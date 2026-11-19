@@ -16,12 +16,14 @@ const Classroom = lazy(() => import('./pages/Classroom'));
 const Leaderboard = lazy(() => import('./pages/Leaderboard'));
 const Shop = lazy(() => import('./pages/Shop'));
 const Inbox = lazy(() => import('./pages/Inbox'));
+const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
 const LEADERBOARD_CSS = ['entrance-test', 'vocab-leaderboard', 'duel', 'pf-pages'];
 const SHOP_CSS = ['entrance-test', 'shop', 'duel', 'pf-pages'];
 const INBOX_CSS = ['inbox', 'pf-pages'];
+const PROFILE_CSS = ['profile', 'pf-profile', 'inventory'];
 
 // A data router: running quizzes use useBlocker to ask before leaving
 const router = createHashRouter(createRoutesFromElements(
@@ -42,6 +44,7 @@ const router = createHashRouter(createRoutesFromElements(
       <Route path="leaderboard" element={<PageCss names={LEADERBOARD_CSS}><Leaderboard /></PageCss>} />
       <Route path="shop" element={<PageCss names={SHOP_CSS}><Shop /></PageCss>} />
       <Route path="inbox" element={<PageCss names={INBOX_CSS}><Inbox /></PageCss>} />
+      <Route path="profile" element={<PageCss names={PROFILE_CSS}><Profile /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

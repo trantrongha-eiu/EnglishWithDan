@@ -46,10 +46,59 @@ test.afterAll(() => new Promise((r) => server.close(r)));
 const NOW = Date.now();
 const inHours = (h) => new Date(NOW + h * 3600000).toISOString();
 const USER = { _id: 'me1', id: 'me1', username: 'hocvien', firstName: 'An', lastName: 'Trần', role: 'student', plan: 'premium' };
+const daysAgo = (d) => new Date(NOW - d * 86400000).toISOString();
+const dayKey = (d) => {
+  const x = new Date(NOW - d * 86400000);
+  return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+};
+
+function makeProfile() {
+  return {
+    _id: 'me1', username: 'hocvien', email: 'an@example.test', firstName: 'An', lastName: 'Trần', role: 'student',
+    bio: 'Mỗi ngày một ít', studyMotto: 'Cố lên', targetBand: 7, targetExamDate: new Date(NOW + 30 * 86400000).toISOString(),
+    plan: 'premium', createdAt: daysAgo(200), planStartedAt: daysAgo(70), planExpiresAt: new Date(NOW + 20 * 86400000).toISOString(),
+    avatar: '', hasPassword: true,
+  };
+}
+
+function makeStats() {
+  const scored = (n, band) => Array.from({ length: n }, (_, i) => ({ _id: `a${i}`, bandScore: band - (i % 3) * 0.5, createdAt: daysAgo(i * 2 + 1) }));
+  return {
+    streak: 12,
+    reading: { total: 11, avgBand: '6.5', history: scored(11, 7) },
+    listening: { total: 3, avgBand: '7.0', history: scored(3, 7.5) },
+    writing: {
+      total: 2, avgBand: '5.5',
+      history: [
+        { _id: 'w1', wordCount1: 160, wordCount2: 260, createdAt: daysAgo(3), grading: { overallBand: 5.5 } },
+        { _id: 'w2', wordCount1: null, wordCount2: 255, createdAt: daysAgo(5) },
+      ],
+    },
+    speaking: {
+      total: 2, avgBand: '6.0',
+      history: [{ _id: 's1', createdAt: daysAgo(4), aiFeedback: { overallBand: 6 } }, { _id: 's2', createdAt: daysAgo(6) }],
+    },
+  };
+}
+
+function makeBadges() {
+  const b = (id, category, earned, current) => ({
+    id, category, earned, icon: '🏅', name: `Huy hiệu ${id}`, description: `Mô tả ${id}`, progress: { current, target: 10 },
+  });
+  return {
+    success: true, earnedCount: 1, totalCount: 3,
+    categories: [{ id: 'study', name: 'Học tập', icon: '📚' }, { id: 'fun', name: 'Vui', icon: '🎉' }],
+    badges: [b('b1', 'study', true, 10), b('b2', 'study', false, 4), b('b3', 'fun', false, 0)],
+  };
+}
 
 function makeState() {
   const owned = { cake: 2, lens: 1, towel: 1, iceShield: 2 };
   return {
+    profile: makeProfile(),
+    stats: makeStats(),
+    badges: makeBadges(),
+    danielHammer: { count: 1, canUse: true, previousStreak: 9 },
     wallet: 200,
     owned,
     pets: new Set(['meo']),
@@ -86,8 +135,9 @@ function shopBody(s) {
     success: true,
     wallet: s.wallet,
     streak: 12,
-    items: ITEMS.map((i) => ({ ...i, owned: s.owned[i.key] || 0 })),
-    pets: PETS.map((p) => ({ ...p, owned: s.pets.has(p.id) })),
+    items: ITEMS.map((i) => ({ ...i, owned: s.owned[i.key] || 0, sellPrice: Math.floor(i.price / 2) })),
+    pets: PETS.map((p) => ({ ...p, owned: s.pets.has(p.id), sellPrice: Math.floor(p.price / 2) })),
+    danielHammer: s.danielHammer,
     activePet: 'meo',
     pet: { id: 'meo', name: 'Mèo Quýt', skill: { icon: '🍀', name: 'Thần Tài', text: 'Thêm quà mỗi ngày' }, gift: s.gift, guard: { max: 2, used: 1, reflect: false } },
     effects: {
@@ -159,7 +209,29 @@ async function open(page, url, state = makeState()) {
       state.wallet -= ITEMS.find((x) => x.key === b.key).price * b.qty;
       return json({ success: true });
     }
-    if (p === '/shop/pet-gift') { state.gift = 'claimed'; state.wallet += 4; return json({ success: true, petName: 'Mèo Quýt', flames: 4 }); }
+    if (p === '/shop/pet-gift') {
+      if (state.failGift) return json({ success: false, message: 'Chưa mở được quà' }, 500);
+      state.gift = 'claimed'; state.wallet += 4;
+      return json({ success: true, petName: 'Mèo Quýt', flames: 4 });
+    }
+    if (p === '/user/profile' && req.method() === 'GET') return state.failProfile ? json({ success: false, message: 'Lỗi' }, 500) : json({ success: true, user: state.profile });
+    if (p === '/user/profile') {
+      const b = req.postDataJSON();
+      if (b.firstName === 'Sai') return json({ success: false, message: 'Tên không hợp lệ' }, 400);
+      Object.assign(state.profile, b);
+      return json({ success: true, user: state.profile });
+    }
+    if (p === '/user/stats') return state.failStats ? json({ success: false }, 500) : json({ success: true, stats: state.stats });
+    if (p === '/badges') return json(state.badges);
+    if (p === '/user/activity-heatmap') return json({ success: true, activity: [{ date: dayKey(1), count: 1 }, { date: dayKey(2), count: 3 }, { date: dayKey(9), count: 6 }] });
+    if (p === '/user/change-password') {
+      if (req.postDataJSON().currentPassword === 'sai-mat-khau') return json({ success: false, message: 'Mật khẩu hiện tại không đúng' }, 400);
+      state.profile.hasPassword = true;
+      return json({ success: true, message: 'Đã đổi mật khẩu thành công', token: 'new-token' });
+    }
+    if (p === '/user/avatar') { state.profile.avatar = '/img/buaDaniel.jpg'; return json({ success: true, avatar: '/img/buaDaniel.jpg' }); }
+    if (p === '/shop/use' || p === '/shop/sell' || p === '/shop/gift' || p === '/user/streak/use-hammer') return json({ success: true, streak: 9, activePet: 'meo', targetName: 'Giang' });
+    if (p === '/shop/pet' && req.method() === 'PUT') return json({ success: true, activePet: req.postDataJSON().petId });
     if (p === '/shop/cake') { state.owned.cake -= 1; return json({ success: true, outcome: 'hit' }); }
     if (p === '/shop/lens') { state.owned.lens -= 1; return json({ success: true }); }
     if (p === '/shop/duels') return json({ success: true });
@@ -199,7 +271,9 @@ function fingerprint(page, sel) {
   return page.evaluate((s) => {
     const root = document.querySelector(s);
     const base = root.getBoundingClientRect();
-    const out = [{ k: 'ROOT', box: [base.width, base.x].map(Math.round) }];
+    // Where the page starts counts too (a dialog is placed on the screen, not the page)
+    const top = base.y + (getComputedStyle(root).position === 'fixed' ? 0 : window.scrollY);
+    const out = [{ k: 'ROOT', box: [base.width, base.x, top].map(Math.round) }];
     const PROPS = ['color', 'backgroundColor', 'fontSize', 'fontWeight', 'borderTopWidth', 'borderTopLeftRadius', 'display', 'textAlign', 'paddingLeft', 'paddingTop'];
     for (const el of root.querySelectorAll('*')) {
       if (el.closest('.lh-mascot, .vlb-lulu, .ews-pet, .vlb-top-lulu, .pet-badge') && !el.matches('.lh-mascot, .vlb-lulu, .ews-pet, .vlb-top-lulu')) continue;
@@ -269,6 +343,33 @@ const PAGES = {
       await p.locator('.gift-pet-art svg').waitFor();
     },
   },
+  profile: {
+    legacy: '/profile.html?legacy=1', app: '/app/#/profile', root: '.profile-layout',
+    ready: async (p) => {
+      await petsReady(p);
+      await p.locator('#profileName:has-text("An Trần")').waitFor();
+      await p.locator('#badgesCard .badge-item').first().waitFor();
+      await p.locator('#heatmapCard').waitFor();
+      await p.locator('#bandTrendChartWrap svg').waitFor();
+      await p.locator('#recentActivity .activity-item').first().waitFor();
+      await p.locator('.pfp-cover-dan svg').waitFor();
+    },
+  },
+};
+
+// Open one tab of the profile, on either version of the page
+const profileTab = (name, sel) => async (p) => {
+  await PAGES.profile.ready(p);
+  await p.locator(`.tab-btn[data-tab="${name}"]`).click();
+  await p.locator(sel).first().waitFor();
+  // The click scrolls smoothly, and the sticky sidebar moves with it
+  await p.evaluate(() => new Promise((done) => {
+    let last = -1;
+    const timer = setInterval(() => {
+      if (window.scrollY === last) { clearInterval(timer); done(); }
+      last = window.scrollY;
+    }, 200);
+  }));
 };
 
 async function compare(browser, name, label, { viewport = { width: 1280, height: 900 }, patch = () => {}, ready, root } = {}) {
@@ -353,10 +454,40 @@ const VARIANTS = [
     await p.locator('.msg-item[data-id="m1"]').click();
     await p.locator('.gift-claimed-label').waitFor();
   }, (s) => { Object.assign(s.messages[1], { giftHammers: 1, giftClaimed: true }); }],
+  ['profile', 'edit tab', profileTab('edit', '#editFirstName'), () => {}],
+  ['profile', 'security tab', profileTab('security', '#secNewPass'), () => {}],
+  ['profile', 'security tab of a Google account', profileTab('security', '#secSocialNote'), (s) => { s.profile.hasPassword = false; }],
+  ['profile', 'history tab', profileTab('history', '#readingHistory tr'), () => {}],
+  ['profile', 'inventory tab', profileTab('inventory', '.inv-pet svg'), () => {}],
+  ['profile', 'empty inventory', profileTab('inventory', '.inv-empty'), (s) => {
+    s.pets = new Set(); s.owned = {}; s.danielHammer = { count: 0, canUse: false };
+  }],
+  ['profile', 'free account with nothing done yet', async (p) => {
+    await petsReady(p);
+    await p.locator('#profileName:has-text("An Trần")').waitFor();
+    await p.locator('#bandTrendChartWrap div').waitFor();
+    await p.locator('#planUpgradeBtn').waitFor();
+  }, (s) => {
+    Object.assign(s.profile, { plan: 'free', planExpiresAt: null, planStartedAt: null, bio: '', studyMotto: '', targetBand: null, targetExamDate: null });
+    s.stats = { streak: 0 };
+    s.badges = { success: true, badges: [], earnedCount: 0, totalCount: 0 };
+  }],
+  ['profile', 'Premium ending in 3 days', async (p) => {
+    await p.locator('#planUpgradeBtn').waitFor();
+  }, (s) => { s.profile.planExpiresAt = new Date(NOW + 2.5 * 86400000).toISOString(); }],
+  ['profile', 'expired Premium', async (p) => {
+    await p.locator('.plan-tag--expired').waitFor();
+  }, (s) => { s.profile.planExpiresAt = daysAgo(2); }],
 ];
 
 for (const [name, label, ready, patch] of VARIANTS) {
   test(`${name} matches the old page: ${label}`, ({ browser }) => compare(browser, name, label, { ready, patch }));
+}
+
+for (const [tab, sel] of [['edit', '#editFirstName'], ['security', '#secNewPass'], ['history', '#readingHistory tr'], ['inventory', '.inv-pet svg']]) {
+  const ready = profileTab(tab, sel);
+  test(`profile ${tab} tab matches the old page (dark)`, ({ browser }) => compare(browser, 'profile', `${tab} dark`, { ready, patch: (s) => { s.theme = 'dark'; } }));
+  test(`profile ${tab} tab matches the old page (phone)`, ({ browser }) => compare(browser, 'profile', `${tab} phone`, { ready, viewport: { width: 390, height: 844 } }));
 }
 
 for (const theme of ['light', 'dark']) {
@@ -375,6 +506,15 @@ for (const theme of ['light', 'dark']) {
     patch,
     root: '.duel-modal',
     ready: async (p) => { await PAGES.leaderboard.ready(p); await p.locator('[data-duel="u5"]').click(); await p.locator('.duel-modal [data-ok]').waitFor(); },
+  }));
+  test(`gift dialog matches the old page (${theme})`, ({ browser }) => compare(browser, 'profile', `gift dialog ${theme}`, {
+    patch,
+    root: '.inv-gift-modal',
+    ready: async (p) => {
+      await profileTab('inventory', '[data-inv-gift-item="cake"]')(p);
+      await p.locator('[data-inv-gift-item="cake"]').click();
+      await p.locator('.inv-gift-modal [data-gift-to="u9"]').click();
+    },
   }));
 }
 
@@ -465,7 +605,95 @@ async function shopFlow(page, log, state) {
   expect(log).toHaveLength(6);
 }
 
-async function inboxFlow(page, log) {
+async function profileFlow(page, log, state, isApp) {
+  await PAGES.profile.ready(page);
+  await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'overview');
+  await expect(page.locator('#streakCount')).toHaveText('12 ngày');
+  await expect(page.locator('#planBadge')).toContainText('Premium');
+
+  await page.locator('.tab-btn[data-tab="edit"]').click();
+  await expect(page.locator('#editFirstName')).toHaveValue('An');
+  await expect(page.locator('#editTargetBand')).toHaveValue('7');
+  await expect(page.locator('#bioCount')).toHaveText('15');
+  await page.locator('#editFirstName').fill('Sai');
+  await page.locator('#tab-edit .btn-primary').click();
+  await expect(page.locator('#editMsg')).toHaveText('Tên không hợp lệ');
+  await page.locator('#editFirstName').fill('Bình');
+  await page.locator('#editMotto').fill('Học đều');
+  await page.locator('#editTargetBand').selectOption('7.5');
+  await page.locator('#editLastName').press('Enter');
+  await expect(page.locator('#editMsg')).toHaveText('Đã lưu thay đổi thành công!');
+  await expect(page.locator('#profileName')).toHaveText('Bình Trần');
+  await expect(page.locator('#mottoText')).toHaveText('Học đều');
+  await expect(page.locator('#targetBandDisplay')).toHaveText('7.5');
+  await page.locator('.accent-swatch[data-primary="#10b981"]').click();
+  await expect(page.locator('.accent-swatch.active')).toHaveAttribute('data-primary', '#10b981');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('profileAccent')).primary)).toBe('#10b981');
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--brand'))).toBe('#10b981');
+
+  await page.locator('.tab-btn[data-tab="security"]').click();
+  const submit = page.locator('#tab-security .btn-primary');
+  await submit.click();
+  await expect(page.locator('#secMsg')).toHaveText('Vui lòng nhập mật khẩu hiện tại');
+  await page.locator('#secCurrentPass').fill('mat-khau-cu');
+  await page.locator('#secNewPass').fill('ngan');
+  await submit.click();
+  await expect(page.locator('#secMsg')).toHaveText('Mật khẩu phải có ít nhất 8 ký tự');
+  await page.locator('#secNewPass').fill('mat-khau-moi');
+  await page.locator('#secConfirmPass').fill('khac-han-nhe');
+  await submit.click();
+  await expect(page.locator('#secMsg')).toHaveText('Mật khẩu xác nhận không khớp');
+  await page.locator('#secCurrentPass').fill('sai-mat-khau');
+  await page.locator('#secConfirmPass').fill('mat-khau-moi');
+  await submit.click();
+  await expect(page.locator('#secMsg')).toHaveText('Mật khẩu hiện tại không đúng');
+  await page.locator('#secCurrentPass').fill('mat-khau-cu');
+  await page.locator('#secConfirmPass').press('Enter');
+  await expect(page.locator('#secMsg')).toHaveText('Đã đổi mật khẩu thành công');
+  await expect(page.locator('#secNewPass')).toHaveValue('');
+  expect(await page.evaluate(() => localStorage.getItem('token'))).toBe('new-token');
+
+  await page.locator('.tab-btn[data-tab="history"]').click();
+  await expect(page.locator('#readingHistory tr:visible')).toHaveCount(9);
+  await page.locator('#readingHistory button').click();
+  await expect(page.locator('#readingHistory tr:visible')).toHaveCount(12);
+  await expect(page.locator('#readingHistory button')).toHaveText('Thu gọn');
+
+  await page.locator('#avatarInput').setInputFiles({
+    name: 'a.png', mimeType: 'image/png',
+    buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=', 'base64'),
+  });
+  await expect(page.locator('img#avatarDisplay')).toHaveAttribute('src', /buaDaniel/);
+  // (the old page has no account dock, so no menu avatar to update)
+  if (isApp) await expect(page.locator('#navAvatar img')).toHaveAttribute('src', /buaDaniel/);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('user')).avatar)).toContain('buaDaniel');
+
+  await page.locator('.tab-btn[data-tab="inventory"]').click();
+  await page.locator('[data-inv-use="crown"], [data-inv-use="towel"]').first().waitFor();
+  await page.locator('[data-inv-use="towel"]').click();
+  await page.locator('#shared-confirm-ok').click();
+  await toastSeen(page, 'Lau sạch bong');
+  await page.locator('[data-inv-sell-item="cake"]').click();
+  await page.locator('#shared-confirm-ok').click();
+  await toastSeen(page, 'Đã bán');
+  await page.locator('[data-inv-daniel]').click();
+  await page.locator('#shared-confirm-ok').click();
+  await toastSeen(page, 'Đã khôi phục chuỗi 9');
+  await page.locator('[data-inv-pet=""]').click();
+  await toastSeen(page, 'Linh thú đã về nghỉ');
+  await page.locator('[data-inv-gift-item="cake"]').click();
+  const gift = page.locator('.inv-gift-modal');
+  await expect(gift.locator('[data-ok]')).toBeDisabled();
+  await gift.locator('[data-gift-to="u9"]').click();
+  await gift.locator('[data-step="1"]').click();
+  await expect(gift.locator('[data-ok]')).toHaveText('🎁 Tặng 2 cho Giang');
+  await gift.locator('[data-ok]').click();
+  await toastSeen(page, 'Đã gửi 2');
+  await expect(gift).toHaveCount(0);
+  expect(log.filter((l) => !l.startsWith('POST /user/avatar'))).toHaveLength(9);
+}
+
+async function inboxFlow(page, log, state, isApp) {
   await page.locator('.msg-item').nth(49).waitFor();
   await expect(page.locator('#unreadBadge')).toHaveText('3');
   await page.locator('.msg-item[data-id="m0"]').click();
@@ -495,12 +723,13 @@ async function inboxFlow(page, log) {
 
   await expect(page.locator('#loadMoreBtn')).toContainText('Xem thêm (49/59)');
   await page.locator('#loadMoreBtn').click();
-  // the delete shifted the server's pages by one, as on the old page
-  await expect(page.locator('.msg-item')).toHaveCount(58);
+  // The delete shifts the server's pages by one: the old page then misses a
+  // message, the app reads the shifted page again and shows all 59.
+  await expect(page.locator('.msg-item')).toHaveCount(isApp ? 59 : 58);
   expect(log.length).toBe(5);
 }
 
-const FLOWS = { leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow };
+const FLOWS = { leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -508,9 +737,10 @@ for (const [name, flow] of Object.entries(FLOWS)) {
       const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
       const page = await ctx.newPage();
       const { log, state, errors } = await open(page, url);
-      await flow(page, log, state);
+      await flow(page, log, state, url.startsWith('/app/'));
       await ctx.close();
-      return { log, errors };
+      // (the picture itself is re-encoded by each browser run)
+      return { log: log.map((l) => l.replace(/^(POST \/user\/avatar) .*/, '$1')), errors };
     };
     const old = await run(PAGES[name].legacy);
     const now = await run(PAGES[name].app);
@@ -525,6 +755,8 @@ test.describe('inside the React app', () => {
   for (const [from, to] of [
     ['/vocab-leaderboard.html', '/app/#/leaderboard'], ['/shop.html', '/app/#/shop'],
     ['/inbox.html', '/app/#/inbox'], ['/inbox.html?msg=m7', '/app/#/inbox?msg=m7'],
+    ['/profile.html', '/app/#/profile'], ['/profile.html#inventory', '/app/#/profile?tab=inventory'],
+    ['/profile.html#plan', '/app/#/profile?focus=plan'],
   ]) {
     test(`${from} forwards to ${to}`, async ({ page }) => {
       await open(page, from);
@@ -630,6 +862,90 @@ test.describe('inside the React app', () => {
     await PAGES.leaderboard.ready(page);
     expect(await dock()).toEqual({ shown: false, cls: false });
     expect(errors).toEqual([]);
+  });
+
+  test('a pet gift that failed can be tried again', async ({ page }) => {
+    const state = makeState();
+    state.failGift = true;
+    await open(page, '/app/#/shop', state);
+    await PAGES.shop.ready(page);
+    await page.locator('[data-pet-gift]').click();
+    await toastSeen(page, 'Chưa mở được quà');
+    await expect(page.locator('[data-pet-gift]')).toBeEnabled();
+    state.failGift = false;
+    await page.locator('[data-pet-gift]').click();
+    await expect(page.locator('.shop-gift-done')).toBeVisible();
+  });
+
+  test('a message that arrives between pages does not show a row twice', async ({ page }) => {
+    const state = makeState();
+    const { errors } = await open(page, '/app/#/inbox', state);
+    await page.locator('.msg-item').nth(49).waitFor();
+    state.messages.unshift({ ...state.messages[5], _id: 'm999', subject: 'Tin mới' });
+    await page.locator('#loadMoreBtn').click();
+    await expect(page.locator('.msg-item')).toHaveCount(60);
+    const ids = await page.locator('.msg-item').evaluateAll((els) => els.map((e) => e.dataset.id));
+    expect(new Set(ids).size).toBe(60);
+    // the count says 61, but the server has nothing further: no dead button
+    await page.locator('#loadMoreBtn').click();
+    await expect(page.locator('#loadMoreBtn')).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
+  test('profile: tabs and sections open from the address, and the menu goes there in place', async ({ page }) => {
+    await open(page, '/app/#/profile?tab=history');
+    await page.locator('#profileName:has-text("An Trần")').waitFor();
+    await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'history');
+    await expect(page).toHaveTitle(/Hồ sơ/);
+    await page.evaluate(() => { window.__sameDocument = true; location.hash = '#/profile?focus=plan'; });
+    await expect(page.locator('#plan')).toHaveClass(/highlight-pulse/);
+    await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'overview');
+    await page.evaluate(() => { location.hash = '#/profile?focus=speakingHistoryCard'; });
+    await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'history');
+    await page.locator('.tab-btn[data-tab="edit"]').click();
+    await expect(page).toHaveURL(/#\/profile\?tab=edit$/);
+    await page.evaluate(() => { location.hash = '#/shop'; });
+    await PAGES.shop.ready(page);
+    expect(await page.evaluate(() => [...document.querySelectorAll('link[href*="/css/"]')].some((l) => /css\/(profile|pf-profile|inventory)\.css/.test(l.href)))).toBe(false);
+    await page.locator('.shop-card-actions a[href*="profile"]').first().click();
+    await expect(page.locator('.tab-btn.active')).toHaveAttribute('data-tab', 'inventory');
+    expect(await page.evaluate(() => window.__sameDocument)).toBe(true);
+    expect(await page.evaluate(() => window.PageHelp ? window.PageHelp.pageKey() : 'profile.html')).toBe('profile.html');
+  });
+
+  test('profile: a new name reaches the BXH without a reload', async ({ page }) => {
+    const state = makeState();
+    await open(page, '/app/#/profile?tab=edit', state);
+    await expect(page.locator('#editFirstName')).toHaveValue('An');
+    await page.locator('#editFirstName').fill('Bình');
+    await page.locator('#tab-edit .btn-primary').click();
+    await expect(page.locator('#profileName')).toHaveText('Bình Trần');
+    await page.evaluate(() => { location.hash = '#/leaderboard'; });
+    await PAGES.leaderboard.ready(page);
+    await expect(page.locator('#dan-lb-list .dan-lb-row.is-me .dan-lb-name')).toHaveText('Bình Trần (Bạn)');
+  });
+
+  test('profile: a failed part leaves the rest on screen', async ({ page }) => {
+    const state = makeState();
+    state.failStats = true;
+    await open(page, '/app/#/profile', state);
+    await page.locator('#profileName:has-text("An Trần")').waitFor();
+    await toastSeen(page, 'Không thể tải số liệu thống kê');
+    await expect(page.locator('#statReading')).toHaveText('-');
+  });
+
+  test('profile: staff have no Kho đồ', async ({ page }) => {
+    await page.addInitScript(() => { window.__staff = true; });
+    await page.addInitScript((u) => {
+      const set = Storage.prototype.setItem;
+      Storage.prototype.setItem = function (k, v) { return set.call(this, k, k === 'user' ? JSON.stringify(u) : v); };
+    }, { ...USER, role: 'admin' });
+    const state = makeState();
+    state.profile.role = 'admin';
+    await open(page, '/app/#/profile?tab=inventory', state);
+    await page.locator('#profileRole:has-text("Quản trị viên")').waitFor();
+    await expect(page.locator('.tab-btn[data-tab="inventory"]')).toHaveCount(0);
+    await expect(page.locator('#inventory-body')).toContainText('chỉ dành cho học sinh và giáo viên');
   });
 
   test('a failed load offers a retry', async ({ page }) => {

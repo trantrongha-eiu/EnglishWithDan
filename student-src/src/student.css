@@ -50,14 +50,23 @@ body {
 }
 
 /* #root is a flex column: these static-page shells center with auto margins */
-#root > .et-shell, #root > .inbox-layout { width: 100%; }
+#root > .et-shell, #root > .inbox-layout, #root > .profile-layout { width: 100%; }
 /* Their old pages had no dashboard.css, whose body sets line-height: 1.5 */
-#root > .shop-shell, #root > .inbox-layout { line-height: normal; }
+#root > .shop-shell, #root > .inbox-layout, #root > .profile-layout { line-height: normal; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }
 [data-theme="dark"] #root > .inbox-layout .btn-ghost { background: transparent; }
 #root > .inbox-layout .empty-state p, #root > .inbox-layout .detail-placeholder p { margin: 1em 0; }
+/* dashboard.css styles every form label and removes paragraph margins */
+#root > .profile-layout .form-group label {
+  font-size: var(--fs-body-sm); color: var(--text); text-transform: none;
+  letter-spacing: normal; margin-bottom: 6px;
+}
+:where(#root > .profile-layout) p { margin-block: 1em; }
+.inv-gift-modal { line-height: normal; }
+[data-theme="dark"] .inv-gift-modal .btn-ghost,
+[data-theme="dark"] #root > .profile-layout .btn-ghost { background: var(--surface); }
 
 /* Route loading fallback */
 .route-loading {

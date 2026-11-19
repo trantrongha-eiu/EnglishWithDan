@@ -81,7 +81,7 @@
       : /reading/.test(pg) ? 'reading'
       : /writing|task1|task2|grammar|sentences/.test(pg) ? 'writing'
       : /speaking/.test(pg) ? 'speaking'
-      : /dashboard/.test(pg) || (/^\/app(\/|$)/.test(location.pathname) && !/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/.test(location.hash)) ? 'dashboard' : '_';
+      : /dashboard/.test(pg) || (/^\/app(\/|$)/.test(location.pathname) && !/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/.test(location.hash)) ? 'dashboard' : '_';
   }
 
   function randomOutfit(not) {

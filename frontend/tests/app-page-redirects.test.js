@@ -12,7 +12,7 @@ function redirectOf(file, url) {
     .replace(/^<script>/, '').replace(/<\/script>$/, '');
   const target = [];
   const u = new URL(url, 'https://example.test');
-  vm.runInNewContext(script, { URLSearchParams, location: { search: u.search, replace: (x) => target.push(x) } });
+  vm.runInNewContext(script, { URLSearchParams, location: { search: u.search, hash: u.hash, replace: (x) => target.push(x) } });
   return target[0];
 }
 
@@ -22,11 +22,17 @@ describe('static pages that moved to /app/', () => {
     ['shop.html', '/shop', '/app/#/shop'],
     ['inbox.html', '/inbox.html', '/app/#/inbox'],
     ['inbox.html', '/inbox.html?msg=abc', '/app/#/inbox?msg=abc'],
+    ['profile.html', '/profile', '/app/#/profile'],
+    ['profile.html', '/profile.html#overview', '/app/#/profile'],
+    ['profile.html', '/profile.html#inventory', '/app/#/profile?tab=inventory'],
+    ['profile.html', '/profile.html#security', '/app/#/profile?tab=security'],
+    ['profile.html', '/profile.html#plan', '/app/#/profile?focus=plan'],
+    ['profile.html', '/profile.html#readingHistoryCard', '/app/#/profile?focus=readingHistoryCard'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

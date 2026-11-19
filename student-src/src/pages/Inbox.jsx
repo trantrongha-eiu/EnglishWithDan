@@ -142,7 +142,7 @@ export default function Inbox() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   // Latest values for the async steps (paging until ?msg= is found, a slow "read")
-  const live = useRef({ messages: [], total: 0, page: 1, selected: null, loadingMore: false });
+  const live = useRef({ messages: [], total: 0, page: 1, deleted: 0, selected: null, loadingMore: false });
 
   const putMessages = useCallback((next) => {
     live.current.messages = next;
@@ -158,12 +158,26 @@ export default function Inbox() {
     l.loadingMore = true;
     setLoadingMore(true);
     try {
+      // Pages move while the list is open. A deleted message pulls later ones
+      // into pages already read, so those are read again; a new message pushes
+      // rows onto the next page, so rows already shown are skipped.
       const nextPage = l.page + 1;
-      const data = await apiFetch(`/user/messages?page=${nextPage}&limit=${PAGE_SIZE}`);
-      putMessages(l.messages.concat(data.messages || []));
-      l.total = data.total || l.total;
+      const firstPage = l.deleted ? Math.max(1, l.page - Math.floor((l.deleted - 1) / PAGE_SIZE)) : nextPage;
+      const pages = Array.from({ length: nextPage - firstPage + 1 }, (_, i) => firstPage + i);
+      const replies = await Promise.all(pages.map((p) => apiFetch(`/user/messages?page=${p}&limit=${PAGE_SIZE}`)));
+      const last = replies[replies.length - 1];
+      const seen = new Set(l.messages.map((m) => m._id));
+      const fresh = [];
+      for (const m of replies.flatMap((r) => r.messages || [])) {
+        if (!seen.has(m._id)) { seen.add(m._id); fresh.push(m); }
+      }
+      putMessages(l.messages.concat(fresh));
+      l.total = last.total ?? l.total;
+      // Nothing left to fetch, even if the count still says otherwise
+      if (!fresh.length && (last.messages || []).length < PAGE_SIZE) l.total = l.messages.length;
       setTotal(l.total);
       l.page = nextPage;
+      l.deleted = 0;
     } catch (e) {
       siteToast(`Không tải thêm được: ${e.message}`, 'error');
     } finally {
@@ -267,6 +281,7 @@ export default function Inbox() {
         const l = live.current;
         putMessages(l.messages.filter((m) => m._id !== msg._id));
         l.total = Math.max(0, l.total - 1);
+        l.deleted += 1;
         setTotal(l.total);
         l.selected = null;
         setSelectedId(null);

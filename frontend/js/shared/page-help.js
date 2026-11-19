@@ -45,7 +45,7 @@
   function pageKey() {
     var path = location.pathname.replace(/\/+$/, '');
     if (path === '/app') {
-      var route = (location.hash.match(/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/) || [])[1];
+      var route = (location.hash.match(/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/) || [])[1];
       if (route) return route === 'leaderboard' ? 'vocab-leaderboard.html' : route + '.html';
     }
     var last = path.split('/').pop() || '';

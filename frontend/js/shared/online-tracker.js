@@ -141,7 +141,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.hash.match(/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/);
+    var m = location.hash.match(/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/);
     if (!m) return location.pathname;
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

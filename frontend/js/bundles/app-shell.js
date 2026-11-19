@@ -1652,7 +1652,7 @@
   cornerDock.id = 'navCornerDock';
   cornerDock.innerHTML =
     STAFF_ADMIN_ICON +
-    '<a href="/profile.html" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân">' +
+    '<a href="/app/#/profile" id="navUserWidget" title="Trang cá nhân" aria-label="Trang cá nhân">' +
       '<span id="navAvatar">?</span>' +
     '</a>' +
     '<button class="btn-dark-mode" id="globalLogoutBtn" title="Đăng xuất" aria-label="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>';
@@ -1697,7 +1697,7 @@
     '<div class="mobile-nav-inner">' +
     mkMobileLinks() +
     mkUtilityMobileLinks() +
-    '<a href="/profile.html" class="mobile-nav-link"><i class="fas fa-user-circle" style="width:20px;text-align:center"></i> Trang cá nhân</a>' +
+    '<a href="/app/#/profile" class="mobile-nav-link"><i class="fas fa-user-circle" style="width:20px;text-align:center"></i> Trang cá nhân</a>' +
     STAFF_ADMIN_MOBILE +
     '<div class="mobile-nav-divider"></div>' +
     '<button id="mobileLangBtn" class="mobile-nav-link ews-lang-mobile" data-i18n-skip style="width:100%;border:none;background:none;cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;text-align:left;color:var(--text-light);">' +
@@ -1795,7 +1795,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=b3afeef7ca';
+      s.src = '/js/shared/page-help.js?v=431b76a1a4';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -3167,7 +3167,7 @@
       : /reading/.test(pg) ? 'reading'
       : /writing|task1|task2|grammar|sentences/.test(pg) ? 'writing'
       : /speaking/.test(pg) ? 'speaking'
-      : /dashboard/.test(pg) || (/^\/app(\/|$)/.test(location.pathname) && !/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/.test(location.hash)) ? 'dashboard' : '_';
+      : /dashboard/.test(pg) || (/^\/app(\/|$)/.test(location.pathname) && !/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/.test(location.hash)) ? 'dashboard' : '_';
   }
 
   function randomOutfit(not) {
@@ -5729,7 +5729,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.hash.match(/^#\/(classroom|leaderboard|shop|inbox)(?=[/?]|$)/);
+    var m = location.hash.match(/^#\/(classroom|leaderboard|shop|inbox|profile)(?=[/?]|$)/);
     if (!m) return location.pathname;
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

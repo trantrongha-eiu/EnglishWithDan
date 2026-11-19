@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* This page now lives in the React app (/app/#/profile, source:
+     student-src/src/pages/Profile.jsx). Old links keep their query string, and
+     #tab / #section become ?tab= / ?focus=. ?legacy=1 stays on this version as
+     a fallback. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var h = (location.hash || '').slice(1);
+    if (/^(edit|security|history|inventory)$/.test(h)) q.set('tab', h);
+    else if (h && h !== 'overview') q.set('focus', h);
+    var qs = q.toString();
+    location.replace('/app/#/profile' + (qs ? '?' + qs : ''));
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +39,7 @@
   <link rel="stylesheet" href="/css/inventory.css?v=10c24e4883"/>
 </head>
 <body>
-  <script src="/js/bundles/app-shell.js?v=7c2aea54ac"></script>
+  <script src="/js/bundles/app-shell.js?v=7d1f03ee18"></script>
   <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
   <script src="/js/shared/dictionary-lookup.js?v=74785ced6f"></script>
   <script src="/js/shared/badge-popup.js?v=b1f5e551eb"></script>

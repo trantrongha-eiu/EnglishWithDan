@@ -107,7 +107,7 @@ function Picker({ se, c, swapping, onClose, onBooked }) {
   }
 
   async function submit() {
-    if (!slotId || !mode) return;
+    if (!slot || !mode) return;
     setBusy(true);
     try {
       await apiFetch(`/classes/my/speaking-exam/${slotId}/book`, {
@@ -190,7 +190,7 @@ function Picker({ se, c, swapping, onClose, onBooked }) {
         )}
         <div className="ci-warn-actions">
           <button type="button" className="ci-warn-btn ci-warn-btn--ghost" onClick={onClose}>Đóng</button>
-          <button type="button" className="ci-warn-btn se-submit" disabled={!slotId || !mode || busy} onClick={submit}>
+          <button type="button" className="ci-warn-btn se-submit" disabled={!slot || !mode || busy} onClick={submit}>
             {busy ? (swapping ? 'Đang đổi…' : 'Đang đăng kí…') : (swapping ? 'Xác nhận đổi buổi' : 'Xác nhận đăng kí')}
           </button>
         </div>

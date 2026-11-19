@@ -7,6 +7,7 @@ const TITLES = {
   '/leaderboard': 'BXH Vocab',
   '/shop': 'Cửa hàng lửa',
   '/inbox': 'Hộp thư',
+  '/profile': 'Hồ sơ',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

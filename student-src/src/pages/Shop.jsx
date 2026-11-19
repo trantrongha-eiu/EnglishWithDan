@@ -7,7 +7,7 @@ import { canBuyItem, fmtUntil, maxQty, shopApi, takeHopeResult } from '../utils/
 // active effects, items and linh thú; this page only sells. Using, walking a
 // pet and selling back stay in the Kho đồ tab of the profile page.
 
-const KHO = '/profile.html#inventory';
+const KHO = '/app/#/profile?tab=inventory';
 const SKELETON = '<div class="shop-card shop-skel"></div>';
 const html = (__html) => ({ __html });
 
@@ -84,7 +84,7 @@ function Effects({ data, hopeResult }) {
 }
 
 // The pet out walking: its skill, today's 🎁, Hộ Thể blocks left
-function MyPet({ data, pets, onGift }) {
+function MyPet({ data, pets, opening, onGift }) {
   const p = data.pet;
   if (!p) {
     const ownsAny = data.pets.some((x) => x.owned);
@@ -106,7 +106,7 @@ function MyPet({ data, pets, onGift }) {
         <b>🐾 {p.name} đang đi dạo cùng bạn</b>
         <Skill skill={p.skill} />
         <div className="shop-mypet-status">
-          {p.gift === 'ready' && <button type="button" className="btn btn-primary btn-sm shop-gift-btn" data-pet-gift onClick={onGift}>🎁 Mở quà hôm nay</button>}
+          {p.gift === 'ready' && <button type="button" className="btn btn-primary btn-sm shop-gift-btn" data-pet-gift disabled={opening} onClick={onGift}>🎁 Mở quà hôm nay</button>}
           {p.gift === 'claimed' && <span className="shop-gift-done">✓ Đã mở quà hôm nay — mai lại có nhé</span>}
           {p.gift !== 'ready' && p.gift !== 'claimed' && <span className="shop-gift-wait">🎁 Học 1 bài kiếm 🔥 đầu tiên hôm nay là bé mang quà về</span>}
           {p.guard && (
@@ -246,6 +246,7 @@ export default function Shop() {
   const pets = usePets();
   const [{ data, hopeResult, failed }, setState] = useState({ data: null, hopeResult: null, failed: false });
   const [buying, setBuying] = useState(null);
+  const [openingGift, setOpeningGift] = useState(false);
   const busy = useRef(false);
 
   const load = useCallback(() => shopApi('GET', '/shop').then((d) => {
@@ -305,16 +306,17 @@ export default function Shop() {
     });
   }
 
-  function openGift(e) {
+  // The button comes back after a failure, so the student can try again
+  function openGift() {
     if (busy.current) return;
-    e.currentTarget.disabled = true;
     busy.current = true;
+    setOpeningGift(true);
     shopApi('POST', '/shop/pet-gift').then((d) => {
       if (d?.success) window.Pets?.giftOpened?.();
-      after(d, d?.success
+      return after(d, d?.success
         ? `🎁 ${d.petName} mang về +${d.flames} 🔥${d.item ? ` và ${d.item.emoji} ${d.item.name} (đã vào Kho đồ)` : ''}!`
         : '');
-    });
+    }).finally(() => setOpeningGift(false));
   }
 
   const allPets = data?.pets || [];
@@ -342,7 +344,7 @@ export default function Shop() {
       </div>
 
       {data && <Effects data={data} hopeResult={hopeResult} />}
-      {data && <MyPet data={data} pets={pets} onGift={openGift} />}
+      {data && <MyPet data={data} pets={pets} opening={openingGift} onGift={openGift} />}
 
       <section className="shop-section shop-section--duel">
         <h2 className="shop-h2"><span>⚔️</span> Thách đấu 🔥</h2>
