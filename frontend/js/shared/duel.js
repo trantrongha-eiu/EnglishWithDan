@@ -52,6 +52,135 @@
     return 'còn ' + Math.max(1, Math.round(ms / 60000)) + ' phút';
   }
 
+  /* ── Linh thú arena ─────────────────────────────────────────────────
+     Each side's walking pet (myPet / rival.pet from GET /shop/duels):
+     on a live card they face off and the leader holds its bom vĩ thú,
+     charged; when a duel ends, finale() plays the winner's pet firing at
+     the loser's (Pets.bombHtml — bigger with every tail). No pet → a 🔥
+     spirit fires a plain cầu lửa. Needs js/shared/pets.js; without it the
+     board just shows no pets. */
+  function P() { return window.Pets && window.Pets.bombHtml ? window.Pets : null; }
+  function petArt(id) {
+    var p = P();
+    return p && id && p.svg(id) ? p.svg(id, 'pt-static') : '<span class="duel-nopet" aria-hidden="true">🔥</span>';
+  }
+  function petName(id) { var p = P(); return (p && id && p.names[id]) || ''; }
+  // A pet box; the right-hand one is mirrored so the two face each other.
+  // hold = it holds its charged sphere (sized for a `size`px box).
+  function fighter(id, size, right, hold) {
+    var p = P(), bomb = '';
+    // Held on the card at ~half size, so the pet stays visible behind it.
+    if (hold && p) bomb = p.bombHtml(id || null, p.bombSpec(id || null).px * size / 58 * 0.5, 'is-hold');
+    return '<span class="duel-pet' + (right ? ' is-right' : '') + '" style="--ps:' + size + 'px">'
+      + '<span class="duel-pet-flip">' + petArt(id) + bomb + '</span></span>';
+  }
+  function arena(d, myPet) {
+    if (!P()) return '';
+    var diff = d.myScore - d.rivalScore;
+    return '<div class="duel-arena" aria-hidden="true">'
+      + fighter(myPet, 68, false, diff > 0)
+      + '<span class="duel-arena-vs">VS</span>'
+      + fighter(d.rival.pet, 68, true, diff < 0)
+      + '</div>';
+  }
+
+  // Results already played, per browser (ids, newest last).
+  var SEEN_KEY = 'ews-duel-fx-seen';
+  function seenList() { try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '[]') || []; } catch (e) { return []; } }
+  function markSeen(ids) {
+    try {
+      var s = seenList();
+      ids.forEach(function (id) { if (s.indexOf(id) < 0) s.push(id); });
+      localStorage.setItem(SEEN_KEY, JSON.stringify(s.slice(-60)));
+    } catch (e) {}
+  }
+  // The newest result from the last 2 days this browser hasn't played yet.
+  function autoFinale(recent, myPet) {
+    var seen = seenList(), fresh = [];
+    recent.forEach(function (d) {
+      if (d.status !== 'done' || seen.indexOf(d.id) >= 0) return;
+      if (d.endsAt && Date.now() - new Date(d.endsAt).getTime() > 2 * 86400000) return;
+      fresh.push(d);
+    });
+    if (!fresh.length) return;
+    markSeen(fresh.map(function (d) { return d.id; }));
+    finale(fresh[0], myPet);
+  }
+
+  var FX_CHARGE = 1300, FX_FLY = 650;
+  function finale(d, myPet) {
+    var p = P();
+    if (!p || document.querySelector('.duel-fx')) return;
+    var reduced = false;
+    try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    var size = Math.min(150, Math.round((window.innerWidth || 400) * 0.3));
+    var tie = d.result === 'tie', iWon = d.result === 'win';
+    var me = { pet: myPet, name: 'Bạn', score: d.myScore };
+    var rv = { pet: d.rival.pet, name: d.rival.name, score: d.rivalScore };
+    var title = tie ? '🤝 Hòa rồi!' : iWon ? '🏆 Bạn thắng!' : '💥 ' + esc(rv.name) + ' thắng!';
+    var sub = d.myScore + ' – ' + d.rivalScore + ' 🔥 · '
+      + (tie ? 'mỗi bên nhận lại ' + d.stake + ' 🔥' : iWon ? '+' + d.pot + ' 🔥 vào ví lửa' : 'mất ' + d.stake + ' 🔥 — phục thù thôi!');
+    var shooter = function (side) {
+      var t = p.tails(side.pet);
+      return t ? esc(petName(side.pet)) + ' tung bom vĩ thú ' + t + ' đuôi!' : (side.pet ? esc(petName(side.pet)) : 'Lửa') + ' phóng cầu lửa!';
+    };
+    var wrap = document.createElement('div');
+    wrap.className = 'duel-fx' + (reduced ? ' is-reduced' : '');
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-label', 'Kết quả thách đấu với ' + d.rival.name);
+    wrap.innerHTML = '<div class="duel-fx-box">'
+      + '<p class="duel-fx-kicker">⚔️ Kết quả thách đấu · cược ' + d.stake + ' 🔥</p>'
+      + '<div class="duel-fx-stage">'
+      + '<div class="duel-fx-side' + (tie ? '' : iWon ? ' is-winner' : ' is-loser') + '">' + fighter(me.pet, size, false, false)
+      + '<b>' + me.name + '</b><span>' + me.score + ' 🔥</span></div>'
+      + '<div class="duel-fx-side' + (tie ? '' : iWon ? ' is-loser' : ' is-winner') + '">' + fighter(rv.pet, size, true, false)
+      + '<b>' + esc(rv.name) + '</b><span>' + rv.score + ' 🔥</span></div>'
+      + '</div>'
+      + '<p class="duel-fx-call">' + (tie ? 'Hai bom va nhau giữa trời!' : shooter(iWon ? me : rv)) + '</p>'
+      + '<div class="duel-fx-result"><h3>' + title + '</h3><p>' + sub + '</p>'
+      + '<button type="button" class="btn btn-primary" data-fx-close>' + (iWon || tie ? 'Tuyệt!' : 'Phục thù ⚔️') + '</button></div>'
+      + '</div>';
+    document.body.appendChild(wrap);
+    var trigger = document.activeElement;
+    function close() {
+      wrap.remove();
+      if (trigger && trigger.focus) try { trigger.focus(); } catch (e) {}
+    }
+    wrap.addEventListener('click', function (e) {
+      if (e.target === wrap || (e.target.closest && e.target.closest('[data-fx-close]'))) close();
+    });
+    wrap.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    requestAnimationFrame(function () { wrap.classList.add('is-in'); });
+    var btn = wrap.querySelector('[data-fx-close]');
+    if (reduced) { wrap.classList.add('is-done'); btn.focus(); return; }
+
+    // Who fires: the winner, or both on a tie (the spheres meet mid-air).
+    var sides = wrap.querySelectorAll('.duel-fx-side');
+    var shots = tie ? [0, 1] : [iWon ? 0 : 1];
+    var bombs = shots.map(function (i) {
+      var side = i ? rv : me, flip = sides[i].querySelector('.duel-pet-flip');
+      flip.insertAdjacentHTML('beforeend', p.bombHtml(side.pet || null, p.bombSpec(side.pet || null).px * size / 58));
+      sides[i].classList.add('is-charging');
+      return { el: flip.lastChild, from: sides[i], to: sides[1 - i] };
+    });
+    setTimeout(function () {
+      bombs.forEach(function (b) {
+        b.from.classList.remove('is-charging');
+        var a = b.el.getBoundingClientRect(), t = b.to.querySelector('.duel-pet').getBoundingClientRect();
+        var dist = Math.abs((t.left + t.width / 2) - (a.left + a.width / 2));
+        b.el.style.setProperty('--dist', Math.round(tie ? dist / 2 : dist) + 'px');
+        b.el.classList.add('is-fired');
+      });
+    }, FX_CHARGE);
+    setTimeout(function () {
+      bombs.forEach(function (b) { b.el.classList.add('is-boom'); });
+      wrap.classList.add('is-boom');
+      if (!tie) bombs[0].to.classList.add('is-hit');
+    }, FX_CHARGE + FX_FLY);
+    setTimeout(function () { wrap.classList.add('is-done'); btn.focus(); }, FX_CHARGE + FX_FLY + 700);
+  }
+
   /* ── Board ─────────────────────────────────────────────────────── */
   var board = null;   // { el, opts, data }
   var boardTimer = null;
@@ -85,6 +214,7 @@
       + '<div class="duel-card-head"><span class="duel-swords" aria-hidden="true">⚔️</span><div>'
       + 'Đang đấu với ' + rival + ' <span class="duel-stake">Thắng nhận 🔥 ' + d.pot + '</span>'
       + '<small>Kết thúc ' + left(d.endsAt).replace('còn', 'sau') + '</small></div></div>'
+      + arena(d, board && board.data && board.data.myPet)
       + '<div class="duel-vs" role="img" aria-label="Bạn ' + d.myScore + ' 🔥, ' + esc(d.rival.name) + ' ' + d.rivalScore + ' 🔥">'
       + '<span class="duel-vs-me">Bạn <b>' + d.myScore + '</b></span>'
       + '<span class="duel-bar"><span class="duel-bar-me" style="width:' + Math.round(d.myScore / total * 100) + '%"></span></span>'
@@ -106,7 +236,9 @@
       ? d.myScore + ' – ' + d.rivalScore + ' 🔥' + (d.result === 'win' ? ' · +' + d.pot + ' 🔥' : d.result === 'lose' ? ' · −' + d.stake + ' 🔥' : ' · hoàn cược')
       : 'cược ' + d.stake + ' 🔥';
     return '<li class="duel-recent duel-recent--' + esc(key) + '"><span aria-hidden="true">' + r[0] + '</span>'
-      + '<b>' + r[1] + '</b> với ' + esc(d.rival.name) + '<small>' + detail + '</small></li>';
+      + '<b>' + r[1] + '</b> với ' + esc(d.rival.name) + '<small>' + detail + '</small>'
+      + (d.status === 'done' && P() ? '<button type="button" class="duel-replay" data-duel-replay="' + esc(d.id) + '">▶ Xem lại</button>' : '')
+      + '</li>';
   }
 
   function render() {
@@ -132,6 +264,7 @@
       if (!board) return; // left the shop while this was loading
       board.data = d;
       render();
+      autoFinale(d.recent || [], d.myPet);
     }).catch(function () {
       if (!board) return;
       board.el.removeAttribute('aria-busy');
@@ -151,10 +284,15 @@
   }
 
   document.addEventListener('click', function (e) {
-    var b = e.target.closest && e.target.closest('[data-duel-new],[data-duel-accept],[data-duel-decline],[data-duel-cancel]');
+    var b = e.target.closest && e.target.closest('[data-duel-new],[data-duel-accept],[data-duel-decline],[data-duel-cancel],[data-duel-replay]');
     if (!b || b.disabled || !board || !board.el.contains(b)) return;
     if (b.hasAttribute('data-duel-new')) return challenge(null, board.opts);
     var id;
+    if ((id = b.getAttribute('data-duel-replay'))) {
+      var hit = (board.data && board.data.recent || []).filter(function (x) { return x.id === id; })[0];
+      if (hit) finale(hit, board.data.myPet);
+      return;
+    }
     if ((id = b.getAttribute('data-duel-accept'))) {
       var stake = b.getAttribute('data-stake');
       confirmThen('Nhận lời thách đấu?', 'Bạn đặt ' + stake + ' 🔥 vào trận với ' + b.getAttribute('data-name') + '. Đến hết ngày mai, ai kiếm nhiều 🔥 từ bài học hơn sẽ thắng ' + (stake * 2) + ' 🔥.', 'Chiến! ⚔️', function () {
@@ -183,6 +321,8 @@
     clearInterval(boardTimer);
     boardTimer = null;
     board = null;
+    var fx = document.querySelectorAll('.duel-fx');
+    for (var i = 0; i < fx.length; i++) fx[i].remove();
   }
 
   /* ── Challenge dialog ──────────────────────────────────────────── */
@@ -313,5 +453,5 @@
     sync();
   }
 
-  window.Duel = { mount: mount, unmount: unmount, challenge: challenge, reload: load };
+  window.Duel = { mount: mount, unmount: unmount, challenge: challenge, reload: load, finale: finale };
 })();

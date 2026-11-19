@@ -269,7 +269,14 @@ async function listDuels(userId) {
   const lives = await Promise.all(active.map(d => earnedOn([d.challengerId, d.opponentId], d.startDay, d.endDay)));
   const liveById = Object.fromEntries(active.map((d, i) => [String(d._id), lives[i]]));
   const views = rows.map(d => view(d, userId, liveById[String(d._id)]));
+  // Each side's linh thú out walking — the board pits them against each
+  // other and the winner's fires its bom vĩ thú (js/shared/duel.js).
+  const ids = [...new Set([String(userId), ...views.map(v => v.rival.id)])];
+  const pets = {};
+  for (const u of await User.find({ _id: { $in: ids } }).select('activePet').lean()) pets[String(u._id)] = u.activePet || '';
+  for (const v of views) v.rival.pet = pets[v.rival.id] || '';
   return {
+    myPet: pets[String(userId)] || '',
     open: views.filter(v => OPEN.includes(v.status)),
     recent: views.filter(v => !OPEN.includes(v.status)).slice(0, 8),
     rules: { min: DUEL_MIN_STAKE, max: DUEL_MAX_STAKE, maxOpen: DUEL_MAX_OPEN, pendingHours: DUEL_PENDING_HOURS },

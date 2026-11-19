@@ -76,3 +76,66 @@
   .duel-intro .btn { width: 100%; }
   .duel-vs-rival { max-width: 80px; }
 }
+
+/* ── Linh thú arena (duel.js arena / fighter / finale): each side's pet,
+   the right one mirrored so they face off; the leader holds its charged
+   bom vĩ thú (pets.css .pt-bomb). --ps = box size. */
+.duel-pet { position: relative; display: inline-block; width: var(--ps); height: var(--ps); flex: 0 0 var(--ps); }
+.duel-pet-flip { position: relative; display: block; width: 100%; height: 100%; }
+.duel-pet.is-right .duel-pet-flip { transform: scaleX(-1); }
+.duel-pet .pt-tail { animation: pt-wag 1.3s ease-in-out infinite; }
+.duel-pet .pt-eye { animation: pt-blink 4.5s infinite; }
+.duel-nopet {
+  display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;
+  font-size: calc(var(--ps) * .55); line-height: 1; filter: drop-shadow(0 0 6px rgba(249, 115, 22, .6));
+}
+.duel-arena {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 8px;
+  padding: 6px 14px 4px; border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(168, 85, 247, .12), transparent 70%);
+}
+.duel-arena-vs { align-self: center; font-weight: 900; font-size: 13px; letter-spacing: .08em; color: var(--text2); }
+
+/* Result overlay: dimmed backdrop, two pets, the shot, then the result. */
+.duel-fx {
+  position: fixed; inset: 0; z-index: 9995; display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: rgba(9, 6, 20, .72); opacity: 0; transition: opacity .25s;
+}
+.duel-fx.is-in { opacity: 1; }
+.duel-fx-box {
+  position: relative; width: min(560px, 100%); padding: 18px 16px 20px; border-radius: 20px; text-align: center;
+  background: radial-gradient(ellipse at 50% 70%, #2e1065 0%, #140a2a 60%, #0b0716 100%);
+  color: #f5f3ff; box-shadow: 0 20px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(168, 85, 247, .35);
+  overflow: hidden;
+}
+.duel-fx.is-boom .duel-fx-box { animation: duel-fx-shake .45s linear; }
+.duel-fx-kicker { margin: 0 0 6px; font-size: 13px; font-weight: 700; color: #c4b5fd; }
+.duel-fx-stage { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; padding: 18px 4px 6px; }
+.duel-fx-side { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 0; transition: transform .4s, filter .4s, opacity .4s; }
+.duel-fx-side b { font-size: 15px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel-fx-side > span:last-child { font-size: 13px; color: #c4b5fd; }
+.duel-fx-side.is-charging .duel-pet .pt-svg { animation: pt-charge .09s linear infinite alternate; }
+.duel-fx-side.is-hit .duel-pet { animation: duel-fx-hit .7s ease-out forwards; }
+.duel-fx-call { margin: 6px 0 0; min-height: 1.4em; font-weight: 700; color: #e9d5ff; }
+.duel-fx-result { opacity: 0; transform: translateY(8px); transition: opacity .35s, transform .35s; pointer-events: none; }
+.duel-fx.is-done .duel-fx-result { opacity: 1; transform: none; pointer-events: auto; }
+.duel-fx-result h3 { margin: 10px 0 2px; font-size: 24px; color: #fff; }
+.duel-fx-result p { margin: 0 0 12px; color: #ddd6fe; font-size: 14px; }
+.duel-fx.is-done .duel-fx-side.is-winner { transform: translateY(-6px) scale(1.04); }
+.duel-fx.is-done .duel-fx-side.is-loser { filter: grayscale(.7); opacity: .75; }
+.duel-replay {
+  margin-left: 6px; padding: 1px 8px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--surface2, #f3f4f6); color: var(--text2); font: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+}
+.duel-replay:hover { color: var(--text); }
+@keyframes duel-fx-shake {
+  0%, 100% { transform: none; } 20% { transform: translate(-5px, 2px); } 40% { transform: translate(5px, -2px); }
+  60% { transform: translate(-3px, 1px); } 80% { transform: translate(3px, 0); }
+}
+@keyframes duel-fx-hit {
+  0% { transform: none; } 25% { transform: translateY(-10px) rotate(-12deg); }
+  100% { transform: translateY(4px) rotate(-8deg) scale(.94); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .duel-fx.is-boom .duel-fx-box, .duel-fx-side.is-hit .duel-pet, .duel-pet .pt-tail, .duel-pet .pt-eye { animation: none !important; }
+}

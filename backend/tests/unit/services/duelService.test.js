@@ -27,6 +27,19 @@ describe('⚔️ Thách đấu', () => {
     expect((await duelService.respond(b._id, list.open[0].id, true)).status).toBe('duel_gone');
   });
 
+  test('the list carries each side\'s walking linh thú (bom vĩ thú arena)', async () => {
+    const a = await player(); const b = await player();
+    await User.updateOne({ _id: a._id }, { $set: { activePet: 'vi9' } });
+    await User.updateOne({ _id: b._id }, { $set: { activePet: 'vi2' } });
+    await duelService.challenge(a._id, String(b._id), 10);
+    const mine = await duelService.listDuels(a._id);
+    expect(mine.myPet).toBe('vi9');
+    expect(mine.open[0].rival).toMatchObject({ id: String(b._id), pet: 'vi2' });
+    const c = await player();
+    await duelService.challenge(c._id, String(a._id), 10);
+    expect((await duelService.listDuels(a._id)).open.find(d => d.rival.id === String(c._id)).rival.pet).toBe('');
+  });
+
   test('rules: stake range, self, enough 🔥, one open duel per pair', async () => {
     const a = await player(10); const b = await player();
     expect((await duelService.challenge(a._id, String(b._id), 2)).status).toBe('duel_stake');
