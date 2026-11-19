@@ -112,7 +112,7 @@ function resourcePath(r) {
     case 'speaking': return `speaking.html?questionId=${id}`;
     case 'speaking_topic': return `speaking.html?topicSet=${id}`;
     case 'speaking_full_mock': return 'speaking.html?tab=fullmock';
-    case 'grammar': return code ? `essential-grammar.html?lesson=${enc(code)}` : 'essential-grammar.html';
+    case 'grammar': return code ? `app/essential-grammar?lesson=${enc(code)}` : 'app/essential-grammar';
     case 'vocabulary_lesson': return `app/dashboard/lesson/${id}`;
     case 'mock_test': return 'mock-test.html';
     case 'shadowing': return code ? `app/shadowing?lesson=${enc(code)}` : 'app/shadowing';

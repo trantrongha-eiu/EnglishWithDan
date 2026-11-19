@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 export const openUpgrade = (reason) => window.openUpgradeModal?.(reason);
 
 // The site's own toast and confirm popup (js/shared/toast.js, confirm-dialog.js)
-export const siteToast = (msg, type = 'info') => window.showToast?.(msg, type);
+export const siteToast = (msg, type = 'info', ms) => window.showToast?.(msg, type, ms);
 export const siteToastTitled = (type, title, msg, ms) => window.showToastWithTitle?.(type, title, msg, ms);
 export function siteConfirm(title, msg, confirmLabel, onOk) {
   if (window.confirmDialog) window.confirmDialog(title, msg, onOk, { confirmLabel, confirmClass: 'btn-primary' });

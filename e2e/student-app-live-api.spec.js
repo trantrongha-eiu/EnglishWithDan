@@ -88,6 +88,14 @@ test.beforeAll(async () => {
     steps: { listening: { attemptId: oid(), band: 7 }, reading: {}, writing: {}, speaking: {} },
   });
   await model('ShadowingLesson').create({ ...lessonData, segmentCount: lessonData.segments.length, isPublished: true });
+  await model('EssentialGrammarLesson').create({
+    category: 'Thì', lessonKey: 'present-simple', title: 'Hiện tại đơn', orderIndex: 1, isActive: true,
+    blocks: [
+      { type: 'overview', data: { text: 'Thì hiện tại đơn.' } },
+      { type: 'practice_exercises', data: { exercises: [{ type: 'multiple_choice', question: 'He ___ tea.', options: ['drink', 'drinks'], answerIndex: 1, explanation: 'Thêm s' }] } },
+      { type: 'quiz', data: { questions: [{ question: 'We ___ here.', options: ['live', 'lives'], answerIndex: 0, explanation: 'Số nhiều' }] } },
+    ],
+  });
 
   await new Promise((resolve) => { apiServer = app.listen(0, resolve); });
   apiBase = `http://127.0.0.1:${apiServer.address().port}`;
@@ -198,6 +206,23 @@ test('goal tab in Hồ sơ: saved on the server and shown in the sidebar', async
   await expect(page.locator('#plan-content .plan-day').first()).toBeVisible({ timeout: 15000 });
   const saved = await model('User').findById(student._id).lean();
   expect(saved).toMatchObject({ targetBand: 6.5, currentBand: 5, weeklyStudyMinutes: 180, studyDays: ['mon', 'wed', 'fri'] });
+  expect(errors).toEqual([]);
+});
+
+test('essential grammar: graded by the server, kept in the history', async ({ page }) => {
+  const errors = await wire(page);
+  await page.goto(`${BASE}/app/essential-grammar`);
+  await expect(page).toHaveURL(`${BASE}/app/essential-grammar?lesson=present-simple`);
+  await expect(page.locator('#eg-history-body')).toContainText('Chưa có lần làm nào');
+  await page.locator('.eg-ex-item[data-ref] .eg-quiz-option').nth(1).click();
+  await page.locator('.eg-quiz-q .eg-quiz-option').nth(0).click();
+  await expect(page.locator('#eg-quiz-result')).toContainText('100%');
+  await expect(page.locator('.eg-hist-score')).toHaveText('100%');
+  await expect(page.locator('.eg-hist-detail')).toContainText('2/2 câu đúng');
+  // Another device: the tick comes from the server, not this browser
+  await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('eg_lesson_scores')).forEach((k) => localStorage.removeItem(k)));
+  await page.reload();
+  await expect(page.locator('#header-eg-progress')).toHaveText(/1\/1/);
   expect(errors).toEqual([]);
 });
 

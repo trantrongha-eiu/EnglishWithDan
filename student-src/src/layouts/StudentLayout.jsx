@@ -12,6 +12,7 @@ const TITLES = {
   '/review-history': 'Lịch sử Review',
   '/dictation': 'Luyện Dictation',
   '/shadowing': 'Luyện Shadowing',
+  '/essential-grammar': 'Essential Grammar',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

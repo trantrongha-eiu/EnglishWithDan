@@ -21,6 +21,7 @@
 
   // /app/ is the React version of dashboard.html: same tour, same "seen" key.
   function currentTourPage() {
+    if (/^\/app\/essential-grammar(\/|$)/.test(location.pathname)) return 'essential-grammar.html';
     if (/^\/app(\/|$)/.test(location.pathname)) return 'dashboard.html';
     return (location.pathname.replace(/\/+$/, '').split('/').pop() || 'dashboard.html').replace(/^[^.]+$/, '$&.html');
   }
@@ -473,7 +474,30 @@
   // bước" only then.
   function has(page) { return !!PAGE_TOURS[page]; }
 
-  window.EWSTour = { start, reset, has };
+  // Once per browser per page, logged-in users only. It goes first in the
+  // shared login-popup queue (highest priority) so a brand-new student walks
+  // the tour before any goal-setup / badge / review modal appears;
+  // #ews-tour-tip is removed by endTour(), which releases the queue slot.
+  function autoStart(page) {
+    if (!PAGE_TOURS[page]) return;
+    let seen = false;
+    try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
+    const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
+    if (seen || !loggedIn) return;
+    setTimeout(function () {
+      if (window.PopupQueue) {
+        window.PopupQueue.enqueue({
+          id: 'onboarding-tour', priority: 60, until: '#ews-tour-tip',
+          show: function () { start(page); }
+        });
+      } else {
+        start(page);
+      }
+    }, 900);
+  }
+
+  // autoStart: for React app pages, which decide when their content is ready
+  window.EWSTour = { start, reset, has, autoStart };
 
   // ── Auto-start (once per browser per page, logged-in users only) + the
   // always-available "replay" button nav.js injects hidden by default —
@@ -487,13 +511,10 @@
     const btn = document.getElementById('globalTourBtn');
     if (btn) {
       btn.style.display = '';
-      btn.addEventListener('click', function () { start(page); });
+      // Read on click: inside the React app the page can have changed since
+      btn.addEventListener('click', function () { start(currentTourPage()); });
     }
 
-    let seen = false;
-    try { seen = localStorage.getItem(tourKeyFor(page)) === '1'; } catch (e) {}
-    const loggedIn = window.AuthService && window.AuthService.isLoggedIn && window.AuthService.isLoggedIn();
-    if (seen || !loggedIn) return;
     // Opened straight onto one test/section (homework card, shared link):
     // the student came to do that item — a tour of the list screen would
     // cover its "Chọn chế độ" popup. Not marked seen: it runs on the next
@@ -501,19 +522,6 @@
     // DOMContentLoaded, so it is there by now.
     if (window.RouteParams && window.RouteParams.openedOnItem && window.RouteParams.openedOnItem()) return;
     if (/^\/app(\/|$)/.test(location.pathname) && !/^\/app\/?(dashboard\/?)?$/.test(location.pathname)) return;
-    // The tour goes first in the shared login-popup queue (highest priority)
-    // so a brand-new student walks the tour before any goal-setup / badge /
-    // review modal appears. #ews-tour-tip is removed by endTour(), which is
-    // what releases the queue slot.
-    setTimeout(function () {
-      if (window.PopupQueue) {
-        window.PopupQueue.enqueue({
-          id: 'onboarding-tour', priority: 60, until: '#ews-tour-tip',
-          show: function () { start(page); }
-        });
-      } else {
-        start(page);
-      }
-    }, 900);
+    autoStart(page);
   });
 })();

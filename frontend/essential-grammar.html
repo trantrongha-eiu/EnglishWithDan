@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* This page now lives in the React app (/app/essential-grammar, source:
+     student-src/src/pages/EssentialGrammar.jsx). Old links keep their query
+     string, /essential-grammar/<key> becomes ?lesson=<key>. ?legacy=1 stays here. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var m = location.pathname.match(/^\/essential-grammar\/([^\/]+)\/?$/);
+    if (m && !q.get('lesson')) q.set('lesson', decodeURIComponent(m[1]));
+    var qs = q.toString();
+    location.replace('/app/essential-grammar' + (qs ? '?' + qs : ''));
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -40,8 +53,8 @@
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=16a6719c91"></script>
-<script src="/js/shared/onboarding-tour.js?v=f1fd708d32"></script>
+<script src="/js/bundles/app-shell.js?v=b47569dada"></script>
+<script src="/js/shared/onboarding-tour.js?v=9e5f33d519"></script>
 <script src="/js/shared/route-params.js?v=cb2d4fee78"></script>
 <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
 <script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>

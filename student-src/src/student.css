@@ -52,11 +52,11 @@ body {
 /* #root is a flex column: these static-page shells center with auto margins */
 #root > .et-shell, #root > .inbox-layout, #root > .profile-layout,
 #root > .tuition-layout, #root > .rh-layout,
-#root > .dict-wrap, #root > .sh-wrap { width: 100%; }
+#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout { width: 100%; }
 /* Their old pages had no dashboard.css, whose body sets line-height: 1.5 */
 #root > .shop-shell, #root > .inbox-layout, #root > .profile-layout,
 #root > .tuition-layout, #root > .rh-layout,
-#root > .dict-wrap, #root > .sh-wrap { line-height: normal; }
+#root > .dict-wrap, #root > .sh-wrap, #root > .eg-layout { line-height: normal; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }

@@ -71,7 +71,7 @@ test.beforeAll(async () => {
     let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (p === '/test-audio.wav') { res.writeHead(200, { 'Content-Type': 'audio/wav' }); res.end(silentWav()); return; }
     // The host serves these clean paths from the page's own file
-    const clean = p.match(/^\/(dictation|shadowing)\/[^/]+\/?$/);
+    const clean = p.match(/^\/(dictation|shadowing|essential-grammar)\/[^/]+\/?$/);
     if (clean) p = `/${clean[1]}.html`;
     if (p.endsWith('/')) p += 'index.html';
     // The host's rewrite: every /app path is the app
@@ -136,6 +136,39 @@ function makeBadges() {
   };
 }
 
+const GRAMMAR_BLOCKS = [
+  { type: 'overview', data: { text: 'Thì hiện tại đơn.' } },
+  { type: 'formula', data: { forms: [{ label: 'Khẳng định', structure: 'S + V(s)', example: 'She works.' }] } },
+  { type: 'usage', data: { points: [{ title: 'Thói quen', description: 'Việc lặp lại' }] } },
+  { type: 'signal_words', data: { words: ['always', 'often'] } },
+  { type: 'image', data: { src: '/img/buaDaniel.jpg', caption: 'Minh họa' } },
+  { type: 'examples', data: { items: [{ en: 'I read.', vi: 'Tôi đọc.' }] } },
+  { type: 'common_mistakes', data: { items: [{ wrong: 'He go', right: 'He goes', note: 'Thêm -es' }] } },
+  { type: 'ielts_tips', data: { tips: ['Dùng khi nói về sự thật.'] } },
+  { type: 'comparison', data: { title: 'So sánh thì', headers: ['A', 'B'], rows: [['1', '2']] } },
+  { type: 'video', data: { videos: [{ youtubeId: 'abcdefghijk', title: 'Bài giảng', channel: 'Kênh A', duration: '5:00', label: 'Phần 1' }] } },
+  { type: 'verb_forms', data: { target: 'past', items: [{ base: 'go', meaning: 'đi', past: ['went'], pastParticiple: ['gone'], note: 'Bất quy tắc' }, { base: 'work', meaning: 'làm', past: ['worked'], pastParticiple: ['worked'] }] } },
+  { type: 'conjugation_drill', data: { items: [{ sentence: 'She ___ every day.', answers: ['works'], explanation: 'Ngôi 3 số ít' }] } },
+  { type: 'translation_drill', data: { items: [{ vi: 'Tôi không biết.', answers: ["I don't know."], hint: 'Dùng do not' }] } },
+  { type: 'practice_exercises', data: { exercises: [
+    { type: 'multiple_choice', question: 'He ___ tea.', options: ['drink', 'drinks'], answerIndex: 1, explanation: 'Thêm s' },
+    { type: 'fill_blank', question: 'She ___\nhome.', answer: 'goes', explanation: 'Ngôi 3' },
+    { type: 'translation_vn_en', question: 'Tôi đi', answer: 'I go', explanation: 'Đơn giản' },
+  ] } },
+  { type: 'quiz', data: { questions: [
+    { question: 'We ___ here.', options: ['live', 'lives'], answerIndex: 0, explanation: 'Số nhiều' },
+    { question: 'It ___.', options: ['rain', 'rains'], answerIndex: 1, explanation: 'Ngôi 3' },
+  ] } },
+  { type: 'summary', data: { text: 'Nhớ thêm s.' } },
+];
+const GRAMMAR_LESSONS = () => [
+  { _id: 'g1', category: 'Thì', lessonKey: 'present-simple', title: 'Hiện tại đơn', icon: '⏰', orderIndex: 1, blocks: GRAMMAR_BLOCKS },
+  { _id: 'g2', category: 'Thì', lessonKey: 'past-simple', title: 'Quá khứ đơn', orderIndex: 2, blocks: [{ type: 'overview', data: { text: 'Quá khứ.' } }] },
+  { _id: 'g3', category: 'Câu', lessonKey: 'passive', title: 'Câu bị động', icon: '🔁', orderIndex: 1, blocks: [
+    { type: 'practice_exercises', data: { exercises: [{ type: 'multiple_choice', question: 'It ___ made.', options: ['is', 'are'], answerIndex: 0, explanation: 'Số ít' }] } },
+  ] },
+];
+
 function makeState() {
   const owned = { cake: 2, lens: 1, towel: 1, iceShield: 2 };
   return {
@@ -162,6 +195,10 @@ function makeState() {
     })),
     mustRead: 0,
     unreadCount: 3,
+    grammarLessons: GRAMMAR_LESSONS(),
+    grammarHistory: [{ _id: 'h1', score: 75, correct: 3, total: 4, answered: 3, timeSpent: 95, createdAt: daysAgo(2) }],
+    grammarProgress: [{ lessonId: 'g2', bestScore: 90, score: 90, lastAttempt: daysAgo(3) }],
+    assignments: [],
     goal: { hasGoal: true, currentBand: 5.5, targetBand: 8, examDate: '2030-01-15T00:00:00.000Z', weeklyStudyMinutes: 240, preferredSessionMinutes: 60, studyDays: ['mon', 'wed'], currentBandSource: 'self_assessed', gapBands: 2.5, daysRemaining: 100, feasibility: { level: 'tight', message: 'Hơi gấp' } },
     fees: [
       { _id: 'f1', feeType: 'monthly', month: 11, year: 2026, amount: 1500000, note: 'Giảm 10% <đợt 1>', isPaid: false },
@@ -272,6 +309,7 @@ async function open(page, url, state = makeState()) {
     localStorage.setItem('ews_seen_streak35_notice', '1');
     localStorage.setItem('ews_page_help_seen', '1');
     localStorage.setItem('ews_onboarding_tour_v1_dashboard.html', '1');
+    if (!window.__keepGrammarTour) localStorage.setItem('ews_onboarding_tour_v1_essential-grammar.html', '1');
     // Change route the way the browser's Back button does
     window.__go = (route) => { history.pushState(null, '', '/app' + route); window.dispatchEvent(new PopStateEvent('popstate')); };
   }, [state.user || USER, state.theme || '', !!state.fixedRandom, !!state.fakeSpeech]);
@@ -381,6 +419,19 @@ async function open(page, url, state = makeState()) {
       return pageOf(type ? state.reviews.filter((r) => r.attemptType === type) : state.reviews);
     }
     if (p === '/mock-test/history') return pageOf(state.mocks);
+    if (p === '/essential-grammar/lessons') return state.failGrammar ? json({ success: false }, 500) : json({ success: true, lessons: state.grammarLessons.map(({ blocks, ...l }) => l) });
+    if (p === '/essential-grammar/my-progress') return json({ success: true, progress: state.grammarProgress });
+    if (p === '/assignments/mine') return json({ success: true, assignments: state.assignments });
+    m = p.match(/^\/essential-grammar\/lessons\/(\w+)$/);
+    if (m) return state.failBlocks === m[1] ? json({ success: false }, 500) : json({ success: true, lesson: state.grammarLessons.find((l) => l._id === m[1]) });
+    m = p.match(/^\/essential-grammar\/(\w+)\/attempt\/history$/);
+    if (m) return json({ success: true, history: state.grammarHistory });
+    m = p.match(/^\/essential-grammar\/(\w+)\/attempt$/);
+    if (m) {
+      if (state.failAttempt) return json({ success: false, message: 'Lỗi' }, 500);
+      state.grammarHistory = [{ _id: 'h2', score: 100, correct: 3, total: 3, answered: 3, timeSpent: 9, createdAt: new Date(NOW).toISOString() }, ...state.grammarHistory];
+      return json({ success: true });
+    }
     if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)\/translations$/);
     if (m) return json({ success: true, translations: ['Xin chào bạn tôi.', 'Hôm nay trời đẹp.', ''] });
@@ -565,11 +616,21 @@ const PAGES = {
       await p.locator('.sh-head .lh-mascot').waitFor();
     },
   },
+  grammar: {
+    legacy: '/essential-grammar.html?legacy=1&lesson=present-simple', app: '/app/essential-grammar?lesson=present-simple', root: '.eg-layout',
+    ready: grammarReady,
+  },
   shadowingChooser: { legacy: '/shadowing.html?legacy=1&lesson=l0', app: '/app/shadowing?lesson=l0', root: '.sh-wrap', ready: shadowReady('.sh-choice.last') },
   shadowingPractice: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=shadowing', app: '/app/shadowing?lesson=l0&mode=shadowing', root: '.sh-wrap', ready: shadowReady('#sh-play') },
   shadowingWatch: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=watch', app: '/app/shadowing?lesson=l0&mode=watch', root: '.sh-wrap', ready: shadowReady('#wt-play') },
   shadowingDictation: { legacy: '/shadowing.html?legacy=1&lesson=l0&mode=dictation', app: '/app/shadowing?lesson=l0&mode=dictation', root: '.sh-wrap', ready: shadowReady('#dc-play') },
 };
+
+async function grammarReady(p) {
+  await p.locator('.eg-hero .lh-mascot').waitFor();
+  await p.locator('.eg-hist-row').first().waitFor();
+  await p.locator('.eg-lesson-item .wp-item-done-icon').first().waitFor({ state: 'attached' });
+}
 
 function shadowReady(sel) {
   return async (p) => {
@@ -627,6 +688,34 @@ for (const name of Object.keys(PAGES)) {
   test(`${name} looks the same as the old page (phone)`, ({ browser }) => compare(browser, name, 'phone', { viewport: { width: 390, height: 844 } }));
   test(`${name} looks the same as the old page (dark)`, ({ browser }) => compare(browser, name, 'dark', { patch: (s) => { s.theme = 'dark'; } }));
 }
+
+// Every kind of result on screen at once, on either version of the page
+const grammarWorked = async (p) => {
+  await grammarReady(p);
+  const rows = p.locator('.eg-vf-row .eg-drill-input');
+  await rows.nth(0).fill('went');
+  await rows.nth(1).fill('wrong');
+  await p.locator('.eg-drill-actions .eg-ex-reveal-btn').first().click();
+  await p.locator('.eg-vf-row.eg-drill-bad').waitFor();
+  await p.locator('.eg-conj-input').fill('work');
+  await p.locator('.eg-drill-actions .eg-ex-reveal-btn').nth(1).click();
+  await p.locator('.eg-conj-row.eg-drill-bad').waitFor();
+  await p.locator('.eg-tr-input').fill('I know');
+  await p.locator('.eg-tr-actions .eg-ex-reveal-btn').click();
+  await p.locator('.eg-tr-head-bad').waitFor();
+  await p.locator('.eg-tr-actions .ask-lulu').click();
+  await p.locator('.eg-tr-hint.vis').waitFor();
+  await p.locator('.eg-ex-item input.eg-ex-input').fill('goes');
+  await p.locator('.eg-ex-item:has(input.eg-ex-input) .eg-ex-reveal-btn').click();
+  await p.locator('.eg-ex-answer-panel.vis').waitFor();
+  await p.locator('.eg-quiz-q .eg-quiz-option').first().click();
+  await p.locator('#eg-grade-footer button').waitFor();
+  await p.locator('.ews-lulu-say, .ask-lulu-bubble').first().waitFor({ state: 'detached', timeout: 8000 }).catch(() => {});
+  await p.mouse.move(0, 0);
+};
+test('grammar with every drill answered matches the old page', ({ browser }) => compare(browser, 'grammar', 'worked', { ready: grammarWorked }));
+test('grammar with every drill answered matches the old page (phone)', ({ browser }) => compare(browser, 'grammar', 'worked phone', { ready: grammarWorked, viewport: { width: 390, height: 844 } }));
+test('grammar with every drill answered matches the old page (dark)', ({ browser }) => compare(browser, 'grammar', 'worked dark', { ready: grammarWorked, patch: (s) => { s.theme = 'dark'; } }));
 
 const shopReady = async (p) => {
   await petsReady(p);
@@ -986,7 +1075,17 @@ async function shadowingFlow(page, log) {
   await expect.poll(() => log.length).toBe(1);
 }
 
-const FLOWS = { leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
+async function grammarFlow(page, log) {
+  await grammarReady(page);
+  await page.locator('.eg-ex-item[data-ref] .eg-quiz-option').nth(1).click();
+  await page.locator('.eg-quiz-q').nth(0).locator('.eg-quiz-option').nth(1).click();
+  await page.locator('.eg-quiz-q').nth(1).locator('.eg-quiz-option').nth(1).click();
+  await expect(page.locator('#eg-quiz-result')).toContainText('67%');
+  await expect.poll(() => log.length).toBe(1);
+  log[0] = log[0].replace(/"timeSpent":\d+/, '"timeSpent":1');
+}
+
+const FLOWS = { grammar: grammarFlow, leaderboard: leaderboardFlow, shop: shopFlow, inbox: inboxFlow, profile: profileFlow, tuition: tuitionFlow, dictation: dictationFlow, shadowing: shadowingFlow };
 
 for (const [name, flow] of Object.entries(FLOWS)) {
   test(`${name}: every action sends the same requests as the old page`, async ({ browser }) => {
@@ -1015,6 +1114,7 @@ test.describe('inside the React app', () => {
     ['/profile.html', '/app/profile'], ['/profile.html#inventory', '/app/profile?tab=inventory'],
     ['/profile.html#plan', '/app/profile?focus=plan'],
     ['/tuition.html', '/app/tuition'], ['/goal.html', '/app/profile?tab=goal'],
+    ['/essential-grammar.html?lesson=passive', '/app/essential-grammar?lesson=passive'], ['/essential-grammar/passive', '/app/essential-grammar?lesson=passive'],
     ['/review-history.html', '/app/review-history'], ['/review-history.html?view=mock', '/app/review-history?view=mock'],
     ['/dictation.html?sectionId=s1', '/app/dictation?sectionId=s1'], ['/dictation/s1', '/app/dictation?sectionId=s1'],
     ['/shadowing.html?lesson=l0&mode=watch', '/app/shadowing?lesson=l0&mode=watch'], ['/shadowing/l0', '/app/shadowing?lesson=l0'],
@@ -1382,7 +1482,8 @@ test.describe('inside the React app', () => {
     await page.evaluate(() => { window.__audio = document.getElementById('dict-audio'); window.__audio.muted = true; return window.__audio.play().catch(() => {}); });
     await page.click('.dict-back-btn');
     await expect(page).toHaveURL(`${BASE}/app/dictation`);
-    expect(await page.evaluate(() => window.__audio.paused)).toBe(true);
+    // (React runs the cleanup just after the screen changes)
+    await expect.poll(() => page.evaluate(() => window.__audio.paused)).toBe(true);
     await expect(page.locator('#screen-practice')).toHaveCount(0);
   });
 
@@ -1594,6 +1695,113 @@ test.describe('inside the React app', () => {
     await open(other, '/app/profile?tab=goal', free);
     await expect(other.locator('#tab-goal')).toContainText('Nâng cấp Premium');
     expect(free.goalCalls || 0).toBe(0);
+  });
+
+  test('grammar: finishing a lesson scores it, saves it and offers a retry', async ({ page }) => {
+    const { log } = await open(page, '/app/essential-grammar?lesson=present-simple');
+    await grammarReady(page);
+    await expect(page.locator('#header-eg-progress')).toHaveText(/1\/3/);
+    await page.locator('.eg-ex-item[data-ref] .eg-quiz-option').nth(1).click();
+    await expect(page.locator('.eg-ex-item[data-ref] .eg-quiz-explanation')).toHaveClass(/vis/);
+    await expect(page.locator('.eg-quiz-progress')).toHaveText('Đã trả lời: 1/3 câu (toàn bài)');
+    await expect(page.locator('#eg-grade-now-label')).toContainText('2 câu bỏ trống');
+    await page.locator('.eg-quiz-q').nth(0).locator('.eg-quiz-option').nth(0).click();
+    await page.locator('.eg-quiz-q').nth(1).locator('.eg-quiz-option').nth(1).click();
+    await expect(page.locator('#eg-quiz-result')).toContainText('100%');
+    await expect(page.locator('#eg-hero-status')).toContainText('Đã hoàn thành');
+    await expect(page.locator('#header-eg-progress')).toHaveText(/2\/3/);
+    await expect(page.locator('.eg-hist-row')).toHaveCount(2);
+    expect(log).toHaveLength(1);
+    expect(JSON.parse(log[0].slice(log[0].indexOf('{'))).answers).toEqual([{ ref: 'ex:13:0', chosen: 1 }, { ref: 'q:14:0', chosen: 0 }, { ref: 'q:14:1', chosen: 1 }]);
+    await page.locator('.eg-retry-btn').click();
+    await expect(page.locator('.eg-quiz-progress')).toHaveText('Đã trả lời: 0/3 câu (toàn bài)');
+    await expect(page.locator('.eg-quiz-option:disabled')).toHaveCount(0);
+  });
+
+  test('grammar: grading early locks the blanks; a lesson without a quiz can retry too', async ({ page }) => {
+    await open(page, '/app/essential-grammar?lesson=present-simple');
+    await grammarReady(page);
+    await page.locator('.eg-quiz-q').nth(0).locator('.eg-quiz-option').nth(0).click();
+    await page.click('#eg-grade-now-btn');
+    await expect(page.locator('#eg-quiz-result')).toContainText('33%');
+    await expect(page.locator('.eg-quiz-option:not(:disabled)')).toHaveCount(0);
+    await page.locator('.eg-nav-btn').click();
+    await expect(page).toHaveURL(`${BASE}/app/essential-grammar?lesson=past-simple`);
+    await page.goBack();
+    await expect(page).toHaveURL(`${BASE}/app/essential-grammar?lesson=present-simple`);
+    await expect(page.locator('.eg-quiz-option:disabled')).toHaveCount(0);
+    await page.locator('#eg-sidebar .eg-lesson-item', { hasText: 'Câu bị động' }).click();
+    await page.locator('.eg-quiz-option').first().click();
+    await toastSeen(page, 'Bạn đạt 100%');
+    await page.locator('#eg-grade-now-btn', { hasText: 'Làm lại bài' }).click();
+    await expect(page.locator('.eg-quiz-option:disabled')).toHaveCount(0);
+  });
+
+  test('grammar: the drills check answers, Enter moves on, retry shuffles the verbs clear', async ({ page }) => {
+    await open(page, '/app/essential-grammar?lesson=present-simple');
+    await grammarReady(page);
+    const inputs = page.locator('.eg-vf-row .eg-drill-input');
+    await inputs.nth(0).fill('went');
+    await inputs.nth(0).press('Enter');
+    await expect(inputs.nth(1)).toBeFocused();
+    await inputs.nth(1).fill('worked');
+    await inputs.nth(1).press('Enter');
+    await expect(page.locator('.eg-drill-score').first()).toHaveText('Đúng 2/2 🎉');
+    await page.locator('.eg-drill-btn-ghost', { hasText: 'xáo trộn' }).click();
+    await expect(page.locator('.eg-vf-row.eg-drill-ok')).toHaveCount(0);
+    await expect(inputs.nth(0)).toHaveValue('');
+    await expect(inputs.nth(0)).toBeFocused();
+    // "don't" and "do not" are the same answer
+    await page.locator('.eg-tr-input').fill('I do not know');
+    await page.locator('.eg-tr-input').press('Control+Enter');
+    await expect(page.locator('.eg-tr-head-ok')).toBeVisible();
+    await page.locator('.eg-video-poster').click();
+    await expect(page.locator('.eg-video-frame iframe')).toHaveAttribute('src', /youtube-nocookie.com\/embed\/abcdefghijk/);
+  });
+
+  test('grammar: address, last lesson, missing lessons, homework and search', async ({ page }) => {
+    const state = makeState();
+    state.assignments = [{ title: 'BTVN 1', resources: [{ resourceType: 'grammar', resourceId: 'g2', completed: false }] }];
+    await open(page, '/app/essential-grammar?lesson=khong-co', state);
+    await toastSeen(page, 'không còn tồn tại');
+    await expect(page).toHaveURL(`${BASE}/app/essential-grammar?lesson=present-simple`);
+    await page.locator('.eg-search-input').first().fill('bi dong');
+    await expect(page.locator('#eg-sidebar .eg-lesson-item')).toHaveCount(1);
+    await page.locator('.eg-search-input').first().fill('');
+    await page.locator('#eg-sidebar .eg-cat-header').first().click();
+    await expect(page.locator('#eg-sidebar .eg-cat-group').first()).toHaveClass(/collapsed/);
+    await page.locator('#eg-sidebar .eg-cat-header').first().click();
+    await page.locator('#eg-sidebar .eg-lesson-item', { hasText: 'Quá khứ đơn' }).click();
+    await expect(page.locator('#eg-hw-banner')).toContainText('BTVN 1');
+    await page.evaluate(() => window.__go('/shop'));
+    await page.evaluate(() => window.__go('/essential-grammar'));
+    await expect(page).toHaveURL(`${BASE}/app/essential-grammar?lesson=past-simple`);
+    await expect(page.locator('.eg-hero-title')).toContainText('Quá khứ đơn');
+    await expect(page.locator('.nav-dropdown > a[href="/writing.html"]')).toHaveClass(/active/);
+  });
+
+  test('grammar: failures say so and the lesson can be opened again', async ({ page }) => {
+    const state = makeState();
+    state.failBlocks = 'g2';
+    state.failAttempt = true;
+    await open(page, '/app/essential-grammar?lesson=past-simple', state);
+    await expect(page.locator('#eg-main-content')).toContainText('Không tải được bài học này');
+    state.failBlocks = '';
+    await page.locator('#eg-sidebar .eg-lesson-item', { hasText: 'Câu bị động' }).click();
+    await page.locator('.eg-quiz-option').first().click();
+    await toastSeen(page, 'Chưa lưu được kết quả');
+    await page.locator('#eg-sidebar .eg-lesson-item', { hasText: 'Quá khứ đơn' }).click();
+    await expect(page.locator('.eg-overview-text')).toHaveText('Quá khứ.');
+  });
+
+  test('grammar: the first-visit tour runs, but not from a homework link', async ({ page }) => {
+    await page.addInitScript(() => { window.__keepGrammarTour = true; });
+    await open(page, '/app/essential-grammar?lesson=passive');
+    await page.locator('.eg-hero-title').waitFor();
+    await page.waitForTimeout(1200);
+    await expect(page.locator('#ews-tour-tip')).toHaveCount(0);
+    await page.goto(`${BASE}/app/essential-grammar`);
+    await expect(page.locator('#ews-tour-tip')).toContainText('Danh sách bài học', { timeout: 4000 });
   });
 
   test('the pet stays off Dictation but comes back on the next page', async ({ page }) => {
