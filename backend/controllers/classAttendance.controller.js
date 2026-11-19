@@ -108,8 +108,8 @@ function sanitizePolicy(input = {}, base = {}) {
   // The admin form only has "Ngưỡng cảnh báo" (homeworkWarnThreshold), but the
   // student dashboard's warning banner + reminder message read
   // homeworkMissThreshold — so a teacher lowering the warning to 2 still had
-  // students warned at 4. Owner's rule is one number for both (see
-  // scripts/migrateHomeworkThresholds.js): follow the warning threshold
+  // students warned at 4. Owner's rule is one number for both: follow the
+  // warning threshold
   // unless the reminder one was explicitly changed in this same request.
   const missChanged = num(input.homeworkMissThreshold) !== undefined
     && base.homeworkMissThreshold !== undefined && num(input.homeworkMissThreshold) !== base.homeworkMissThreshold;

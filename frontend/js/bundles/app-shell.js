@@ -1405,7 +1405,7 @@
         { divider: true, label: 'Khóa học' },
         { href: 'speaking-course.html',             icon: 'fa-graduation-cap', label: 'Khóa học Speaking' },
         { divider: true, label: 'Luyện tập' },
-        { href: 'speaking-part2.html',              icon: 'fa-book-reader', label: 'Part 2 · 7 câu chuyện gốc' },
+        { href: 'app/speaking-part2',               icon: 'fa-book-reader', label: 'Part 2 · 7 câu chuyện gốc' },
         { href: 'app/shadowing',                    icon: 'fa-comment-dots', label: 'Shadowing (Video)' },
       ]
     },
@@ -1804,7 +1804,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=d5858efb79';
+      s.src = '/js/shared/page-help.js?v=9eaaf23312';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -3173,6 +3173,7 @@
 
   function pageKey() {
     if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
+    if (/^\/app\/speaking-part2(\/|$)/.test(location.pathname)) return 'speaking';
     if (/^\/app\/(essential-grammar|advanced-sentences|writing-practice|task1-practice)(\/|$)/.test(location.pathname)) return 'writing';
     if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
     var pg = (location.pathname.split('/').pop() || '').replace('.html', '');
@@ -5742,7 +5743,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice)(?=\/|$)/);
+    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2)(?=\/|$)/);
     if (!m) return '/app/'; // the vocab home, whatever is open inside it
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

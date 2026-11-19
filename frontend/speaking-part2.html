@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="vi" data-theme="light">
 <head>
+  <script>
+  /* This page now lives in the React app (/app/speaking-part2, source:
+     student-src/src/pages/SpeakingPart2.jsx). Old links keep their query
+     string (?story=&variant=). ?legacy=1 stays here. */
+  (function () {
+    var q = new URLSearchParams(location.search);
+    if (q.get('legacy') === '1') return;
+    var qs = q.toString();
+    location.replace('/app/speaking-part2' + (qs ? '?' + qs : ''));
+  })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -25,7 +36,7 @@
   <link rel="stylesheet" href="/css/speaking-part2.css?v=3485afd107"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=72f1083c89"></script>
+<script src="/js/bundles/app-shell.js?v=aafcef0f19"></script>
 <script src="/js/shared/onboarding-tour.js?v=7a8f913b41"></script>
 <script src="/js/shared/route-params.js?v=cb2d4fee78"></script>
 <script src="/js/shared/word-audio.js?v=9fd314228b"></script>

@@ -44,7 +44,7 @@
   ];
   function pageKey() {
     var path = location.pathname.replace(/\/+$/, '');
-    var route = (path.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice)(?=\/|$)/) || [])[1];
+    var route = (path.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2)(?=\/|$)/) || [])[1];
     if (route) return route === 'leaderboard' ? 'vocab-leaderboard.html' : route + '.html';
     if (/^\/app(\/|$)/.test(path)) return 'dashboard.html';
     var last = path.split('/').pop() || '';

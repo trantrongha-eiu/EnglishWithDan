@@ -368,3 +368,61 @@ test('shadowing: record, hear yourself, score saved and shown on the card', asyn
   await expect(page).toHaveURL(new RegExp(`lesson=${lessonData.slug}`));
   expect(errors).toEqual([]);
 });
+
+test('speaking part 2: read, nhại with a real recording, dịch — progress saved on the server and back after a reload', async ({ page }) => {
+  test.setTimeout(90 * 1000);
+  const errors = await wire(page);
+  // The recognizer reads the sentence on screen back, perfectly
+  await page.addInitScript(() => {
+    function FakeSR() {
+      const self = this;
+      self.start = () => setTimeout(() => {
+        const said = Object.assign([{ transcript: document.getElementById('sp2-sh-sent').textContent }], { isFinal: true });
+        self.onresult({ results: [said] });
+      }, 700);
+      self.stop = () => {};
+    }
+    window.SpeechRecognition = FakeSR;
+    window.webkitSpeechRecognition = FakeSR;
+  });
+  const story = require(path.join(BACKEND, 'data', 'speakingPart2.js')).stories[0];
+  const frame1 = story.fixed[0].s.concat(story.fixed[1].join ? story.fixed[1].s : []).map((x) => x[0]);
+  await page.goto(`${BASE}/app/speaking-part2?story=${story.id}`);
+  await page.locator('#sp2-step-speak').waitFor();
+  await page.locator('#sp2-step-read .t2-actions .t2-primary').click();
+  await expect(page.locator('#sp2-step-read .t2-step-chip.ok')).toHaveText('Đã đọc');
+
+  await page.locator('#sp2-frame-0 .sp2-rung-btns .t2-primary').click();
+  for (let i = 0; i < frame1.length; i++) {
+    await page.locator('#sp2-sh-rec').click();
+    await expect(page.locator('#sp2-sh-score .sp2-sh-ring b')).toHaveText('100%', { timeout: 10000 });
+    await expect(page.locator('#sp2-sh-mine')).toBeEnabled({ timeout: 5000 });
+    await page.locator('.sp2-sh-nav .t2-primary').click();
+  }
+  await expect(page.locator('.sp2-shlist .sp2-shlist-pct.is-ok')).toHaveCount(frame1.length);
+  // "Dịch khung này" from the result screen
+  await page.locator('.sp2-done .t2-actions button', { hasText: 'Dịch khung này' }).click();
+  for (const en of frame1) {
+    await page.locator('#sp2-wbw [data-role="input"]').pressSequentially(en.replace(/[^\p{L}\p{N}]/gu, ''), { delay: 5 });
+    await expect(page.locator('#sp2-fb .wp-result-correct')).toBeVisible();
+    await page.locator('#sp2-fb .wp-next-btn').click();
+  }
+  await expect(page.locator('.sp2-done .t2-done-score')).toHaveText('100%');
+
+  const Progress = model('SpeakingPart2Progress');
+  await expect.poll(async () => (await Progress.findOne({ userId: student._id, storyId: story.id }).lean())?.ok?.length || 0, { timeout: 10000 }).toBe(frame1.length);
+  const doc = await Progress.findOne({ userId: student._id, storyId: story.id }).lean();
+  expect(doc.read).toBe(true);
+  expect(doc.shadow.f0_0).toBe(100);
+
+  // Another device (nothing in this browser): the server's copy shows frame 1 learnt, frame 2 open
+  await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('sp2_progress:')).forEach((k) => localStorage.removeItem(k)));
+  await page.reload();
+  await expect(page.locator('#sp2-frame-0')).toHaveClass(/is-ok/);
+  await expect(page.locator('#sp2-frame-1')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#sp2-step-read .t2-step-chip.ok')).toHaveText('Đã đọc');
+  // The word-for-word story from the framework
+  await page.locator('.sp2-full-btn.is-nav').click();
+  await expect(page.locator('.sp2-full-body .sp2-full-p').first()).toBeVisible();
+  expect(errors).toEqual([]);
+});

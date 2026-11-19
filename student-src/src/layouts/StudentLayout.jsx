@@ -16,6 +16,7 @@ const TITLES = {
   '/advanced-sentences': 'Viết câu nâng cao',
   '/writing-practice': 'Luyện viết câu giao tiếp',
   '/task1-practice': 'Task 1 Grammar',
+  '/speaking-part2': 'Speaking Part 2 · 7 câu chuyện gốc',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

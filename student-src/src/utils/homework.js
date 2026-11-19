@@ -129,7 +129,7 @@ function resourcePath(r) {
     case 'task1_skill': return code ? `app/task1-practice?skill=${enc(code)}` : 'app/task1-practice';
     case 'task1_grammar': return `app/task1-practice?skill=${enc(code || 'all')}`;
     case 'task1_grammar_set2': return `app/task1-practice?skill=${enc(code || 'all')}&set=set2`;
-    case 'speaking_part2': return code ? `speaking-part2.html?story=${enc(code)}` : 'speaking-part2.html';
+    case 'speaking_part2': return code ? `app/speaking-part2?story=${enc(code)}` : 'app/speaking-part2';
     default: return null;
   }
 }
