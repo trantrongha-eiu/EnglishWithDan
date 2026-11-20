@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { API, apiFetch } from '../utils/api';
+import { siteConfirm } from '../utils/shell';
 
 // 📢 Giới thiệu bạn bè — /app/affiliate, under "BXH vocab" in the menu
 // (backend/services/affiliateService.js): the referral link, what it has
@@ -48,24 +49,103 @@ function Stat({ icon, label, value, accent }) {
   );
 }
 
-function Guide({ percent, minPayout }) {
+function Guide({ settings: s }) {
   return (
     <details className="aff-guide">
       <summary><i className="fas fa-circle-question" /> Affiliate là gì? Cách kiếm tiền</summary>
-      <p><b>Affiliate</b> là chương trình giới thiệu học viên. Khi bạn chia sẻ <b>link giới thiệu</b> và người khác
-        truy cập qua link đó, đăng ký tài khoản mới rồi mua gói <b>Premium</b> hoặc đóng <b>học phí</b>, bạn nhận
-        <b> {percent}%</b> hoa hồng trên số tiền họ thanh toán.</p>
-      <p><b>Lưu ý:</b> sau khi một tài khoản đăng ký qua link của bạn, bạn <b>tiếp tục nhận hoa hồng</b> cho mọi lần
-        mua, gia hạn hoặc đóng học phí sau này của tài khoản đó.</p>
+      <p><b>Affiliate</b> là chương trình giới thiệu học viên. Bạn chia sẻ <b>link giới thiệu</b>, người khác đăng ký
+        tài khoản mới qua link đó, và bạn được thưởng khi họ thanh toán:</p>
+      <ul>
+        <li><b>Gói Premium:</b> nhận <b>{s.premiumPercent}%</b> giá mỗi gói họ mua — kể cả mọi lần gia hạn sau này.</li>
+        <li><b>Đăng ký học:</b> khi họ đóng khoản học phí đầu tiên, bạn chọn 1 trong 2:
+          nhận <b>{vnd(s.tuitionCash)}</b> vào ví, hoặc <b>trừ {vnd(s.tuitionCredit)}</b> vào học phí của bạn
+          (nếu bạn cũng đăng ký học). Mỗi người bạn giới thiệu được thưởng 1 lần.</li>
+      </ul>
       <ol>
         <li>Bấm <b>Sao chép link</b> bên dưới.</li>
         <li>Gửi link cho bạn bè qua Zalo, Facebook, Messenger…</li>
         <li>Bạn bè đăng ký <b>tài khoản mới</b> qua link (trong vòng 30 ngày kể từ lúc bấm link).</li>
-        <li>Khi họ thanh toán và được admin xác nhận, hoa hồng tự cộng vào ví.</li>
-        <li>Ví đủ <b>{vnd(minPayout)}</b> thì gửi yêu cầu rút tiền về ngân hàng.</li>
+        <li>Khi họ thanh toán và được admin xác nhận, thưởng hiện ở trang này.</li>
+        <li>Ví đủ <b>{vnd(s.minPayout)}</b> thì gửi yêu cầu rút tiền về ngân hàng.</li>
       </ol>
     </details>
   );
+}
+
+// A referred student's first tuition payment: money or a discount, once
+function RewardChoices({ rewards, onDone }) {
+  const [busy, setBusy] = useState('');
+  if (!rewards.length) return null;
+
+  function choose(r, choice) {
+    const title = choice === 'cash' ? `Nhận ${vnd(r.cashAmount)} vào ví?` : `Trừ ${vnd(r.creditAmount)} vào học phí?`;
+    const msg = choice === 'cash'
+      ? 'Tiền vào ví Affiliate, đủ mức tối thiểu thì rút về ngân hàng. Chọn rồi thì không đổi được.'
+      : 'Số tiền được trừ vào khoản học phí chưa đóng của bạn (hoặc khoản tiếp theo admin nhập). Chọn rồi thì không đổi được.';
+    siteConfirm(title, msg, 'Chọn', () => send(r, choice));
+  }
+
+  async function send(r, choice) {
+    setBusy(`${r.id}:${choice}`);
+    try {
+      await apiFetch(`/affiliate/rewards/${r.id}/choose`, { method: 'POST', body: JSON.stringify({ choice }) });
+      toast('success', 'Đã chọn', choice === 'cash' ? `+${vnd(r.cashAmount)} đã vào ví của bạn` : `Đã ghi giảm ${vnd(r.creditAmount)} vào học phí của bạn`);
+      onDone();
+    } catch (e) {
+      toast('error', 'Lỗi', e.message || 'Không chọn được, thử lại nhé');
+    } finally {
+      setBusy('');
+    }
+  }
+
+  return (
+    <div className="card mt-16 aff-rewards" id="affRewards">
+      <div className="card-header"><span style={{ fontWeight: 700 }}><i className="fas fa-gift" /> Chọn phần thưởng ({rewards.length})</span></div>
+      <div className="card-body">
+        {rewards.map((r) => (
+          <div className="aff-reward" key={r.id}>
+            <div className="aff-reward-info">
+              <b>{r.buyer}</b> đã đăng ký học và đóng {r.description}.
+              <div className="aff-sub">Chọn 1 trong 2 — chọn rồi thì không đổi được.</div>
+            </div>
+            <div className="aff-reward-actions">
+              {r.cashAmount > 0 && (
+                <button type="button" className="btn btn-primary" disabled={!!busy} onClick={() => choose(r, 'cash')}>
+                  <i className="fas fa-wallet" /> Nhận {vnd(r.cashAmount)} vào ví
+                </button>
+              )}
+              {r.creditAmount > 0 && (
+                <button type="button" className="btn btn-ghost aff-reward-credit" disabled={!!busy} onClick={() => choose(r, 'credit')}>
+                  <i className="fas fa-graduation-cap" /> Trừ {vnd(r.creditAmount)} học phí
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// "Đơn hàng" + "Hoa hồng" cells of one history row
+function rewardCells(c) {
+  if (c.kind !== 'tuition_flat') {
+    return [<>{c.description}<div className="aff-sub">{vnd(c.baseAmount)} × {c.percent}%</div></>, <b>+{vnd(c.amount)}</b>];
+  }
+  const what = <>Đăng ký học · {c.description}</>;
+  if (c.status === 'awaiting_choice') return [what, <span className="aff-pill aff-pill--wait">🎁 Chờ bạn chọn</span>];
+  if (c.rewardChoice === 'credit') {
+    return [what, <>
+      <b>−{vnd(c.creditAmount)} học phí</b>
+      <div className="aff-sub">{c.creditFee ? `Đã trừ vào ${c.creditFee}` : 'Sẽ trừ vào khoản học phí tiếp theo của bạn'}</div>
+    </>];
+  }
+  return [what, <b>+{vnd(c.amount || c.cashAmount)}</b>];
+}
+
+// A server from before the Premium / học phí split only sends `percent`
+function withDefaults(s = {}) {
+  return { tuitionCash: 200000, tuitionCredit: 300000, ...s, premiumPercent: s.premiumPercent ?? s.percent ?? 20 };
 }
 
 const MAX_QR_BYTES = 5 * 1024 * 1024;
@@ -233,7 +313,7 @@ export default function Affiliate() {
   useEffect(() => {
     let alive = true;
     apiFetch('/affiliate/me', SLOW)
-      .then((d) => { if (alive) { setData({ ...d, loadId: (loadSeq += 1) }); setError(''); } })
+      .then((d) => { if (alive) { setData({ ...d, settings: withDefaults(d.settings), loadId: (loadSeq += 1) }); setError(''); } })
       .catch((e) => { if (alive) setError(e.message || 'Không tải được dữ liệu Affiliate'); });
     return () => { alive = false; };
   }, [version]);
@@ -276,10 +356,10 @@ export default function Affiliate() {
 
           <div className="card">
             <div className="card-header">
-              <span style={{ fontWeight: 700 }}><i className="fas fa-bullhorn" /> Giới thiệu bạn bè — nhận {data.settings.percent}% hoa hồng</span>
+              <span style={{ fontWeight: 700 }}><i className="fas fa-bullhorn" /> Giới thiệu bạn bè — Premium {data.settings.premiumPercent}% · Đăng ký học {vnd(data.settings.tuitionCash)}/người</span>
             </div>
             <div className="card-body">
-              <Guide percent={data.settings.percent} minPayout={data.settings.minPayout} />
+              <Guide settings={data.settings} />
               <label className="form-label" htmlFor="affLink">Link giới thiệu của bạn</label>
               <div className="aff-link-row">
                 <input className="form-control" id="affLink" readOnly value={link} onFocus={(e) => e.target.select()} />
@@ -292,6 +372,8 @@ export default function Affiliate() {
             </div>
           </div>
 
+          <RewardChoices rewards={data.commissions.filter((c) => c.status === 'awaiting_choice')} onDone={() => setVersion((v) => v + 1)} />
+
           <div className="aff-stats mt-16">
             <Stat icon="👆" label="Lượt bấm link" value={data.stats.clicks} />
             <Stat icon="🙋" label="Đăng ký qua link" value={data.stats.signups} />
@@ -300,6 +382,7 @@ export default function Affiliate() {
             <Stat icon="🏦" label="Đã rút" value={vnd(data.stats.paid)} />
             <Stat icon="👛" label="Số dư khả dụng" value={vnd(data.stats.balance)} accent />
           </div>
+          {data.stats.credited > 0 && <p className="aff-sub mt-16">🎓 Đã chọn trừ học phí: <b>{vnd(data.stats.credited)}</b> (xem cột Hoa hồng bên dưới).</p>}
 
           <PayoutForm key={data.loadId} data={data} onDone={() => setVersion((v) => v + 1)} />
 
@@ -317,9 +400,9 @@ export default function Affiliate() {
                           <tr key={c.id} className={c.status === 'cancelled' ? 'aff-row-cancelled' : ''}>
                             <td>{day(c.createdAt)}</td>
                             <td>{c.buyer}</td>
-                            <td>{c.description}<div className="aff-sub">{vnd(c.baseAmount)} × {c.percent}%</div></td>
+                            <td>{rewardCells(c)[0]}</td>
                             <td>
-                              <b>+{vnd(c.amount)}</b>
+                              {rewardCells(c)[1]}
                               {c.status === 'cancelled' && <div className="aff-sub">Đã hủy{c.cancelReason ? `: ${c.cancelReason}` : ''}</div>}
                             </td>
                           </tr>

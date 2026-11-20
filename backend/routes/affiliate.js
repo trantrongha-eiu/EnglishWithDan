@@ -35,6 +35,14 @@ router.post('/click', clickLimiter, guard(async (req, res) => {
   res.status(204).end();
 }));
 
+// GET /api/affiliate/info — public: the home page's "Giới thiệu bạn bè"
+// block shows the current terms to visitors who are not logged in
+router.get('/info', guard(async (req, res) => {
+  const settings = affiliateService.publicSettings(await affiliateService.getSettings());
+  res.set('Cache-Control', 'public, max-age=300');
+  res.json({ success: true, ...settings });
+}));
+
 // POST /api/affiliate/claim { code } — new account's first login via a link
 router.post('/claim', auth, guard(async (req, res) => {
   const result = await affiliateService.claimReferral(req.user._id, req.body?.code);
@@ -44,6 +52,14 @@ router.post('/claim', auth, guard(async (req, res) => {
 // GET /api/affiliate/me — link, stats, referrals, commissions, payouts
 router.get('/me', auth, guard(async (req, res) => {
   res.json({ success: true, ...(await affiliateService.getMyAffiliate(req.user._id)) });
+}));
+
+// POST /api/affiliate/rewards/:id/choose { choice: 'cash' | 'credit' } —
+// a referred student's first tuition payment: money into the wallet, or a
+// discount off the referrer's own tuition
+router.post('/rewards/:id/choose', auth, guard(async (req, res) => {
+  const reward = await affiliateService.chooseReward(req.user._id, req.params.id, req.body?.choice);
+  res.json({ success: true, reward });
 }));
 
 // Bank QR image for payouts — same limits as the tuition QR upload

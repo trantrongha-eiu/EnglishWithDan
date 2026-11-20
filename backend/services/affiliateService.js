@@ -2,17 +2,23 @@
 
 // Affiliate / referral program.
 //
-//   1. Every account gets a referral link (/?ref=CODE) in Hồ sơ → Affiliate.
+//   1. Every account gets a referral link (/?ref=CODE) on /app/affiliate
+//      ("Giới thiệu bạn bè", menu BXH vocab).
 //   2. frontend/js/shared/visit-tracker.js stores ?ref= in the browser; the
 //      new account is tied to its referrer at sign-up (register body `ref`)
 //      or on its first login (POST /api/affiliate/claim — covers Google).
-//   3. Each paid order of a referred user earns the referrer a commission:
-//      an approved Premium upgrade request (routes/admin/premium.js) or a
-//      tuition fee marked paid (tuitionService.updateFee). Un-marking /
-//      deleting the fee cancels it. The % comes from AffiliateSettings and is
-//      snapshotted per commission.
-//   4. Balance = earned commissions − pending/paid payouts. The referrer
-//      requests a withdrawal; the admin transfers by hand and marks it paid.
+//   3. A referred user's payments earn the referrer (rates in
+//      AffiliateSettings, snapshotted per commission):
+//      • every approved Premium upgrade request (routes/admin/premium.js):
+//        premiumPercent % of it;
+//      • their FIRST paid tuition fee (tuitionService.updateFee): one reward,
+//        the referrer chooses tuitionCash into the wallet or tuitionCredit off
+//        their own oldest unpaid tuition fee (chooseReward → applyPendingCredits;
+//        tuitionService.createFee/createMonthlyFees apply a waiting credit).
+//      Un-marking / deleting the fee cancels it (or moves the reward to
+//      another paid fee of the same student).
+//   4. Balance = earned cash − pending/paid payouts. The referrer requests a
+//      withdrawal; the admin transfers by hand and marks it paid.
 
 const crypto = require('crypto');
 const mongoose = require('mongoose');
@@ -21,6 +27,7 @@ const Message = require('../models/Message');
 const AffiliateSettings = require('../models/AffiliateSettings');
 const AffiliateCommission = require('../models/AffiliateCommission');
 const AffiliatePayout = require('../models/AffiliatePayout');
+const TuitionFee = require('../models/TuitionFee');
 const logger = require('../utils/logger');
 const mediaStore = require('./mediaStore');
 
@@ -68,21 +75,34 @@ async function getSettings() {
 async function updateSettings(body = {}) {
   const doc = await getSettings();
   if (body.enabled !== undefined) doc.enabled = body.enabled === true || body.enabled === 'true';
-  if (body.percent !== undefined) {
-    const p = Number(body.percent);
-    if (!Number.isFinite(p) || p < 0 || p > 100) throw fail(400, 'Phần trăm hoa hồng phải từ 0 đến 100');
-    doc.percent = Math.round(p * 100) / 100;
+  // `percent` = the Premium rate for callers from before the split
+  const premium = body.premiumPercent !== undefined ? body.premiumPercent : body.percent;
+  if (premium !== undefined) {
+    const p = Number(premium);
+    if (!Number.isFinite(p) || p < 0 || p > 100) throw fail(400, 'Phần trăm hoa hồng Premium phải từ 0 đến 100');
+    doc.premiumPercent = Math.round(p * 100) / 100;
   }
-  if (body.minPayout !== undefined) {
-    const m = Number(body.minPayout);
-    if (!Number.isFinite(m) || m < 0) throw fail(400, 'Mức rút tối thiểu không hợp lệ');
-    doc.minPayout = Math.round(m);
-  }
+  const money = (key, label) => {
+    if (body[key] === undefined) return;
+    const m = Number(body[key]);
+    if (!Number.isFinite(m) || m < 0) throw fail(400, `${label} không hợp lệ`);
+    doc[key] = Math.round(m);
+  };
+  money('tuitionCash', 'Thưởng tiền mặt khi đăng ký học');
+  money('tuitionCredit', 'Mức trừ học phí');
+  money('minPayout', 'Mức rút tối thiểu');
   await doc.save();
   return doc;
 }
 
-const publicSettings = (s) => ({ enabled: !!s.enabled, percent: s.percent, minPayout: s.minPayout });
+const publicSettings = (s) => ({
+  enabled: !!s.enabled,
+  premiumPercent: s.premiumPercent,
+  percent: s.premiumPercent, // older clients
+  tuitionCash: s.tuitionCash,
+  tuitionCredit: s.tuitionCredit,
+  minPayout: s.minPayout,
+});
 
 // ── Codes, clicks, claims ────────────────────────────────────────────────
 async function ensureCode(userId) {
@@ -174,7 +194,9 @@ async function notify(toId, actor, subject, body) {
   }
 }
 
-// Earn (or refresh) the commission for one paid order. Idempotent per
+const PAGE = 'Giới thiệu bạn bè (menu BXH vocab)';
+
+// Earn (or refresh) a Premium commission for one paid order. Idempotent per
 // {source, sourceId}: re-running with the same order updates the row.
 async function earnCommission({ source, sourceId, buyerId, baseAmount, description }, actor) {
   const buyer = await User.findById(buyerId).select('referredBy username firstName lastName').lean();
@@ -199,7 +221,7 @@ async function earnCommission({ source, sourceId, buyerId, baseAmount, descripti
   const referrer = await User.findById(buyer.referredBy).select('_id isBanned').lean();
   if (!referrer || referrer.isBanned) return null;
 
-  const percent = settings.percent;
+  const percent = settings.premiumPercent;
   const amount = Math.round(base * percent / 100);
   if (amount <= 0) return null;
 
@@ -221,7 +243,7 @@ async function earnCommission({ source, sourceId, buyerId, baseAmount, descripti
   }
   await notify(referrer._id, actor,
     `🎉 Bạn nhận được ${vnd(amount)}đ hoa hồng Affiliate`,
-    `Người bạn giới thiệu (${maskName(buyer)}) vừa thanh toán ${description || 'một đơn hàng'} — ${vnd(base)}đ.\n\nHoa hồng ${percent}%: +${vnd(amount)}đ đã cộng vào ví Affiliate của bạn.\n\nXem chi tiết và rút tiền ở Hồ sơ → Affiliate.`);
+    `Người bạn giới thiệu (${maskName(buyer)}) vừa thanh toán ${description || 'một đơn hàng'} — ${vnd(base)}đ.\n\nHoa hồng ${percent}%: +${vnd(amount)}đ đã cộng vào ví Affiliate của bạn.\n\nXem chi tiết và rút tiền ở trang ${PAGE}.`);
   return doc;
 }
 
@@ -246,23 +268,163 @@ async function onPremiumApproved(request, actor) {
   }, actor);
 }
 
-// tuitionService: after any save of a fee (paid → earn/refresh, unpaid → cancel)
+// ── Tuition reward: one per referred student ─────────────────────────────
+const feeLabel = (fee) => (fee.feeType === 'monthly' ? `học phí tháng ${fee.month}/${fee.year}` : `học phí khóa "${fee.courseName}"`);
+const idOf = (v) => v?._id || v;
+
+// The referred student's first paid fee: a reward waiting for the referrer's
+// choice. Later fees (or a re-save of this one) change nothing.
+async function earnTuitionReward(fee, actor) {
+  const buyerId = idOf(fee.studentId);
+  const buyer = await User.findById(buyerId).select('referredBy username firstName lastName').lean();
+  if (!buyer?.referredBy) return null;
+
+  const existing = await AffiliateCommission.findOne({ referredUserId: buyerId, kind: 'tuition_flat' });
+  if (existing && existing.status !== 'cancelled') return existing;
+  // Paid under the old per-fee rules: that was this student's reward
+  if (!existing && await AffiliateCommission.exists({ referredUserId: buyerId, source: 'tuition', kind: { $ne: 'tuition_flat' }, status: 'earned' })) return null;
+
+  const settings = await getSettings();
+  if (!settings.enabled || !(settings.tuitionCash > 0 || settings.tuitionCredit > 0)) return null;
+  const referrer = await User.findById(buyer.referredBy).select('_id isBanned').lean();
+  if (!referrer || referrer.isBanned) return null;
+
+  const fields = {
+    referrerId: referrer._id, referredUserId: buyerId, source: 'tuition', sourceId: fee._id,
+    kind: 'tuition_flat', baseAmount: Math.max(0, Math.round(Number(fee.amount) || 0)), percent: 0, amount: 0,
+    description: feeLabel(fee), status: 'awaiting_choice', rewardChoice: null,
+    cashAmount: settings.tuitionCash, creditAmount: settings.tuitionCredit,
+    chosenAt: null, creditFeeId: null, creditAppliedAt: null, cancelReason: '', cancelledAt: null,
+  };
+  // A cancelled reward comes back on the new fee; so does a cancelled
+  // old-style row of this very fee (the {source, sourceId} key is taken)
+  const reuse = existing || await AffiliateCommission.findOne({ source: 'tuition', sourceId: fee._id, status: 'cancelled' });
+  let doc;
+  if (reuse) {
+    doc = await Object.assign(reuse, fields).save();
+  } else {
+    try {
+      doc = await AffiliateCommission.create(fields);
+    } catch (err) {
+      if (err?.code === 11000) return AffiliateCommission.findOne({ referredUserId: buyerId, kind: 'tuition_flat' }); // concurrent earn
+      throw err;
+    }
+  }
+  const choices = [
+    settings.tuitionCash > 0 && `• Nhận ${vnd(settings.tuitionCash)}đ vào ví Affiliate (rút về ngân hàng), hoặc`,
+    settings.tuitionCredit > 0 && `• Trừ ${vnd(settings.tuitionCredit)}đ vào học phí của bạn.`,
+  ].filter(Boolean).join('\n');
+  await notify(referrer._id, actor,
+    '🎁 Người bạn giới thiệu đã đăng ký học — chọn phần thưởng của bạn',
+    `${maskName(buyer)} vừa đóng ${feeLabel(fee)}. Bạn được chọn 1 trong 2:\n${choices}\n\nVào trang ${PAGE} để chọn.`);
+  return doc;
+}
+
+// Takes waiting "trừ học phí" rewards off the referrer's oldest unpaid fees.
+// A fee smaller than the credit is skipped; with no fee the credit waits for
+// the next one (tuitionService.createFee/createMonthlyFees call this).
+async function applyPendingCredits(referrerId) {
+  if (!referrerId) return 0;
+  const rows = await AffiliateCommission.find({
+    referrerId: idOf(referrerId), kind: 'tuition_flat', status: 'earned', rewardChoice: 'credit', creditFeeId: null,
+  }).sort({ chosenAt: 1 }).populate('referredUserId', 'username firstName lastName');
+  let applied = 0;
+  for (const row of rows) {
+    const credit = row.creditAmount;
+    if (!(credit > 0)) continue;
+    const fees = await TuitionFee.find({ studentId: row.referrerId, isPaid: false, amount: { $gte: credit } })
+      .sort({ year: 1, month: 1, createdAt: 1 }).limit(5).lean();
+    let done = false;
+    for (const fee of fees) {
+      const line = `Giảm ${vnd(credit)}đ – thưởng giới thiệu ${maskName(row.referredUserId)}`;
+      // Only if nobody paid or changed it in between
+      const r = await TuitionFee.updateOne(
+        { _id: fee._id, isPaid: false, amount: fee.amount },
+        { $inc: { amount: -credit }, $set: { note: fee.note ? `${fee.note} · ${line}` : line } }
+      );
+      if (r.modifiedCount) {
+        await AffiliateCommission.updateOne({ _id: row._id, creditFeeId: null }, { $set: { creditFeeId: fee._id, creditAppliedAt: new Date() } });
+        applied += 1;
+        done = true;
+        break;
+      }
+    }
+    if (!done) break; // no fee big enough now; later rows would not fit either
+  }
+  return applied;
+}
+
+// Gives a credit back to the fee it came off, while that fee is unpaid
+async function undoCredit(row) {
+  if (!row.creditFeeId) return false;
+  const fee = await TuitionFee.findById(row.creditFeeId).lean();
+  if (!fee || fee.isPaid) return false;
+  const note = String(fee.note || '').split(' · ').filter((part) => !/^Giảm .*thưởng giới thiệu/.test(part)).join(' · ');
+  await TuitionFee.updateOne({ _id: fee._id }, { $inc: { amount: row.creditAmount }, $set: { note } });
+  return true;
+}
+
+async function cancelFlatReward(row, reason) {
+  const restored = row.rewardChoice === 'credit' ? await undoCredit(row) : false;
+  const usedCredit = row.rewardChoice === 'credit' && row.creditFeeId && !restored;
+  Object.assign(row, {
+    status: 'cancelled', cancelledAt: new Date(),
+    cancelReason: `${reason || ''}${usedCredit ? ' (khoản giảm học phí đã được dùng)' : ''}`,
+    ...(restored ? { creditFeeId: null, creditAppliedAt: null } : {}),
+  });
+  return row.save();
+}
+
+// A referred student's paid fee was un-marked / deleted: the reward moves to
+// another paid fee of theirs if there is one, else it is cancelled.
+async function dropTuitionReward(fee, reason) {
+  const row = await AffiliateCommission.findOne({ source: 'tuition', sourceId: fee._id });
+  if (!row || row.status === 'cancelled') return row;
+  if (row.kind !== 'tuition_flat') return cancelCommission('tuition', fee._id, reason);
+  const other = await TuitionFee.findOne({ studentId: row.referredUserId, isPaid: true, _id: { $ne: fee._id } }).sort({ paidDate: 1 }).lean();
+  if (other) {
+    const taken = await AffiliateCommission.exists({ source: 'tuition', sourceId: other._id });
+    if (!taken) {
+      Object.assign(row, { sourceId: other._id, baseAmount: Math.round(Number(other.amount) || 0), description: feeLabel(other) });
+      return row.save();
+    }
+  }
+  return cancelFlatReward(row, reason);
+}
+
+// tuitionService: after any save of a fee (paid → reward, unpaid → drop it)
 async function syncTuitionFee(fee, actor) {
   if (!fee) return null;
-  if (!fee.isPaid) return cancelCommission('tuition', fee._id, 'Học phí bị bỏ đánh dấu đã đóng');
-  const label = fee.feeType === 'monthly' ? `học phí tháng ${fee.month}/${fee.year}` : `học phí khóa "${fee.courseName}"`;
-  return earnCommission({
-    source: 'tuition',
-    sourceId: fee._id,
-    buyerId: fee.studentId?._id || fee.studentId,
-    baseAmount: fee.amount,
-    description: label,
-  }, actor);
+  if (!fee.isPaid) return dropTuitionReward(fee, 'Học phí bị bỏ đánh dấu đã đóng');
+  return earnTuitionReward(fee, actor);
 }
 
 async function onTuitionFeeDeleted(fee) {
   if (!fee) return null;
-  return cancelCommission('tuition', fee._id, 'Khoản học phí đã bị xóa');
+  if (fee.isPaid) return dropTuitionReward(fee, 'Khoản học phí đã bị xóa');
+  // An unpaid fee that carried a referrer's discount: the credit waits for
+  // the next fee instead
+  const rows = await AffiliateCommission.find({ creditFeeId: fee._id, rewardChoice: 'credit', status: 'earned' });
+  if (!rows.length) return null;
+  await AffiliateCommission.updateMany({ _id: { $in: rows.map((r) => r._id) } }, { $set: { creditFeeId: null, creditAppliedAt: null } });
+  return applyPendingCredits(fee.studentId);
+}
+
+// POST /api/affiliate/rewards/:id/choose { choice: 'cash' | 'credit' }
+async function chooseReward(userId, id, choice) {
+  if (!['cash', 'credit'].includes(choice)) throw fail(400, 'Lựa chọn không hợp lệ');
+  if (!validId(id)) throw fail(404, 'Không tìm thấy phần thưởng');
+  const row = await AffiliateCommission.findOne({ _id: id, referrerId: userId, kind: 'tuition_flat' });
+  if (!row) throw fail(404, 'Không tìm thấy phần thưởng');
+  if (row.status !== 'awaiting_choice') throw fail(400, row.status === 'cancelled' ? 'Phần thưởng này đã bị hủy' : 'Bạn đã chọn phần thưởng này rồi');
+  if (!((choice === 'cash' ? row.cashAmount : row.creditAmount) > 0)) throw fail(400, 'Lựa chọn này hiện không áp dụng');
+  const r = await AffiliateCommission.updateOne(
+    { _id: row._id, status: 'awaiting_choice' },
+    { $set: { status: 'earned', rewardChoice: choice, amount: choice === 'cash' ? row.cashAmount : 0, chosenAt: new Date() } }
+  );
+  if (!r.modifiedCount) throw fail(400, 'Bạn đã chọn phần thưởng này rồi');
+  if (choice === 'credit') await applyPendingCredits(userId);
+  return AffiliateCommission.findById(row._id).lean();
 }
 
 // Errors here must never break the payment flow that triggered them
@@ -275,11 +437,13 @@ function safely(fn) {
 // ── Balance + payouts ────────────────────────────────────────────────────
 async function getTotals(userId) {
   const uid = new mongoose.Types.ObjectId(String(userId));
-  const [comm, pays] = await Promise.all([
+  const [comm, awaiting, pays] = await Promise.all([
     AffiliateCommission.aggregate([
       { $match: { referrerId: uid, status: 'earned' } },
-      { $group: { _id: null, earned: { $sum: '$amount' }, sales: { $sum: '$baseAmount' }, orders: { $sum: 1 } } },
+      { $group: { _id: null, earned: { $sum: '$amount' }, sales: { $sum: '$baseAmount' }, orders: { $sum: 1 },
+        credited: { $sum: { $cond: [{ $eq: ['$rewardChoice', 'credit'] }, '$creditAmount', 0] } } } },
     ]),
+    AffiliateCommission.countDocuments({ referrerId: uid, status: 'awaiting_choice' }),
     AffiliatePayout.aggregate([
       { $match: { userId: uid, status: { $in: ['pending', 'paid'] } } },
       { $group: { _id: '$status', total: { $sum: '$amount' } } },
@@ -292,6 +456,8 @@ async function getTotals(userId) {
     earned, paid, pending,
     sales: comm[0]?.sales || 0,
     orders: comm[0]?.orders || 0,
+    credited: comm[0]?.credited || 0, // taken off their own tuition
+    awaiting,                         // tuition rewards still to choose
     balance: earned - paid - pending,
   };
 }
@@ -305,14 +471,15 @@ async function getMyAffiliate(userId) {
     getTotals(userId),
     User.find({ referredBy: uid }).select('firstName lastName username referredAt createdAt').sort({ referredAt: -1 }).limit(200).lean(),
     AffiliateCommission.find({ referrerId: uid }).sort({ createdAt: -1 }).limit(100)
-      .populate('referredUserId', 'firstName lastName username').lean(),
+      .populate('referredUserId', 'firstName lastName username')
+      .populate('creditFeeId', 'feeType month year courseName isPaid').lean(),
     AffiliatePayout.find({ userId: uid }).sort({ createdAt: -1 }).limit(50).lean(),
   ]);
 
-  // Per-referred-user totals (earned only)
+  // Per-referred-user totals (a reward still to choose counts as an order)
   const perUser = {};
   for (const c of await AffiliateCommission.aggregate([
-    { $match: { referrerId: uid, status: 'earned' } },
+    { $match: { referrerId: uid, status: { $in: ['earned', 'awaiting_choice'] } } },
     { $group: { _id: '$referredUserId', paid: { $sum: '$baseAmount' }, commission: { $sum: '$amount' }, orders: { $sum: 1 } } },
   ])) perUser[String(c._id)] = c;
 
@@ -344,6 +511,10 @@ async function getMyAffiliate(userId) {
       id: String(c._id), source: c.source, description: c.description, buyer: maskName(c.referredUserId),
       baseAmount: c.baseAmount, percent: c.percent, amount: c.amount, status: c.status,
       cancelReason: c.cancelReason, createdAt: c.createdAt,
+      kind: c.kind || 'percent', rewardChoice: c.rewardChoice || null,
+      cashAmount: c.cashAmount || 0, creditAmount: c.creditAmount || 0,
+      // where a "trừ học phí" reward went: that fee, or '' = waiting for one
+      creditFee: c.creditFeeId ? feeLabel(c.creditFeeId) : '',
     })),
     payouts: payouts.map((p) => ({
       id: String(p._id), amount: p.amount, status: p.status, bankName: p.bankName,
@@ -423,7 +594,8 @@ async function requestPayout(userId, body = {}) {
 async function adminOverview() {
   const [settings, comm, pays, referred] = await Promise.all([
     getSettings(),
-    AffiliateCommission.aggregate([{ $match: { status: 'earned' } }, { $group: { _id: null, total: { $sum: '$amount' }, sales: { $sum: '$baseAmount' }, n: { $sum: 1 } } }]),
+    AffiliateCommission.aggregate([{ $match: { status: 'earned' } }, { $group: { _id: null, total: { $sum: '$amount' }, sales: { $sum: '$baseAmount' }, n: { $sum: 1 },
+      credited: { $sum: { $cond: [{ $eq: ['$rewardChoice', 'credit'] }, '$creditAmount', 0] } } } }]),
     AffiliatePayout.aggregate([{ $group: { _id: '$status', total: { $sum: '$amount' }, n: { $sum: 1 } } }]),
     User.countDocuments({ referredBy: { $ne: null } }),
   ]);
@@ -439,6 +611,7 @@ async function adminOverview() {
       pendingPayoutTotal: byStatus('pending').total,
       pendingPayouts: byStatus('pending').n,
       owed: (comm[0]?.total || 0) - byStatus('paid').total,
+      credited: comm[0]?.credited || 0, // "trừ học phí" rewards
     },
   };
 }
@@ -503,7 +676,7 @@ async function rejectPayout(id, adminNote, actor) {
 
 async function listCommissions({ status, referrerId, page = 1, limit = 30 } = {}) {
   const filter = {};
-  if (['earned', 'cancelled'].includes(status)) filter.status = status;
+  if (['awaiting_choice', 'earned', 'cancelled'].includes(status)) filter.status = status;
   if (referrerId && validId(referrerId)) filter.referrerId = referrerId;
   const lim = Math.min(100, Math.max(1, +limit || 30));
   const [items, total] = await Promise.all([
@@ -516,6 +689,8 @@ async function listCommissions({ status, referrerId, page = 1, limit = 30 } = {}
 
 async function adminCancelCommission(id, reason) {
   if (!validId(id)) throw fail(404, 'Không tìm thấy hoa hồng');
+  const flat = await AffiliateCommission.findOne({ _id: id, kind: 'tuition_flat', status: { $in: ['awaiting_choice', 'earned'] } });
+  if (flat) return cancelFlatReward(flat, clean(reason, 300) || 'Admin hủy');
   const c = await AffiliateCommission.findOneAndUpdate(
     { _id: id, status: 'earned' },
     { $set: { status: 'cancelled', cancelReason: clean(reason, 300) || 'Admin hủy', cancelledAt: new Date() } },
@@ -550,6 +725,8 @@ module.exports = {
   onPremiumApproved: safely(onPremiumApproved),
   syncTuitionFee: safely(syncTuitionFee),
   onTuitionFeeDeleted: safely(onTuitionFeeDeleted),
+  applyPendingCredits: safely(applyPendingCredits),
+  chooseReward,
   getTotals, getMyAffiliate, requestPayout, uploadBankQr, deleteBankQr,
   adminOverview, listPayouts, markPayoutPaid, rejectPayout, listCommissions, adminCancelCommission, listReferrers,
 };

@@ -37,7 +37,7 @@
   <link rel="stylesheet" href="/css/tokens.css?v=307c2602bb" />
   <link rel="stylesheet" href="/css/motion.css?v=cf232e2585" />
   <link rel="stylesheet" href="/css/main.css?v=afaeccef16" />
-  <link rel="stylesheet" href="/css/index.css?v=d78967a112">
+  <link rel="stylesheet" href="/css/index.css?v=64f31222e2">
   <!-- BUG-016: deferred only where a real dependency check confirmed it's
        safe — theme.js stays synchronous (sets data-theme before first
        paint to avoid a flash of the wrong theme); auth-service.js + auth.js
@@ -70,6 +70,7 @@
     <div class="nav-links">
       <a href="/courses.html">Khóa học</a>
       <a href="/de-thi-ielts">Đề thi IELTS</a>
+      <a href="#gioi-thieu" class="aff-nav-link">🎁 Giới thiệu bạn bè</a>
       <a href="/about.html">Về chúng tôi</a>
       <a href="/contact.html">Liên hệ</a>
     </div>
@@ -90,6 +91,7 @@
   <div class="mobile-menu" id="mobile-menu">
     <a href="/courses.html" onclick="toggleMenu()">📚 Khóa học</a>
     <a href="/de-thi-ielts" onclick="toggleMenu()">📝 Đề thi IELTS Vol, Actual Tests</a>
+    <a href="#gioi-thieu" onclick="toggleMenu()">🎁 Giới thiệu bạn bè — nhận hoa hồng</a>
     <a href="/about.html" onclick="toggleMenu()">👨‍🏫 Về chúng tôi</a>
     <a href="/contact.html" onclick="toggleMenu()">📞 Liên hệ</a>
     <a href="/test-dau-vao" class="et-mobile-link">📝 Test đầu vào miễn phí <span class="et-new-tag">MỚI</span></a>
@@ -139,6 +141,40 @@
           <strong>IELTS 8.0</strong>
           <span>Chứng chỉ IDP & BC</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════ GIỚI THIỆU BẠN BÈ (affiliate) ════════════════════
+       Visitors (this page is logged-out only: auth.js sends members to the app)
+       can share the site straight away; "Lấy link" logs in with Google and
+       lands on /app/affiliate, the personal link + commission wallet.
+       The % and payout minimum come from GET /api/affiliate/info (js/index.js). -->
+  <section id="gioi-thieu" class="aff-home" aria-labelledby="aff-home-title">
+    <div class="aff-home-card" data-reveal>
+      <div class="aff-home-main">
+        <div class="section-tag aff-home-tag"><i class="fas fa-gift"></i> Affiliate · Ai cũng tham gia được</div>
+        <h2 class="section-title" id="aff-home-title">Giới thiệu bạn bè — nhận <span class="aff-home-pct" data-aff-percent>20%</span> hoa hồng</h2>
+        <p class="aff-home-sub">Gửi link cho bạn bè đăng ký tài khoản:</p>
+        <ul class="aff-home-rates">
+          <li><span class="aff-home-rate">💎 <b data-aff-percent>20%</b></span><span>mỗi gói <b>Premium</b> họ mua — cả mọi lần gia hạn sau này</span></li>
+          <li><span class="aff-home-rate">🎓 <b data-aff-cash>200.000đ</b></span><span>mỗi người <b>đăng ký học</b> — hoặc <b>trừ <span data-aff-credit>300.000đ</span></b> vào học phí nếu bạn cũng đăng ký học</span></li>
+        </ul>
+        <ol class="aff-home-steps">
+          <li><span class="aff-home-num">1</span><div><b>Lấy link riêng</b><small>Đăng nhập bằng Google, miễn phí, chỉ 1 chạm</small></div></li>
+          <li><span class="aff-home-num">2</span><div><b>Gửi cho bạn bè</b><small>Qua Zalo, Facebook, Messenger…</small></div></li>
+          <li><span class="aff-home-num">3</span><div><b>Nhận hoa hồng</b><small>Ví đủ <span data-aff-min>100.000đ</span> là rút về ngân hàng</small></div></li>
+        </ol>
+        <div class="aff-home-actions">
+          <a href="/login.html?next=%2Fapp%2Faffiliate" class="btn btn-red btn-lg"><i class="fas fa-link"></i> Lấy link giới thiệu của tôi</a>
+          <button type="button" class="btn btn-outline btn-lg" id="aff-home-share"><i class="fas fa-share-nodes"></i> Chia sẻ trang này ngay</button>
+        </div>
+        <p class="aff-home-note"><i class="fas fa-circle-info"></i> Chia sẻ trang không cần tài khoản. Muốn được tính hoa hồng thì gửi <b>link riêng</b> của bạn (lấy sau khi đăng nhập).</p>
+      </div>
+      <div class="aff-home-art" aria-hidden="true">
+        <div class="aff-home-coin">💸</div>
+        <div class="aff-home-bubble aff-home-bubble--a">+<span data-aff-percent>20%</span></div>
+        <div class="aff-home-bubble aff-home-bubble--b">🎓 +<span data-aff-cash>200.000đ</span></div>
       </div>
     </div>
   </section>
@@ -708,7 +744,7 @@
   </footer>
 
   <!-- ════════════════════ SCRIPTS ════════════════════ -->
-  <script src="/js/index.js?v=1886b6d5de"></script>
+  <script src="/js/index.js?v=9fa221c2bf"></script>
   <script src="/js/consult-modal.js?v=f8f08c4d9b"></script>
 
   <!-- ════ FLOATING BUTTONS ════ -->

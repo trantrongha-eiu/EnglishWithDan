@@ -49,15 +49,18 @@ function makeAffiliate(s) {
   return {
     success: true,
     code: 'AB7KQ2X',
-    settings: { enabled: true, percent: 10, minPayout: 100000 },
-    stats: { clicks: 12, signups: 2, buyers: 1, earned: 250000, paid: 0, pending: 0, sales: 2500000, orders: 1, balance: 250000 },
+    settings: { enabled: true, premiumPercent: 20, percent: 20, tuitionCash: 200000, tuitionCredit: 300000, minPayout: 100000 },
+    stats: { clicks: 12, signups: 2, buyers: 2, earned: 250000 + (s.choice === 'cash' ? 200000 : 0), paid: 0, pending: 0, sales: 4750000, orders: 2, credited: s.choice === 'credit' ? 300000 : 0, awaiting: s.choice ? 0 : 1, balance: 250000 + (s.choice === 'cash' ? 200000 : 0) },
     bank: { bankName: '', bankAccount: '', accountName: '', qrImageUrl: s.qr },
     referrals: [
       { id: 'r1', name: 'Ngu***', joinedAt: new Date(NOW - 5 * 86400000).toISOString(), orders: 1, paid: 2500000, commission: 250000 },
       { id: 'r2', name: 'Bìn***', joinedAt: new Date(NOW - 2 * 86400000).toISOString(), orders: 0, paid: 0, commission: 0 },
     ],
     commissions: [
-      { id: 'c1', source: 'tuition', description: 'học phí tháng 11/2026', buyer: 'Ngu***', baseAmount: 2500000, percent: 10, amount: 250000, status: 'earned', cancelReason: '', createdAt: new Date(NOW - 86400000).toISOString() },
+      { id: 'c2', source: 'tuition', kind: 'tuition_flat', description: 'học phí khóa "IELTS 5.0"', buyer: 'Bìn***', baseAmount: 3000000, percent: 0,
+        amount: s.choice === 'cash' ? 200000 : 0, status: s.choice ? 'earned' : 'awaiting_choice', rewardChoice: s.choice || null,
+        cashAmount: 200000, creditAmount: 300000, creditFee: s.choice === 'credit' ? 'học phí tháng 12/2026' : '', cancelReason: '', createdAt: new Date(NOW - 3600000).toISOString() },
+      { id: 'c1', source: 'premium', kind: 'percent', description: 'gói Premium 1 năm', buyer: 'Ngu***', baseAmount: 1250000, percent: 20, amount: 250000, status: 'earned', cancelReason: '', createdAt: new Date(NOW - 86400000).toISOString() },
     ],
     payouts: s.payouts,
   };
@@ -94,6 +97,7 @@ async function openStudent(page, url, s, { signedIn = true } = {}) {
       s.payouts.unshift({ id: 'p1', amount: b.amount, status: 'pending', bankName: b.bankName, bankAccount: b.bankAccount, accountName: b.accountName, qrImageUrl: s.qr, adminNote: '', createdAt: new Date().toISOString() });
       return json({ success: true, message: 'Đã gửi yêu cầu rút tiền.' }, 201);
     }
+    if (p === '/affiliate/rewards/c2/choose') { s.choice = JSON.parse(req.postData() || '{}').choice; return json({ success: true }); }
     if (p === '/affiliate/claim') return json({ success: true, status: 'ok' });
     if (p === '/affiliate/click' || p === '/track/visit') return route.fulfill({ status: 204, headers });
     return json({ success: true });
@@ -162,6 +166,30 @@ for (const [label, viewport] of [['desktop', { width: 1280, height: 900 }], ['ph
     // Remove the QR → typed fields required again
     await tab.getByRole('button', { name: /Xóa/ }).click();
     await expect(tab.locator('.aff-qr-empty')).toBeVisible();
+    expect(errors).toEqual([]);
+    await page.close();
+  });
+}
+
+for (const [choice, button, cell] of [['cash', /Nhận 200.000đ vào ví/, '+200.000đ'], ['credit', /Trừ 300.000đ học phí/, 'Đã trừ vào học phí tháng 12/2026']]) {
+  test(`a referred student's first tuition payment: choose ${choice}`, async ({ browser }) => {
+    const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+    const s = { qr: '', payouts: [], calls: [] };
+    const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await openStudent(page, '/app/affiliate', s);
+    const box = page.locator('#affRewards');
+    await expect(box).toContainText('Bìn*** đã đăng ký học');
+    await expect(page.locator('#affiliatePage')).toContainText('Premium 20%');
+    await expect(page.locator('.aff-table').first()).toContainText('Chờ bạn chọn');
+    await shot(page, `affiliate-reward-${choice}-before`);
+
+    await box.getByRole('button', { name: button }).click();
+    await page.locator('#shared-confirm-ok').click();
+    await expect.poll(() => s.choice).toBe(choice);
+    await expect(box).toHaveCount(0);
+    await expect(page.locator('.aff-table').first()).toContainText(cell);
+    await shot(page, `affiliate-reward-${choice}-after`);
     expect(errors).toEqual([]);
     await page.close();
   });

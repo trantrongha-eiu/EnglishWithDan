@@ -144,3 +144,49 @@ function closeResultLightbox() {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeResultLightbox();
 });
+
+/* ── Giới thiệu bạn bè (affiliate block under the hero) ──
+   The terms come from the admin settings; the static text (10%, 100.000đ)
+   stays if the API is asleep. "Chia sẻ trang này" needs no account. */
+(function initAffiliateBlock() {
+  const section = document.getElementById('gioi-thieu');
+  if (!section) return;
+
+  fetch(`${API}/affiliate/info`)
+    .then(r => (r.ok ? r.json() : null))
+    .then(d => {
+      if (!d || !d.success) return;
+      if (d.enabled === false) { [section, ...document.querySelectorAll('a[href="#gioi-thieu"]')].forEach(el => { el.style.display = 'none'; }); return; }
+      const pct = Number.isFinite(d.premiumPercent) ? d.premiumPercent : d.percent;
+      const money = (sel, n) => { if (Number.isFinite(n)) section.querySelectorAll(sel).forEach(el => { el.textContent = `${n.toLocaleString('vi-VN')}đ`; }); };
+      if (Number.isFinite(pct)) section.querySelectorAll('[data-aff-percent]').forEach(el => { el.textContent = `${pct}%`; });
+      money('[data-aff-cash]', d.tuitionCash);
+      money('[data-aff-credit]', d.tuitionCredit);
+      money('[data-aff-min]', d.minPayout);
+    })
+    .catch(() => {});
+
+  const btn = document.getElementById('aff-home-share');
+  if (!btn) return;
+  const label = btn.innerHTML;
+  const url = `${location.origin}/`;
+  btn.addEventListener('click', async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: 'English with Dan', text: 'Học IELTS & tiếng Anh cùng thầy Daniel Hà — xem thử nhé:', url });
+      } catch { /* cancelled */ }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } finally { ta.remove(); }
+    }
+    btn.innerHTML = '<i class="fas fa-check"></i> Đã sao chép link trang';
+    btn.classList.add('aff-home-share-done');
+    setTimeout(() => { btn.innerHTML = label; btn.classList.remove('aff-home-share-done'); }, 2200);
+  });
+})();

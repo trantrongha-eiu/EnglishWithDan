@@ -282,6 +282,16 @@ async function listStudents() {
   return User.find({ role: { $in: ['student', 'teacher'] } }, 'username email firstName lastName').sort('username').lean();
 }
 
+// The response shows the fee after an affiliate discount came off it
+async function refreshAmounts(fees) {
+  const rows = await TuitionFee.find({ _id: { $in: fees.map(f => f._id) } }).select('amount note').lean();
+  const byId = new Map(rows.map(r => [String(r._id), r]));
+  for (const f of fees) {
+    const r = byId.get(String(f._id));
+    if (r) { f.amount = r.amount; f.note = r.note; }
+  }
+}
+
 async function createFee({ studentId, feeType, month, year, courseName, amount, note, createdBy }) {
   const fee = await TuitionFee.create({
     studentId, feeType,
@@ -292,6 +302,8 @@ async function createFee({ studentId, feeType, month, year, courseName, amount, 
     note: note || '',
     createdBy,
   });
+  // A referrer's waiting "trừ học phí" reward comes off the new fee
+  if (await affiliateService.applyPendingCredits(studentId)) await refreshAmounts([fee]);
   return fee.populate('studentId', 'username email firstName lastName');
 }
 
@@ -320,6 +332,8 @@ async function createMonthlyFees({ studentId, month, year, monthCount, amount, n
       amount: Number(amount), note: note || '', createdBy,
     })))
     : [];
+  // A referrer's waiting "trừ học phí" reward comes off the oldest new fee
+  if (fees.length && await affiliateService.applyPendingCredits(studentId)) await refreshAmounts(fees);
   return { fees, skipped: periods.filter(p => taken.has(`${p.month}/${p.year}`)) };
 }
 
@@ -519,7 +533,9 @@ async function deleteFee(id) {
   // Deleting an unpaid fee (e.g. it was created by mistake) can itself
   // resolve the "still owes money" nag, same as marking it paid.
   if (fee && !fee.isPaid) await resetTuitionReminderCountIfCaughtUp(fee.studentId);
-  if (fee && fee.isPaid) await affiliateService.onTuitionFeeDeleted(fee);
+  // Paid: the referrer's reward moves or is cancelled; unpaid: a discount
+  // it carried goes back to waiting for the next fee
+  if (fee) await affiliateService.onTuitionFeeDeleted(fee);
 }
 
 // null = no such fee (or its student account was deleted — the populate

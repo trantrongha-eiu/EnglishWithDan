@@ -65,6 +65,7 @@ function Overview({ stats }) {
     ['🏦', 'Đã chi trả', vnd(stats.paidOut)],
     ['⏳', `Chờ chuyển (${stats.pendingPayouts})`, vnd(stats.pendingPayoutTotal)],
     ['📌', 'Còn nợ người giới thiệu', vnd(stats.owed)],
+    ['🎓', 'Đã trừ vào học phí', vnd(stats.credited || 0)],
   ];
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 10, marginBottom: 16 }}>
@@ -230,7 +231,7 @@ function Commissions({ referrerId, onChange }) {
           onClose={() => setCancelTarget(null)} onConfirm={(r) => cancel(cancelTarget, r)} />
       )}
       <div className="filter-bar" style={{ marginBottom: 12 }}>
-        {[['', 'Tất cả'], ['earned', '✅ Hợp lệ'], ['cancelled', '🚫 Đã hủy']].map(([s, label]) => (
+        {[['', 'Tất cả'], ['awaiting_choice', '🎁 Chờ chọn thưởng'], ['earned', '✅ Hợp lệ'], ['cancelled', '🚫 Đã hủy']].map(([s, label]) => (
           <button key={s || 'all'} className={`btn ${status === s ? 'btn-primary' : 'btn-ghost'} btn-sm`} onClick={() => { setStatus(s); setPage(1); }}>{label}</button>
         ))}
       </div>
@@ -248,13 +249,15 @@ function Commissions({ referrerId, onChange }) {
                   <td style={{ fontSize: 13 }}>
                     <span className={`badge ${c.source === 'premium' ? 'badge-blue' : 'badge-green'}`}>{c.source === 'premium' ? 'Premium' : 'Học phí'}</span>{' '}
                     {c.description}
-                    <div style={{ fontSize: 12, color: 'var(--text3)' }}>{vnd(c.baseAmount)} × {c.percent}%</div>
+                    <div style={{ fontSize: 12, color: 'var(--text3)' }}>
+                      {c.kind === 'tuition_flat' ? `Khoản đầu ${vnd(c.baseAmount)} · thưởng 1 lần/người` : `${vnd(c.baseAmount)} × ${c.percent}%`}
+                    </div>
                   </td>
                   <td style={{ whiteSpace: 'nowrap' }}>
-                    <strong>{vnd(c.amount)}</strong>
+                    <RewardCell c={c} />
                     {c.status === 'cancelled' && <div style={{ fontSize: 12, color: 'var(--danger)' }}>Đã hủy{c.cancelReason ? `: ${c.cancelReason}` : ''}</div>}
                   </td>
-                  <td>{c.status === 'earned' && <button className="btn btn-ghost btn-sm" onClick={() => setCancelTarget(c)}>Hủy</button>}</td>
+                  <td>{c.status !== 'cancelled' && <button className="btn btn-ghost btn-sm" onClick={() => setCancelTarget(c)}>Hủy</button>}</td>
                 </tr>
               ))}
           </tbody>
@@ -299,6 +302,18 @@ function Referrers({ onPick }) {
   );
 }
 
+// Premium = % into the wallet; học phí = the referrer's choice, once per student
+function RewardCell({ c }) {
+  if (c.kind !== 'tuition_flat') return <strong>{vnd(c.amount)}</strong>;
+  if (c.status === 'awaiting_choice') {
+    return <><span className="badge badge-yellow">🎁 Chờ chọn</span><div style={{ fontSize: 12, color: 'var(--text3)' }}>{vnd(c.cashAmount)} ví / −{vnd(c.creditAmount)} học phí</div></>;
+  }
+  if (c.rewardChoice === 'credit') {
+    return <><strong>−{vnd(c.creditAmount)} học phí</strong><div style={{ fontSize: 12, color: 'var(--text3)' }}>{c.creditFeeId ? 'Đã trừ vào học phí người giới thiệu' : 'Chờ khoản học phí tiếp theo'}</div></>;
+  }
+  return <><strong>{vnd(c.amount)}</strong><div style={{ fontSize: 12, color: 'var(--text3)' }}>Tiền mặt vào ví</div></>;
+}
+
 function Settings({ settings, onSaved }) {
   const toast = useToast();
   const [form, setForm] = useState(settings);
@@ -308,7 +323,7 @@ function Settings({ settings, onSaved }) {
   async function save() {
     setSaving(true);
     try {
-      await apiFetch('/admin/affiliate/settings', { method: 'PUT', body: JSON.stringify({ ...form, percent: Number(form.percent), minPayout: Number(form.minPayout) }) });
+      await apiFetch('/admin/affiliate/settings', { method: 'PUT', body: JSON.stringify({ enabled: form.enabled, premiumPercent: Number(form.premiumPercent), tuitionCash: Number(form.tuitionCash), tuitionCredit: Number(form.tuitionCredit), minPayout: Number(form.minPayout) }) });
       toast('Đã lưu cài đặt Affiliate');
       onSaved();
     } catch (e) { toast(e.message, 'error'); }
@@ -322,9 +337,18 @@ function Settings({ settings, onSaved }) {
         Bật chương trình Affiliate
       </label>
       <div className="form-group">
-        <label className="form-label">Phần trăm hoa hồng (%)</label>
-        <input className="form-input" type="number" min={0} max={100} step={0.5} value={form.percent} onChange={(e) => setForm({ ...form, percent: e.target.value })} />
-        <small style={{ color: 'var(--text3)' }}>Áp dụng cho các đơn được xác nhận từ bây giờ — hoa hồng cũ giữ nguyên %.</small>
+        <label className="form-label">Hoa hồng gói Premium (%)</label>
+        <input className="form-input" type="number" min={0} max={100} step={0.5} value={form.premiumPercent} onChange={(e) => setForm({ ...form, premiumPercent: e.target.value })} />
+        <small style={{ color: 'var(--text3)' }}>Mỗi gói Premium người được giới thiệu mua (kể cả gia hạn).</small>
+      </div>
+      <div className="form-group">
+        <label className="form-label">Thưởng đăng ký học — tiền mặt (₫/người)</label>
+        <input className="form-input" type="number" min={0} step={10000} value={form.tuitionCash} onChange={(e) => setForm({ ...form, tuitionCash: e.target.value })} />
+      </div>
+      <div className="form-group">
+        <label className="form-label">… hoặc trừ vào học phí người giới thiệu (₫)</label>
+        <input className="form-input" type="number" min={0} step={10000} value={form.tuitionCredit} onChange={(e) => setForm({ ...form, tuitionCredit: e.target.value })} />
+        <small style={{ color: 'var(--text3)' }}>Thưởng 1 lần khi khoản học phí đầu tiên của người được giới thiệu được đánh dấu đã đóng; người giới thiệu tự chọn tiền mặt hoặc trừ học phí. Mức mới chỉ áp dụng cho thưởng phát sinh từ bây giờ.</small>
       </div>
       <div className="form-group">
         <label className="form-label">Mức rút tối thiểu (₫)</label>
@@ -332,7 +356,7 @@ function Settings({ settings, onSaved }) {
       </div>
       <p style={{ margin: 0, fontSize: 13, color: 'var(--text3)' }}>
         Hoa hồng được tính khi admin <b>duyệt yêu cầu nâng cấp Premium</b> hoặc <b>đánh dấu học phí đã đóng</b> của người được giới thiệu.
-        Bỏ đánh dấu / xóa khoản học phí sẽ tự hủy hoa hồng tương ứng. Khi tắt chương trình, đơn mới không sinh hoa hồng và link mới không được ghi nhận.
+        Chọn "trừ học phí" thì hệ thống tự giảm khoản học phí chưa đóng sớm nhất của người giới thiệu (có ghi chú). Bỏ đánh dấu / xóa khoản học phí sẽ tự hủy thưởng tương ứng. Khi tắt chương trình, đơn mới không sinh hoa hồng và link mới không được ghi nhận.
       </p>
       <div><button className="btn btn-primary" onClick={save} disabled={saving}>{saving ? 'Đang lưu...' : '💾 Lưu cài đặt'}</button></div>
     </div>
@@ -358,7 +382,7 @@ export default function Affiliate() {
       <div className="section-header">
         <h2 className="section-title">Affiliate {overview?.settings && (
           <span className={`badge ${overview.settings.enabled ? 'badge-green' : 'badge-red'}`} style={{ marginLeft: 8, fontSize: 12 }}>
-            {overview.settings.enabled ? `Đang bật · ${overview.settings.percent}%` : 'Đang tắt'}
+            {overview.settings.enabled ? `Đang bật · Premium ${overview.settings.premiumPercent ?? overview.settings.percent}% · Học phí ${vnd(overview.settings.tuitionCash ?? 0)}` : 'Đang tắt'}
           </span>
         )}</h2>
       </div>
