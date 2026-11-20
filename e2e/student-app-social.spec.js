@@ -18,7 +18,7 @@ const http = require('http');
 const ROOT = path.join(__dirname, '..');
 const FRONTEND = path.resolve(process.env.E2E_FRONTEND || path.join(ROOT, 'frontend'));
 const SHOTS = process.env.E2E_SHOTS || '';
-const PORT = 3137;
+const PORT = 3137 + 100 * Number(process.env.TEST_PARALLEL_INDEX || 0); // one static server per worker
 const BASE = `http://localhost:${PORT}`;
 const { ITEMS, PETS } = require(path.join(ROOT, 'backend', 'constants', 'shop.js'));
 
@@ -315,7 +315,8 @@ function makeState() {
         { id: 'd1', status: 'pending', role: 'opponent', stake: 10, pot: 20, rival: { name: 'Bình' }, expiresAt: inHours(5.5) },
         { id: 'd2', status: 'pending', role: 'challenger', stake: 15, pot: 30, rival: { name: 'Chi' }, expiresAt: inHours(3.5) },
       ],
-      recent: [{ id: 'd3', status: 'done', result: 'win', myScore: 8, rivalScore: 3, stake: 5, pot: 10, rival: { name: 'Dũng' } }],
+      // ended 5 days ago: older than 2 days, so its "Kết quả thách đấu" popup doesn't cover the page
+      recent: [{ id: 'd3', status: 'done', result: 'win', myScore: 8, rivalScore: 3, stake: 5, pot: 10, rival: { name: 'Dũng' }, endsAt: new Date(Date.now() - 5 * 86400000).toISOString() }],
     },
   };
 }
@@ -1084,8 +1085,8 @@ async function compare(browser, name, label, { viewport = { width: 1280, height:
     patch(state);
     const { errors } = await open(page, url, state);
     await (ready || cfg.ready)(page);
-    // A tab only the new Hồ sơ has
-    await page.locator('.tab-btn[data-tab="goal"]').evaluateAll((els) => els.forEach((e) => e.remove()));
+    // Tabs only the new Hồ sơ has
+    await page.locator('.tab-btn[data-tab="goal"], .tab-btn[data-tab="affiliate"]').evaluateAll((els) => els.forEach((e) => e.remove()));
     await page.mouse.move(0, 0); // the layout moved: nothing should stay hovered by accident
     const print = await fingerprint(page, cfg.root);
     const words = await text(page, cfg.root);

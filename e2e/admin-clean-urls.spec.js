@@ -12,7 +12,7 @@ const fs = require('fs');
 const http = require('http');
 
 const FRONTEND = path.resolve(process.env.E2E_FRONTEND || path.join(__dirname, '..', 'frontend'));
-const PORT = 3138;
+const PORT = 3138 + 100 * Number(process.env.TEST_PARALLEL_INDEX || 0); // one static server per worker
 const BASE = `http://localhost:${PORT}`;
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'application/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg' };
 const ADMIN = { _id: 'a1', id: 'a1', username: 'admin', firstName: 'Quản', lastName: 'Trị', role: 'admin' };

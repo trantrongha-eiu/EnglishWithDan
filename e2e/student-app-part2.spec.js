@@ -20,7 +20,7 @@ const http = require('http');
 const ROOT = path.join(__dirname, '..');
 const FRONTEND = path.resolve(process.env.E2E_FRONTEND || path.join(ROOT, 'frontend'));
 const SHOTS = process.env.E2E_SHOTS || '';
-const PORT = 3139;
+const PORT = 3139 + 100 * Number(process.env.TEST_PARALLEL_INDEX || 0); // one static server per worker
 const BASE = `http://localhost:${PORT}`;
 const DATA = require(path.join(ROOT, 'backend', 'data', 'speakingPart2.js'));
 const FULL = require(path.join(ROOT, 'backend', 'data', 'speakingPart2Full.js'));
@@ -325,6 +325,8 @@ const PAGES = {
       await p.locator('.sp2-sh-pill').first().click();
       await p.locator('.sp2-sh-pill').nth(1).click();
       await p.locator('#sp2-sh-sent.is-masked').waitFor();
+      // the "Nghe" step lights up 250 ms after a sentence opens: wait for it on both pages
+      await p.locator('#sp2-sh-steps li.is-on').waitFor();
       await p.locator('.sp2-sh-helpbtn').click();
     },
   },

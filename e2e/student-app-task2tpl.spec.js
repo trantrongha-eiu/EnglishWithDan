@@ -20,7 +20,7 @@ const http = require('http');
 const ROOT = path.join(__dirname, '..');
 const FRONTEND = path.resolve(process.env.E2E_FRONTEND || path.join(ROOT, 'frontend'));
 const SHOTS = process.env.E2E_SHOTS || '';
-const PORT = 3140;
+const PORT = 3140 + 100 * Number(process.env.TEST_PARALLEL_INDEX || 0); // one static server per worker
 const BASE = `http://localhost:${PORT}`;
 const GUIDES = require(path.join(ROOT, 'backend', 'scripts', 'data', 'task2', 'typeGuides.js'));
 
@@ -263,6 +263,8 @@ const PAGES = {
     url: '', drop: '.pth-drill-meta > span:first-child', patch: (s) => { s.progress = upTo(2, { drillRounds: [1] }); },
     ready: async (p) => {
       await ready(p); await stepBtn(p, 2).click();
+      // both pages focus the first blank 30 ms in: typing before that lands in the wrong blank
+      await expect(p.locator('.pth-blank').first()).toBeFocused();
       for (const b of await p.locator('.pth-blank').all()) await b.fill('x');
       await p.locator('#pth-fade-actions .pth-btn--primary').click();
       await p.locator('.pth-blank-fix').first().waitFor();
