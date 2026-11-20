@@ -239,7 +239,28 @@ a.pb-card, a.pb-suggest-chip { color: inherit; }
 .se-daychip.is-on{border-color:#7c3aed;background:rgba(124,58,237,.12);box-shadow:0 0 0 1px #7c3aed inset}
 .se-summary{margin-top:12px;padding:9px 11px;border-radius:9px;font-size:13px;line-height:1.5;background:rgba(22,163,74,.1);overflow-wrap:anywhere}
 
-/* ── Hồ sơ → Affiliate (pages/profile/AffiliateTab.jsx) ───────────── */
+/* ── Giới thiệu bạn bè /app/affiliate (pages/Affiliate.jsx) ────────── */
+/* Was a Hồ sơ tab: the card/form look below is profile.css + pf-profile.css,
+   which this page does not load */
+#root > .aff-layout { width: 100%; line-height: normal; }
+.aff-layout { max-width: 860px; margin: 0 auto; padding: 28px 16px; }
+.aff-layout > .pf-hero { margin-bottom: 18px; }
+.aff-layout .card { border: 2.5px solid var(--pf-ink); border-radius: 22px; box-shadow: var(--pf-shadow); overflow: hidden; background: var(--surface); animation: pf-rise .45s ease both; }
+.aff-layout .card-header { padding: 13px 18px; display: flex; align-items: center; gap: 7px; font-family: var(--pf-head); font-weight: 900; font-size: 16px; color: var(--text); border-bottom: 2px dashed var(--pf-line); background: transparent; }
+.aff-layout .card-header i { color: var(--pf-tangerine); margin-right: 4px; }
+.aff-layout .card-body { padding: 16px 18px; }
+.aff-layout .mt-16 { margin-top: 14px; }
+.aff-layout .form-row { display: flex; gap: 14px; }
+.aff-layout .form-row .form-group { flex: 1; }
+.aff-layout label { font-weight: 800; }
+.aff-layout .form-control { border: 2px solid var(--pf-line); border-radius: 14px; background: var(--surface); transition: border-color .15s, box-shadow .15s; }
+.aff-layout .form-control:focus { outline: none; border-color: var(--pf-ink); box-shadow: 0 0 0 4px rgba(255, 210, 63, .45); }
+.aff-layout .btn.btn-primary { border: 2.5px solid var(--pf-ink); border-radius: 14px; font-weight: 900; box-shadow: 3px 3px 0 var(--pf-ink); transition: transform .18s var(--pf-spring), box-shadow .18s; }
+.aff-layout .btn.btn-primary:hover { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--pf-ink); }
+.aff-layout .btn.btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pf-ink); }
+@media (max-width: 768px) { .aff-layout .form-row { flex-direction: column; gap: 0; } }
+@media (max-width: 640px) { .aff-layout { padding: 16px 12px; } }
+@media (prefers-reduced-motion: reduce) { .aff-layout .card { animation: none; } }
 .aff-guide { margin-bottom: 16px; padding: 12px 14px; border: 1px solid var(--border, #e5e7eb); border-radius: 12px; background: var(--bg, #f7f8fc); font-size: 14px; line-height: 1.6; }
 .aff-guide summary { cursor: pointer; font-weight: 700; color: var(--primary, #f5576c); }
 .aff-guide p, .aff-guide ol { margin: 10px 0 0; }

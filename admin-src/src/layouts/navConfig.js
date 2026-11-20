@@ -89,7 +89,7 @@ export const NAV_GROUPS = [
   { id: 'finance', label: 'Tài chính', items: [
     { to: '/upgrade-requests', icon: '⭐', label: 'Yêu cầu nâng cấp', badge: 'pendingUpgrades', badgeTitle: 'Yêu cầu đang chờ duyệt', adminOnly: true },
     { to: '/tuition', icon: '💰', label: 'Học phí', badge: 'pendingTuition', badgeTitle: 'Học sinh còn nợ học phí', adminOnly: true, student: 'tuition.html' },
-    { to: '/affiliate', icon: '📢', label: 'Affiliate', adminOnly: true, student: 'profile.html?tab=affiliate' },
+    { to: '/affiliate', icon: '📢', label: 'Affiliate', adminOnly: true, student: 'app/affiliate' },
   ] },
   { id: 'system', label: 'Công cụ giáo viên', items: [
     { to: '/tip-packs', icon: '🖨️', label: 'Tài liệu in (Tips)' },

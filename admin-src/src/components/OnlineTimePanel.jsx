@@ -13,6 +13,7 @@ const PAGE_NAMES = {
   vocabulary: 'Từ vựng', shadowing: 'Shadowing', dictation: 'Dictation', 'mock-test': 'Thi thử',
   'essential-grammar': 'Ngữ pháp', 'writing-practice': 'Luyện viết', 'task2-practice': 'Task 2', 'task1-practice': 'Task 1',
   profile: 'Hồ sơ', inbox: 'Hộp thư', shop: 'Cửa hàng', goal: 'Mục tiêu', 'review-history': 'Ôn tập',
+  affiliate: 'Giới thiệu bạn bè',
 };
 
 function pageName(p) {

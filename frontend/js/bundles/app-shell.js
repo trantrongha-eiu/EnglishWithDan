@@ -1437,6 +1437,8 @@
       children: [
         { href: 'app/leaderboard', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
         { href: 'app/shop',             icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
+        // Affiliate: the referral link + commission wallet (was a Hồ sơ tab)
+        { href: 'app/affiliate',        icon: 'fa-bullhorn',     label: 'Giới thiệu bạn bè' },
       ]
     },
     // The student's own class page: schedule, attendance, homework, Speaking
@@ -1804,7 +1806,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=188d117996';
+      s.src = '/js/shared/page-help.js?v=b354e8e736';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -5747,7 +5749,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template)(?=\/|$)/);
+    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template|affiliate)(?=\/|$)/);
     if (!m) return '/app/'; // the vocab home, whatever is open inside it
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

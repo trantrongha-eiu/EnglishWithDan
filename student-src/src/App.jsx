@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, createRoutesFromElements, Navigate, Route, RouterProvider, useSearchParams } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthProvider';
 import { ToastProvider } from './contexts/ToastProvider';
 import ProtectedRoute from './routes/ProtectedRoute';
@@ -27,6 +27,7 @@ const WritingPractice = lazy(() => import('./pages/WritingPractice'));
 const Task1Grammar = lazy(() => import('./pages/Task1Grammar'));
 const SpeakingPart2 = lazy(() => import('./pages/SpeakingPart2'));
 const Task2Template = lazy(() => import('./pages/Task2Template'));
+const Affiliate = lazy(() => import('./pages/Affiliate'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
@@ -45,6 +46,14 @@ const WRITING_PRACTICE_CSS = ['writing-practice', 'writing-practice-page', 'play
 const TASK1_CSS = ['writing-practice', 'task1-practice', 'playful', 'pf-pages'];
 const SPEAKING_PART2_CSS = ['writing-practice', 'task2-practice', 'playful', 'pf-pages', 'speaking-part2'];
 const TASK2_TEMPLATE_CSS = ['writing-practice', 'task2-highlight', 'task2-generic-tpl', 'task2-template', 'playful'];
+const AFFILIATE_CSS = ['pf-pages'];
+
+// Hồ sơ → Affiliate became its own page (/app/affiliate, under BXH vocab)
+function ProfileRoute() {
+  const [params] = useSearchParams();
+  if (params.get('tab') === 'affiliate') return <Navigate to="/affiliate" replace />;
+  return <PageCss names={PROFILE_CSS}><Profile /></PageCss>;
+}
 
 // A data router: running quizzes use useBlocker to ask before leaving
 const router = createBrowserRouter(createRoutesFromElements(
@@ -65,7 +74,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="leaderboard" element={<PageCss names={LEADERBOARD_CSS}><Leaderboard /></PageCss>} />
       <Route path="shop" element={<PageCss names={SHOP_CSS}><Shop /></PageCss>} />
       <Route path="inbox" element={<PageCss names={INBOX_CSS}><Inbox /></PageCss>} />
-      <Route path="profile" element={<PageCss names={PROFILE_CSS}><Profile /></PageCss>} />
+      <Route path="profile" element={<ProfileRoute />} />
       <Route path="tuition" element={<PageCss names={TUITION_CSS}><Tuition /></PageCss>} />
       <Route path="review-history" element={<PageCss names={REVIEW_HISTORY_CSS}><ReviewHistory /></PageCss>} />
       <Route path="dictation" element={<PageCss names={DICTATION_CSS}><Dictation /></PageCss>} />
@@ -76,6 +85,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="task1-practice" element={<PageCss names={TASK1_CSS}><Task1Grammar /></PageCss>} />
       <Route path="speaking-part2" element={<PageCss names={SPEAKING_PART2_CSS}><SpeakingPart2 /></PageCss>} />
       <Route path="task2-template" element={<PageCss names={TASK2_TEMPLATE_CSS}><Task2Template /></PageCss>} />
+      <Route path="affiliate" element={<PageCss names={AFFILIATE_CSS}><Affiliate /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

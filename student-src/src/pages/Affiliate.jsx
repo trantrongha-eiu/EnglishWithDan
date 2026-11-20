@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import { API, apiFetch } from '../../utils/api';
+import { API, apiFetch } from '../utils/api';
 
-// Hồ sơ → Affiliate (backend/services/affiliateService.js): the referral
-// link, what it has earned, the people who joined through it, and the
-// withdrawal form. Loads only once the tab is opened (it creates the code).
+// 📢 Giới thiệu bạn bè — /app/affiliate, under "BXH vocab" in the menu
+// (backend/services/affiliateService.js): the referral link, what it has
+// earned, the people who joined through it, and the withdrawal form.
+// It was the Hồ sơ → Affiliate tab; /app/profile?tab=affiliate redirects here.
 
 const SLOW = { timeout: 90000 };
 // Each /affiliate/me answer gets a new id: the payout form restarts from it
@@ -223,23 +224,19 @@ function PayoutForm({ data, onDone }) {
   );
 }
 
-export default function AffiliateTab({ active }) {
+export default function Affiliate() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [version, setVersion] = useState(0);
-  const [opened, setOpened] = useState(active);
   const [copied, setCopied] = useState(false);
 
-  if (active && !opened) setOpened(true);
-
   useEffect(() => {
-    if (!opened) return undefined;
     let alive = true;
     apiFetch('/affiliate/me', SLOW)
       .then((d) => { if (alive) { setData({ ...d, loadId: (loadSeq += 1) }); setError(''); } })
       .catch((e) => { if (alive) setError(e.message || 'Không tải được dữ liệu Affiliate'); });
     return () => { alive = false; };
-  }, [opened, version]);
+  }, [version]);
 
   const link = data ? referralLink(data.code) : '';
 
@@ -257,7 +254,14 @@ export default function AffiliateTab({ active }) {
   }
 
   return (
-    <div className={`tab-content${active ? ' active' : ''}`} id="tab-affiliate">
+    <div className="aff-layout" id="affiliatePage">
+      <div className="pf-hero pf-hero-orange" data-mascot="excited">
+        <div className="pf-hero-body">
+          <h1>Giới thiệu <span className="pf-tag">bạn bè</span></h1>
+          <p className="pf-hero-sub">Gửi link giới thiệu cho bạn bè — khi họ đăng ký và thanh toán, bạn nhận hoa hồng vào ví rồi rút về ngân hàng.</p>
+        </div>
+      </div>
+
       {error && !data && (
         <div className="card"><div className="card-body">
           <p className="aff-note">{error}</p>

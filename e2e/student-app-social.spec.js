@@ -1086,7 +1086,7 @@ async function compare(browser, name, label, { viewport = { width: 1280, height:
     const { errors } = await open(page, url, state);
     await (ready || cfg.ready)(page);
     // Tabs only the new Hồ sơ has
-    await page.locator('.tab-btn[data-tab="goal"], .tab-btn[data-tab="affiliate"]').evaluateAll((els) => els.forEach((e) => e.remove()));
+    await page.locator('.tab-btn[data-tab="goal"]').evaluateAll((els) => els.forEach((e) => e.remove()));
     await page.mouse.move(0, 0); // the layout moved: nothing should stay hovered by accident
     const print = await fingerprint(page, cfg.root);
     const words = await text(page, cfg.root);

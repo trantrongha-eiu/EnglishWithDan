@@ -120,14 +120,18 @@ test('a referral link is kept, counted once, then claimed after login', async ({
 });
 
 for (const [label, viewport] of [['desktop', { width: 1280, height: 900 }], ['phone', { width: 390, height: 844 }]]) {
-  test(`Hồ sơ → Affiliate: upload a bank QR and withdraw with it (${label})`, async ({ browser }) => {
+  test(`Giới thiệu bạn bè page: upload a bank QR and withdraw with it (${label})`, async ({ browser }) => {
     const page = await browser.newPage({ viewport });
     const s = { qr: '', payouts: [], calls: [] };
     const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
+    // The old Hồ sơ tab link still lands on the page
     await openStudent(page, '/app/profile?tab=affiliate', s);
+    await expect(page).toHaveURL(/\/app\/affiliate$/);
+    // …and the menu lists it under BXH vocab
+    await expect(page.locator('a[href$="app/affiliate"]')).not.toHaveCount(0);
 
-    const tab = page.locator('#tab-affiliate');
+    const tab = page.locator('#affiliatePage');
     await expect(tab.locator('#affLink')).toHaveValue(`${BASE}/?ref=AB7KQ2X`);
     await expect(tab).toContainText('Số dư khả dụng');
     await expect(tab).toContainText('250.000đ');
