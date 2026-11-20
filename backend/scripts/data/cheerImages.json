@@ -1,0 +1,47 @@
+{
+ "note": "Result-screen images (frontend/img/cheer/*.jpg, 640x480). Wikimedia Commons, CC0 / public domain only. Replaced the old meme pictures 2026-11-20. cheer-nudge = paste-guard popup; loststreak.jpg/meme_prevent_paste.jpg overwritten too.",
+ "images": {
+  "cheer-top": {
+   "file": "File:Red Panda (24715469267).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Red_Panda_(24715469267).jpg",
+   "license": "CC0",
+   "artist": "Mathias Appel"
+  },
+  "cheer-great": {
+   "file": "File:Hydrochoeris hydrochaeris in Brazil in Petrópolis, Rio de Janeiro, Brazil 09.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Hydrochoeris_hydrochaeris_in_Brazil_in_Petr%C3%B3polis,_Rio_de_Janeiro,_Brazil_09.jpg",
+   "license": "CC0",
+   "artist": "Wilfredor"
+  },
+  "cheer-good": {
+   "file": "File:Puppy filtered.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Puppy_filtered.jpg",
+   "license": "CC0",
+   "artist": "no name provided"
+  },
+  "cheer-ok": {
+   "file": "File:Bristol.zoo.capybara.arp.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Bristol.zoo.capybara.arp.jpg",
+   "license": "Public domain",
+   "artist": "Adrian Pingstone"
+  },
+  "cheer-try": {
+   "file": "File:A curious kitten (Pixabay).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:A_curious_kitten_(Pixabay).jpg",
+   "license": "CC0",
+   "artist": "Dimitri Houtteman"
+  },
+  "cheer-rest": {
+   "file": "File:Kitten sleeping.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Kitten_sleeping.jpg",
+   "license": "CC0",
+   "artist": "Pixabay"
+  },
+  "cheer-nudge": {
+   "file": "File:A kitten in the hand (Flickr).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:A_kitten_in_the_hand_(Flickr).jpg",
+   "license": "CC0",
+   "artist": "Leo Rodman"
+  }
+ }
+}

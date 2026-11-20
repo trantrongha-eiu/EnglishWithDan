@@ -3461,16 +3461,16 @@ function openSubmitErrorModal() {
 }
 
 // Shared band→result-image mapping (also used on the review screen so the
-// same funny/celebratory picture that appears right after submitting still
+// same encouraging picture that appears right after submitting still
 // shows up when reopening the review later, e.g. via "Xem lại kết quả").
 function resultImgSrcForBand(band) {
-  return band >= 7.5 ? 'img/above7.5.jpg'
-       : band >= 6.0 ? 'img/band_6_7.jpg'
-       : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
-       : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
-       : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-       : band >= 1.0 ? 'img/listening_readingbelow30%25.jpg'
-       :                'img/listening_readingbelow20%25.jpg';
+  return band >= 7.5 ? 'img/cheer/cheer-great.jpg'
+       : band >= 6.0 ? 'img/cheer/cheer-good.jpg'
+       : band >= 5.0 ? 'img/cheer/cheer-ok.jpg'
+       : band >= 4.0 ? 'img/cheer/cheer-try.jpg'
+       : band >= 2.0 ? 'img/cheer/cheer-rest.jpg'
+       : band >= 1.0 ? 'img/cheer/cheer-rest.jpg'
+       :                'img/cheer/cheer-rest.jpg';
 }
 
 function showResult(r) {
@@ -3488,27 +3488,27 @@ function showResult(r) {
   const imgEl = document.getElementById('result-img');
   if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
 
-  // Motivational message (funny/sarcastic for very low scores)
+  // Encouraging message — kind at every score, never teasing.
   const isLow = band < 5.0;
   const msgEl = document.getElementById('result-msg');
   if (msgEl) {
     if (isLow) {
-      const funnyMsgs = [
-        'Band dưới 5 rồi... thôi không nói gì thêm 😶 Cày từ vựng đi bạn ơi, mỗi ngày 10 từ là lên điểm liền!',
-        'Não đang offline hả bạn? 🧠💤 Log in lại rồi luyện đọc thêm mỗi ngày đi nào!',
-        'Band này mà đi thi thật thì... 😅 Nhưng không sao, ôn thêm một thời gian rồi quay lại chinh phục thôi!',
-        'Điểm này thấp hơn cả nhiệt độ điều hòa 🥶 Nhưng ai cũng phải bắt đầu từ đâu đó — cứ cày là lên!',
+      const lowMsgs = [
+        'Bài hôm nay hơi khó thôi — mỗi ngày đọc thêm một đoạn ngắn là điểm sẽ lên đều 📖',
+        'Quan trọng là cậu đã bắt đầu! Học 10 từ vựng mỗi ngày là thấy khác liền 🌱',
+        'Đừng nản nha! Hiểu vì sao sai là đã tiến thêm một bước rồi 🐾',
+        'Người band cao cũng từng ở đây đó — kiên trì là tới thôi 💪',
       ];
-      msgEl.textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+      msgEl.textContent = lowMsgs[Math.floor(Math.random() * lowMsgs.length)];
     } else {
       const highMsgs = [
-        'Band 7+ rồi nè! Chắc coi phim Mỹ không cần phụ đề nữa 😎🔥',
-        'Ôi giỏi dữ vậy! Band 7+ thì đi dạy lại đi chứ còn ngồi luyện làm gì nữa 😏',
+        'Band 7+ rồi nè! Công sức luyện đọc của cậu đã đền đáp rồi 🥳',
+        'Tuyệt vời! Cậu đọc hiểu giỏi thật sự đó, cứ giữ phong độ nha 🌟',
       ];
       msgEl.textContent = band >= 7.0
         ? highMsgs[Math.floor(Math.random() * highMsgs.length)]
-        : band >= 6.0 ? 'Band 6+, ngon đó! Nhưng Band 7 mới đúng mục tiêu nha 👀 Cày thêm tí là lên liền!'
-        : 'Band 5, chưa ổn lắm đâu bạn ơi 😬 Cày vocab + đọc thật nhiều là lên điểm ngay thôi!';
+        : band >= 6.0 ? 'Band 6+ rồi, giỏi lắm! Thêm chút xíu nữa là chạm Band 7 thôi 💪'
+        : 'Band 5 là nền tảng tốt rồi đó! Đọc thêm mỗi ngày là cậu sẽ tiến bộ rõ luôn 📚';
     }
   }
   // Lulu reads the message out in a speech bubble (js/shared/playful.js);
@@ -4287,10 +4287,10 @@ async function _doSubmitRetry() {
     const tm = String(Math.floor(elapsed / 60)).padStart(2, '0');
     const ts = String(elapsed % 60).padStart(2, '0');
     const perQ = total ? Math.round(elapsed / total) : 0;
-    const encourage = pct >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 😏🔥'
-                    : pct >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
-                    : pct >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha 🥲 Cày thêm đi!'
-                    : 'Học cho đàng hoàng zô coiii 😤';
+    const encourage = pct >= 80 ? 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟'
+                    : pct >= 60 ? 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪'
+                    : pct >= 40 ? 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛'
+                    : 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷';
     const speed = perQ <= 45 ? '⚡ Rất nhanh' : perQ <= 75 ? 'Ổn' : 'Cần tăng tốc';
     timeLine = `<div class="rd-rb-time">
       <span>⏱ Thời gian: <strong>${tm}:${ts}</strong></span>
@@ -4348,13 +4348,13 @@ async function _doSubmitRetry() {
     });
   }
 
-  const rdPracImgSrc = pct >= 75 ? 'img/above7.5.jpg'
-                      : pct >= 60 ? 'img/band_6_7.jpg'
-                      : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
-                      : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                      : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
-                      : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
-                      : 'img/listening_readingbelow20%25.jpg';
+  const rdPracImgSrc = pct >= 75 ? 'img/cheer/cheer-great.jpg'
+                      : pct >= 60 ? 'img/cheer/cheer-good.jpg'
+                      : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
+                      : pct >= 40 ? 'img/cheer/cheer-try.jpg'
+                      : pct >= 30 ? 'img/cheer/cheer-rest.jpg'
+                      : pct >= 20 ? 'img/cheer/cheer-rest.jpg'
+                      : 'img/cheer/cheer-rest.jpg';
   const rdPracImgHtml = fromPractice
     ? `<img src="${rdPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">`
     : '';
@@ -4592,13 +4592,13 @@ async function loadPracticeReview(attemptId) {
     const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
     const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
     const ts = String(attempt.timeTaken % 60).padStart(2, '0');
-    const rdHistImgSrc = pct >= 75 ? 'img/above7.5.jpg'
-                        : pct >= 60 ? 'img/band_6_7.jpg'
-                        : pct >= 50 ? 'img/listening_readingbelow60%25.jpg'
-                        : pct >= 40 ? 'img/listening_readingbelow50%25.jpg'
-                        : pct >= 30 ? 'img/listening_readingbelow40%25.jpg'
-                        : pct >= 20 ? 'img/listening_readingbelow30%25.jpg'
-                        : 'img/listening_readingbelow20%25.jpg';
+    const rdHistImgSrc = pct >= 75 ? 'img/cheer/cheer-great.jpg'
+                        : pct >= 60 ? 'img/cheer/cheer-good.jpg'
+                        : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
+                        : pct >= 40 ? 'img/cheer/cheer-try.jpg'
+                        : pct >= 30 ? 'img/cheer/cheer-rest.jpg'
+                        : pct >= 20 ? 'img/cheer/cheer-rest.jpg'
+                        : 'img/cheer/cheer-rest.jpg';
     inner.innerHTML =
       `<div class="rd-result-bar rd-result-bar--${barVar}">
         <img src="${rdHistImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">

@@ -2235,17 +2235,17 @@ function renderGroupReviewSummary(group) {
 // REVIEW
 // ══════════════════════════════════════════════
 // Shared band→result-image mapping (also used on the review screen so
-// the same funny/celebratory picture that appears right after
+// the same encouraging picture that appears right after
 // submitting still shows up when reopening the review later, e.g.
 // via "Xem lại" from the test list or history).
 function resultImgSrcForBand(band) {
-    return band >= 7.5 ? 'img/above7.5.jpg'
-         : band >= 6.0 ? 'img/band_6_7.jpg'
-         : band >= 5.0 ? 'img/listening_readingbelow60%25.jpg'
-         : band >= 4.0 ? 'img/listening_readingbelow50%25.jpg'
-         : band >= 2.0 ? 'img/listening_readingbelow40%25.jpg'
-         : band >= 1.0 ? 'img/listening_readingbelow30%25.jpg'
-         :                'img/listening_readingbelow20%25.jpg';
+    return band >= 7.5 ? 'img/cheer/cheer-great.jpg'
+         : band >= 6.0 ? 'img/cheer/cheer-good.jpg'
+         : band >= 5.0 ? 'img/cheer/cheer-ok.jpg'
+         : band >= 4.0 ? 'img/cheer/cheer-try.jpg'
+         : band >= 2.0 ? 'img/cheer/cheer-rest.jpg'
+         : band >= 1.0 ? 'img/cheer/cheer-rest.jpg'
+         :                'img/cheer/cheer-rest.jpg';
 }
 
 function goToReview() {
@@ -3098,17 +3098,17 @@ function _renderExamResult(r, answerKeyWithheld) {
     const imgEl = document.getElementById('result-img');
     if (imgEl) { imgEl.src = resultImgSrcForBand(band); imgEl.style.display = ''; }
 
-    // Message (funny/sarcastic for very low scores)
+    // Encouraging message — kind at every score, never teasing.
     const isLow = band < 5.0;
     const resultEmojiEl = document.getElementById('result-emoji');
     resultEmojiEl.textContent = band >= 7 ? '🎉' : band >= 5.5 ? '💪' : '📚';
     if (isLow) {
-        const funnyMsgs = [
-            'Hmm, hôm nay tai không muốn làm việc à? 😅 Nghe lại nhiều lần, tốc độ sẽ quen thôi!',
-            'Lần này nghe hơi... trật nhỉ 🎧 Luyện shadowing mỗi ngày, tuần sau sẽ khác liền!',
-            'Band này thấp hơn cả giọng hát của mình 🎤 Nhưng không sao, cứ luyện là lên!',
+        const lowMsgs = [
+            'Tai cần thời gian để quen giọng đó — nghe lại vài lần là bắt kịp thôi 🎧',
+            'Không sao đâu! Luyện shadowing mỗi ngày một chút, tuần sau sẽ khác liền 🌱',
+            'Mỗi bài nghe là một lần tai được tập thể dục — cứ đều đặn là lên band 💪',
         ];
-        document.getElementById('result-msg').textContent = funnyMsgs[Math.floor(Math.random() * funnyMsgs.length)];
+        document.getElementById('result-msg').textContent = lowMsgs[Math.floor(Math.random() * lowMsgs.length)];
     } else {
         document.getElementById('result-msg').textContent = getBandMsg(r.bandScore);
     }

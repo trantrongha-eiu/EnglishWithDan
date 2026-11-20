@@ -93,11 +93,11 @@ export function scoreMessage(pct) {
 export const mascotHtml = (opts) => window.Mascot?.reactHtml?.(opts) || null;
 
 export function resultImage(pct) {
-  if (pct >= 90) return '/img/vocab_writingabove90%25.jpg';
-  if (pct >= 70) return '/img/above7.5.jpg';
-  if (pct >= 50) return '/img/vocab50_70%25.jpg';
-  if (pct >= 20) return '/img/vocabbelow50%25.jpg';
-  return '/img/listening_readingbelow20%25.jpg';
+  if (pct >= 90) return '/img/cheer/cheer-top.jpg';
+  if (pct >= 70) return '/img/cheer/cheer-great.jpg';
+  if (pct >= 50) return '/img/cheer/cheer-ok.jpg';
+  if (pct >= 20) return '/img/cheer/cheer-try.jpg';
+  return '/img/cheer/cheer-rest.jpg';
 }
 
 export function spawnConfetti(count = 60) {

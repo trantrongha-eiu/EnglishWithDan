@@ -1764,7 +1764,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=be908b2e82';
+    i18nScript.src = '/js/shared/i18n.js?v=26832be6b7';
     document.body.appendChild(i18nScript);
   }
 
@@ -4402,10 +4402,11 @@
   'use strict';
 
   function getScoreMessage(score) {
-    if (score >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
-    if (score >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀' };
-    if (score >= 40) return { emoji: '🥲', message: 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!' };
-    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
+    // Always encouraging — never teasing, whatever the score.
+    if (score >= 80) return { emoji: '🥳', message: 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟' };
+    if (score >= 60) return { emoji: '😊', message: 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪' };
+    if (score >= 40) return { emoji: '🌱', message: 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛' };
+    return { emoji: '🤗', message: 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷' };
   }
 
   window.getScoreMessage = getScoreMessage;

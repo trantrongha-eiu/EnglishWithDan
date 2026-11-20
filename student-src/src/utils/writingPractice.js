@@ -175,10 +175,10 @@ export function failFeedbackVi(info, requeued) {
 }
 
 export function testResultImage(score) {
-  if (score >= 90) return '/img/vocab_writingabove90%25.jpg';
-  if (score >= 70) return '/img/above7.5.jpg';
-  if (score >= 60) return '/img/band_6_7.jpg';
-  if (score >= 50) return '/img/writingbelow60%25.jpg';
-  if (score >= 45) return '/img/writingbelow50%25.jpg';
-  return '/img/writingbelow45%25.jpg';
+  if (score >= 90) return '/img/cheer/cheer-top.jpg';
+  if (score >= 70) return '/img/cheer/cheer-great.jpg';
+  if (score >= 60) return '/img/cheer/cheer-good.jpg';
+  if (score >= 50) return '/img/cheer/cheer-ok.jpg';
+  if (score >= 45) return '/img/cheer/cheer-try.jpg';
+  return '/img/cheer/cheer-rest.jpg';
 }

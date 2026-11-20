@@ -121,10 +121,11 @@
   'use strict';
 
   function getScoreMessage(score) {
-    if (score >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
-    if (score >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀' };
-    if (score >= 40) return { emoji: '🥲', message: 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!' };
-    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
+    // Always encouraging — never teasing, whatever the score.
+    if (score >= 80) return { emoji: '🥳', message: 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟' };
+    if (score >= 60) return { emoji: '😊', message: 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪' };
+    if (score >= 40) return { emoji: '🌱', message: 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛' };
+    return { emoji: '🤗', message: 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷' };
   }
 
   window.getScoreMessage = getScoreMessage;

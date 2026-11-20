@@ -4826,12 +4826,12 @@ function renderExamDone() {
   const r = state.examResults;
   const scoreClass = r.score >= 70 ? 'wp-score-good' : r.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
   const { emoji, message } = getScoreMessage(r.score);
-  const t2ExamImgSrc = r.score >= 90 ? 'img/vocab_writingabove90%25.jpg'
-                      : r.score >= 70 ? 'img/above7.5.jpg'
-                      : r.score >= 60 ? 'img/band_6_7.jpg'
-                      : r.score >= 50 ? 'img/writingbelow60%25.jpg'
-                      : r.score >= 45 ? 'img/writingbelow50%25.jpg'
-                      : 'img/writingbelow45%25.jpg';
+  const t2ExamImgSrc = r.score >= 90 ? 'img/cheer/cheer-top.jpg'
+                      : r.score >= 70 ? 'img/cheer/cheer-great.jpg'
+                      : r.score >= 60 ? 'img/cheer/cheer-good.jpg'
+                      : r.score >= 50 ? 'img/cheer/cheer-ok.jpg'
+                      : r.score >= 45 ? 'img/cheer/cheer-try.jpg'
+                      : 'img/cheer/cheer-rest.jpg';
   const reviews = (r.results || []).map((item, i) => `
     <div class="${item.isCorrect ? 'wp-wr-item-ok' : 'wp-wr-item'}">
       <div class="${item.isCorrect ? 'wp-wr-num-ok' : 'wp-wr-num'}">
@@ -5109,12 +5109,12 @@ function renderDone() {
   const topicStatusHtml = topicId ? topicStatusRowHtml(topicId) : '';
   const emoji = pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚';
   const scoreClass = pct >= 80 ? 'wp-score-good' : pct >= 50 ? 'wp-score-mid' : 'wp-score-bad';
-  const t2DoneImgSrc = pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
-                      : pct >= 70 ? 'img/above7.5.jpg'
-                      : pct >= 60 ? 'img/band_6_7.jpg'
-                      : pct >= 50 ? 'img/writingbelow60%25.jpg'
-                      : pct >= 45 ? 'img/writingbelow50%25.jpg'
-                      : 'img/writingbelow45%25.jpg';
+  const t2DoneImgSrc = pct >= 90 ? 'img/cheer/cheer-top.jpg'
+                      : pct >= 70 ? 'img/cheer/cheer-great.jpg'
+                      : pct >= 60 ? 'img/cheer/cheer-good.jpg'
+                      : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
+                      : pct >= 45 ? 'img/cheer/cheer-try.jpg'
+                      : 'img/cheer/cheer-rest.jpg';
   const wrongAttempts = state.sessionAttempts.filter(a => !a.isCorrect);
   const wrongCount = wrongAttempts.length;
   // Next step of the lesson: the split-screen writer (translated sentences

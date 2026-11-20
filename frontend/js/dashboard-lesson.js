@@ -1230,11 +1230,11 @@ async function finishLessonQuiz() {
 // vocab dashboard instead of introducing a second, different set of mood
 // images.
 function getVocabResultImage(pct) {
-    return pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
-         : pct >= 70 ? 'img/above7.5.jpg'
-         : pct >= 50 ? 'img/vocab50_70%25.jpg'
-         : pct >= 20 ? 'img/vocabbelow50%25.jpg'
-         :             'img/listening_readingbelow20%25.jpg';
+    return pct >= 90 ? 'img/cheer/cheer-top.jpg'
+         : pct >= 70 ? 'img/cheer/cheer-great.jpg'
+         : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
+         : pct >= 20 ? 'img/cheer/cheer-try.jpg'
+         :             'img/cheer/cheer-rest.jpg';
 }
 
 function _lessonSaveFailed(saveAttempt, err) {

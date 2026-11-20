@@ -1363,12 +1363,12 @@ async function submitTest() {
     if (!data.success) throw new Error(data.message);
 
     const scoreClass = data.score >= 70 ? 'wp-score-good' : data.score >= 40 ? 'wp-score-mid' : 'wp-score-bad';
-    const t1ImgSrc = data.score >= 90 ? 'img/vocab_writingabove90%25.jpg'
-                    : data.score >= 70 ? 'img/above7.5.jpg'
-                    : data.score >= 60 ? 'img/band_6_7.jpg'
-                    : data.score >= 50 ? 'img/writingbelow60%25.jpg'
-                    : data.score >= 45 ? 'img/writingbelow50%25.jpg'
-                    : 'img/writingbelow45%25.jpg';
+    const t1ImgSrc = data.score >= 90 ? 'img/cheer/cheer-top.jpg'
+                    : data.score >= 70 ? 'img/cheer/cheer-great.jpg'
+                    : data.score >= 60 ? 'img/cheer/cheer-good.jpg'
+                    : data.score >= 50 ? 'img/cheer/cheer-ok.jpg'
+                    : data.score >= 45 ? 'img/cheer/cheer-try.jpg'
+                    : 'img/cheer/cheer-rest.jpg';
     const { emoji, message } = getScoreMessage(data.score);
     // Lulu says the message (js/shared/playful.js); emoji + text without it.
     const lulu = window.Mascot && window.Mascot.reactHtml;

@@ -492,29 +492,29 @@ function setMascotEl(el, streak, mood) {
 // FIRE_TIERS / getFireTier() / applyFireTier() live in js/shared/utils.js
 // (shared with the BXH vocab page's streak leaderboard).
 
-// Sarcastic "Lulu" (our panda mascot, named after thầy Daniel) reacting to a
-// dead streak — angry if you just torched a streak bigger than 10 days,
-// sad-but-forgiving otherwise. previousStreak comes from the backend and is
-// only non-zero right after resetIfStale() detects a missed-day reset; it
-// clears itself the moment the student studies again.
-const ANGRY_MSGS = [
-    n => `😡 Lulu CỰC KỲ TỨC GIẬN vì bạn vừa làm bay màu ${n} ngày streak! ${n} NGÀY! Học 1 từ ngay đi, không Lulu giận cả tuần cho xem.`,
-    n => `😤 ${n} ngày công sức... đi tong trong một nốt nhạc. Lulu không khóc đâu, Lulu chỉ đang tức giận dữ dội thôi.`,
-    n => `🔥💔 Streak ${n} ngày vừa nằm xuống. Lulu đang thắp hương cho nó — còn bạn thì đang làm gì thế?`
+// Lulu reacting to a streak at 0 — always kind and encouraging (no
+// guilt-tripping): a "start a new streak" nudge, a warmer one when a long
+// streak (> 10 days) just ended. previousStreak comes from the backend and
+// is only non-zero right after resetIfStale() detects a missed-day reset;
+// it clears itself the moment the student studies again.
+const LOST_STREAK_MSGS = [
+    n => `🌱 Chuỗi ${n} ngày tạm nghỉ rồi — không sao đâu! Học 1 từ hôm nay là bắt đầu chuỗi mới nha.`,
+    n => `💪 Cậu đã giữ được ${n} ngày liền — giỏi lắm đó! Mình cùng làm lại từ hôm nay nha.`,
+    n => `🤗 ${n} ngày chăm chỉ vẫn là của cậu mà. Học 1 từ thôi là chuỗi mới bắt đầu liền!`
 ];
-const SAD_MSGS = [
-    '😢 Lulu đang buồn thiu vì hôm nay chưa thấy bạn học từ nào cả...',
-    '🥺 0 ngày streak. Lulu ngồi một mình cắn hạt dưa cả ngày, buồn ơi là buồn.',
-    '😭 Lulu tưởng bạn quên mất Lulu rồi... học 1 từ thôi là Lulu vui liền!'
+const ZERO_STREAK_MSGS = [
+    '🌷 Hôm nay mình học một chút thôi nha — 1 từ cũng là một bước tiến!',
+    '🍊 Lulu đang chờ cậu đó! Học 1 từ là bắt đầu chuỗi mới liền.',
+    '😊 Bắt đầu chuỗi mới nào — 5 phút mỗi ngày là đủ rồi!'
 ];
 function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function getMascotState(streak, previousStreak) {
     if (streak === 0 && previousStreak > 10) {
-        return { mood: 'angry', img: 'img/loststreak.jpg', alt: 'Lulu đang tức giận', msg: pick(ANGRY_MSGS)(previousStreak) };
+        return { mood: 'wink', zero: true, img: 'img/cheer/cheer-try.jpg', alt: 'Lulu cổ vũ cậu', msg: pick(LOST_STREAK_MSGS)(previousStreak) };
     }
     if (streak === 0) {
-        return { mood: 'sad', img: 'img/listening_readingbelow40%25.jpg', alt: 'Lulu đang buồn', msg: pick(SAD_MSGS) };
+        return { mood: 'happy', zero: true, img: 'img/cheer/cheer-rest.jpg', alt: 'Lulu đang chờ cậu', msg: pick(ZERO_STREAK_MSGS) };
     }
     return { mood: 'happy', emoji: getMascotEmoji(streak), msg: getMascotMsg(streak) };
 }
@@ -538,14 +538,14 @@ function applyMascotState(streak, previousStreak) {
         if (numEl) numEl.textContent = streak;
         if (msgEl) msgEl.textContent = state.msg;
         if (pandaEl) {
-            // Lulu in the sad/angry mood; the old photo only when playful.js
-            // (window.Mascot) didn't load.
+            // Lulu (friendly face at 0 too); the cute photo only when
+            // playful.js (window.Mascot) didn't load.
             pandaEl.innerHTML = '';
             if (state.img && !window.Mascot) pandaEl.innerHTML = `<img src="${state.img}" alt="${state.alt || ''}">`;
-            else setMascotEl(pandaEl, streak, state.mood === 'happy' ? null : state.mood);
+            else setMascotEl(pandaEl, streak, state.zero ? state.mood : null);
         }
-        if (cardEl) cardEl.classList.toggle('is-angry', state.mood === 'angry');
-        if (cardEl) cardEl.classList.toggle('is-sad', state.mood === 'sad');
+        if (cardEl) cardEl.classList.remove('is-angry');
+        if (cardEl) cardEl.classList.toggle('is-sad', !!state.zero);
         applyFireTier(fireEl, numEl, streak);
     }
 }
@@ -3764,11 +3764,11 @@ function showResults(mode) {
     // Vocab result image
     const vocabImgEl = document.getElementById('vocab-result-img');
     if (vocabImgEl) {
-        vocabImgEl.src = pct >= 90 ? 'img/vocab_writingabove90%25.jpg'
-                       : pct >= 70 ? 'img/above7.5.jpg'
-                       : pct >= 50 ? 'img/vocab50_70%25.jpg'
-                       : pct >= 20 ? 'img/vocabbelow50%25.jpg'
-                       :             'img/listening_readingbelow20%25.jpg';
+        vocabImgEl.src = pct >= 90 ? 'img/cheer/cheer-top.jpg'
+                       : pct >= 70 ? 'img/cheer/cheer-great.jpg'
+                       : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
+                       : pct >= 20 ? 'img/cheer/cheer-try.jpg'
+                       :             'img/cheer/cheer-rest.jpg';
         vocabImgEl.style.display = 'block';
     }
 
