@@ -327,7 +327,7 @@
           '<b>① Đọc bài mẫu</b>: đọc to, bấm 🔊 để nghe từng câu; bật/tắt <b>Hiện tiếng Việt</b>.',
           '<b>② Từ vựng ăn điểm</b>: đọc nghĩa + câu ví dụ bị che, gõ lại cụm từ.',
           '<b>③ Học thuộc 7 khung</b>: mỗi câu có 2 điểm — 🎙️ <b>Nhại</b> (nói theo, máy chấm phát âm, đạt khi ≥ 70%) và ⌨️ <b>Dịch</b> (đọc tiếng Việt, gõ lại câu tiếng Anh từng chữ; gõ sai 1 từ 3 lần là câu tính sai và quay lại sau 3 câu). Khung trước thuộc ≥ 70% mới mở khung sau. Bí thì bấm <b>Hỏi Lulu</b>.',
-          '<b>④ Nói thử</b>: chọn đề, xem bài ghép (cả bài / chữ cái đầu / chỉ 7 khung), bấm <b>Bắt đầu nói</b> — đồng hồ 2 phút (khoảng 1:15 nên tới phần WHY), có thể bật 1 phút chuẩn bị và ghi âm để nghe lại.',
+          '<b>④ Nói thử</b>: chọn đề, xem bài ghép (cả bài / chữ cái đầu / chỉ 7 khung), bấm <b>Bắt đầu nói</b> — đồng hồ 3 phút — thi thật dừng ở 2:00 (khoảng 1:15 nên tới phần WHY), có thể bật 1 phút chuẩn bị và ghi âm để nghe lại.',
         ] },
         { icon: '🔎', title: 'Gặp đề lạ', items: [
           'Ở trang chính, gõ cue card vào ô <b>“Gặp cue card này thì kể chuyện nào?”</b> để biết dùng câu chuyện nào và đoạn WHY nào.',

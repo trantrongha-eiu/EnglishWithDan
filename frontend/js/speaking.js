@@ -64,7 +64,7 @@ const state = {
   prepTimer:        null,
   speakTimer:       null,
   prepSecondsLeft:  60,
-  speakSecondsLeft: 120,
+  speakSecondsLeft: 180,
   practiceInited:   false,
   partFilter:       '1',
   groupFilter:      'all', // Part 2/3 only — one of speakingService.SPEAKING_GROUPS' codes, or 'all'
@@ -121,7 +121,7 @@ const state = {
   seqPrepTimer:       null,
   seqPrepSecondsLeft: 60,
   seqSpeakTimer:      null,
-  seqSpeakSecondsLeft: 120,
+  seqSpeakSecondsLeft: 180,
   seqElapsedTimer:    null,
   seqRecordStartTime: null,
   seqTotalElapsed:    0,

@@ -673,7 +673,7 @@
     stream: null, recorder: null, chunks: [], blob: null, mimeType: '',
     recordStart: 0, durationSec: 0,
     prepHandle: null, speakHandle: null, elapsedHandle: null,
-    prepSec: 70, maxSpeakSec: 120,
+    prepSec: 70, maxSpeakSec: 180,
   };
 
   function fmtClock(sec) {
@@ -710,7 +710,7 @@
       + '<div class="et-sp-rec-status" id="et-sp-rec-status">Nhấn để ghi âm</div>'
       + '<div class="et-sp-rec-timers">'
       + '<span class="et-sp-elapsed hidden" id="et-sp-elapsed"><i class="fas fa-circle" style="font-size:7px"></i> <span id="et-sp-elapsed-time">0:00</span></span>'
-      + '<span class="et-sp-countdown hidden" id="et-sp-countdown"><i class="fas fa-hourglass-half"></i> <b id="et-sp-speak-time">2:00</b> còn lại</span>'
+      + '<span class="et-sp-countdown hidden" id="et-sp-countdown"><i class="fas fa-hourglass-half"></i> <b id="et-sp-speak-time">3:00</b> còn lại</span>'
       + '</div></div></div>'
       + '<div class="et-sp-interim" id="et-sp-interim"></div>'
       + '</div>'
@@ -742,7 +742,7 @@
   function setupSpeaking(sSection) {
     sp.active = true;
     sp.prepSec = sSection.prepSec || 70;
-    sp.maxSpeakSec = sSection.maxSpeakSec || 120;
+    sp.maxSpeakSec = sSection.maxSpeakSec || 180;
     var ta = $('et-sp-transcript');
     if (ta) {
       ta.addEventListener('input', function () {
@@ -775,7 +775,7 @@
       }, 1000);
     } else {
       spSetButton('idle');
-      spSetStatus('Nhấn nút micro để bắt đầu ghi âm (tối đa 2 phút)');
+      spSetStatus('Nhấn nút micro để bắt đầu ghi âm (tối đa 3 phút)');
     }
     // Ask for the mic now, during prep, so the permission prompt doesn't
     // eat into the 2 speaking minutes.
@@ -915,7 +915,7 @@
         if (t) t.textContent = fmtClock(left);
         if (left === 30) toast('⚠️ Còn 30 giây!', 'warn');
         if (left <= 0) {
-          toast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');
+          toast('⏰ Hết ' + Math.round(sp.maxSpeakSec / 60) + ' phút — ghi âm đã dừng.', 'info');
           spStopRecording();
         }
       }, 1000);

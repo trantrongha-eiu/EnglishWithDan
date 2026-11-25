@@ -36,7 +36,7 @@
   var REQUEUE_GAP = 3;
   var MAX_REQUEUES = 2;
   var WPM = 130;                  // band 6.0–7.0 speaking speed (PDF: 120–140)
-  var SPEAK_SECONDS = 120;
+  var SPEAK_SECONDS = 180;
   var PREP_SECONDS = 60;
   var CAT = { col: 'Collocation', idiom: 'Idiom', adj: 'Adjective' };
   var CAT_HEAD = {
@@ -861,7 +861,7 @@
     }
     return '<section class="t2-step' + (isCur ? ' is-current' : '') + '" id="sp2-step-speak">' +
       stepHead(4, 'Ghép bài & nói thử 2 phút', p.speak ? '<span class="t2-step-tag ok">Đã nói ' + p.speak + ' lần</span>' : '', (p.speak || 0) > 0) +
-      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng ' + fmt(targets().whyBy) + ' nên đang ở khung 6 (WHY).</p>' +
+      '<p class="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 3 phút (thi thật dừng ở 2:00) — đến khoảng ' + fmt(targets().whyBy) + ' nên đang ở khung 6 (WHY).</p>' +
       '<label class="sp2-field"><span>Đề (cue card):</span><select id="sp2-variant" class="sp2-select">' +
         st.why.map(function (w, i) { return '<option value="' + i + '"' + (i === k ? ' selected' : '') + '>' + esc(w.q) + ' — ' + esc(w.vi) + '</option>'; }).join('') +
       '</select></label>' +
@@ -980,10 +980,10 @@
         '</div></div>';
     }
     var res = ph === 'done' ? '<div class="sp2-timer-res">✅ Bạn đã nói <b>' + fmt(timer.elapsed) + '</b>' +
-      (timer.elapsed < 90 ? ' — hơi ngắn, cố nói đủ 1:30–2:00 nha.' : timer.elapsed >= SPEAK_SECONDS ? ' — hết giờ! Giám khảo sẽ dừng bạn ở đây, đã kịp tới phần WHY chưa?' : ' — độ dài ổn!') + '</div>' +
+      (timer.elapsed < 90 ? ' — hơi ngắn, cố nói đủ 1:30–2:00 nha.' : timer.elapsed >= SPEAK_SECONDS ? ' — hết 3 phút rồi! Thi thật giám khảo dừng bạn ở 2:00, cố nói gọn lại nha.' : timer.elapsed > 120 ? ' — hơi dài: thi thật giám khảo dừng bạn ở 2:00, đã kịp tới phần WHY chưa?' : ' — độ dài ổn!') + '</div>' +
       (timer.url ? '<audio controls src="' + timer.url + '" class="sp2-audio"></audio>' : '') : '';
     return res + '<div class="t2-actions">' +
-      '<button type="button" class="t2-primary is-lg" data-act="timer-start"><i class="fas fa-play"></i> ' + (ph === 'done' ? 'Nói lại' : 'Bắt đầu nói') + ' (2:00)</button>' +
+      '<button type="button" class="t2-primary is-lg" data-act="timer-start"><i class="fas fa-play"></i> ' + (ph === 'done' ? 'Nói lại' : 'Bắt đầu nói') + ' (3:00)</button>' +
       '<button type="button" class="t2-pill-toggle' + (prefs.prep ? ' on' : '') + '" data-act="pref" data-pref="prep" title="Có 1 phút chuẩn bị như thi thật">1 phút chuẩn bị</button>' +
       '<button type="button" class="t2-pill-toggle' + (prefs.rec ? ' on' : '') + '" data-act="pref" data-pref="rec" title="Ghi âm để nghe lại giọng mình">🎙️ Ghi âm</button>' +
     '</div>';

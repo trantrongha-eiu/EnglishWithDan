@@ -1,4 +1,4 @@
-// ④ Nói thử: the 2-minute clock (optionally after 1 minute of preparation)
+// ④ Nói thử: the 3-minute clock (exam target still 2:00) (optionally after 1 minute of preparation)
 // and an optional recording to listen back to. A talk of 60 s or more
 // counts as "đã nói" (onSpoken), also when the story is left mid-talk.
 import { useEffect, useRef, useState } from 'react';
@@ -116,11 +116,11 @@ export default function SpeakTimer({ whyBy, prefs, onPref, onSpoken }) {
     <div className="sp2-timer" id="sp2-timer">
       {ph === 'done' && (
         <div className="sp2-timer-res">✅ Bạn đã nói <b>{fmt(e)}</b>
-          {e < 90 ? ' — hơi ngắn, cố nói đủ 1:30–2:00 nha.' : e >= SPEAK_SECONDS ? ' — hết giờ! Giám khảo sẽ dừng bạn ở đây, đã kịp tới phần WHY chưa?' : ' — độ dài ổn!'}</div>
+          {e < 90 ? ' — hơi ngắn, cố nói đủ 1:30–2:00 nha.' : e >= SPEAK_SECONDS ? ' — hết 3 phút rồi! Thi thật giám khảo dừng bạn ở 2:00, cố nói gọn lại nha.' : e > 120 ? ' — hơi dài: thi thật giám khảo dừng bạn ở 2:00, đã kịp tới phần WHY chưa?' : ' — độ dài ổn!'}</div>
       )}
       {ph === 'done' && t.url && <audio controls src={t.url} className="sp2-audio" />}
       <div className="t2-actions">
-        <button type="button" className="t2-primary is-lg" onClick={start}><i className="fas fa-play" /> {ph === 'done' ? 'Nói lại' : 'Bắt đầu nói'} (2:00)</button>
+        <button type="button" className="t2-primary is-lg" onClick={start}><i className="fas fa-play" /> {ph === 'done' ? 'Nói lại' : 'Bắt đầu nói'} (3:00)</button>
         <button type="button" className={`t2-pill-toggle${prefs.prep ? ' on' : ''}`} title="Có 1 phút chuẩn bị như thi thật" onClick={() => onPref('prep')}>1 phút chuẩn bị</button>
         <button type="button" className={`t2-pill-toggle${prefs.rec ? ' on' : ''}`} title="Ghi âm để nghe lại giọng mình" onClick={() => onPref('rec')}>🎙️ Ghi âm</button>
       </div>

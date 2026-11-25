@@ -296,7 +296,7 @@ function SpeakStep({ st, p, isCur, data, ui, act }) {
     <section className={`t2-step${isCur ? ' is-current' : ''}`} id="sp2-step-speak">
       <StepHead num={4} title="Ghép bài & nói thử 2 phút" done={(p.speak || 0) > 0}
         extra={p.speak ? <span className="t2-step-tag ok">Đã nói {p.speak} lần</span> : null} />
-      <p className="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 2 phút như phòng thi — đến khoảng {fmt(tg.whyBy)} nên đang ở khung 6 (WHY).</p>
+      <p className="t2-step-desc">Chọn một đề, đọc lướt bài ghép, rồi bấm <b>Bắt đầu nói</b> và nói to không nhìn bài. Đồng hồ 3 phút (thi thật dừng ở 2:00) — đến khoảng {fmt(tg.whyBy)} nên đang ở khung 6 (WHY).</p>
       <label className="sp2-field"><span>Đề (cue card):</span>
         <select id="sp2-variant" className="sp2-select" value={k} onChange={(e) => act.variant(+e.target.value)}>
           {st.why.map((w, i) => <option key={i} value={i}>{w.q} — {w.vi}</option>)}

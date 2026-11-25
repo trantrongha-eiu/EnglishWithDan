@@ -65,12 +65,12 @@ function hidePrepTimer() {
 }
 
 // ──────────────────────────────────────────────────────
-// Part 2 – Speaking Countdown (2 min)
+// Part 2 – Speaking Countdown (3 min — student can stop any time)
 // ──────────────────────────────────────────────────────
 function startSpeakCountdown() {
   if (state.currentQuestion?.part !== 2) return;
   clearInterval(state.speakTimer);
-  state.speakSecondsLeft = 120;
+  state.speakSecondsLeft = 180;
 
   const cdEl = document.getElementById('p2-speak-countdown');
   const tmEl = document.getElementById('p2-speak-time');
@@ -90,11 +90,11 @@ function startSpeakCountdown() {
         try { state.recognition.stop(); } catch (e) {}
       }
       state.isRecording = false;
-      showToast('⏰ Hết 2 phút — ghi âm đã dừng.', 'info');
+      showToast('⏰ Hết 3 phút — ghi âm đã dừng.', 'info');
       hideSpeakCountdown();
       // Run teardown directly — don't wait for recognition.onend. Chrome and
       // Brave frequently don't fire onend after stop(), which left the
-      // elapsed timer running past 2:00 and the button stuck on "Dừng".
+      // elapsed timer running past the cap and the button stuck on "Dừng".
       if (typeof _finishRecordingUI === 'function') _finishRecordingUI();
     }
   }, 1000);
@@ -123,7 +123,7 @@ function startElapsedTimer() {
     const secs = Math.floor((Date.now() - state.recordStartTime) / 1000);
     if (t) t.textContent = fmtTime(secs);
     // Hard backstop: nothing legitimately records for >5 min (Part 2 is
-    // capped at 2). Getting here means the stop path desynced (onend never
+    // capped at 3). Getting here means the stop path desynced (onend never
     // fired) — force teardown so the button/timer can't stay stuck.
     if (secs >= 300) {
       stopElapsedTimer();
@@ -185,10 +185,10 @@ function hideSeqPrepTimer() {
   if (prepEl) prepEl.style.display = 'none';
 }
 
-// Part 2 – Speaking Countdown (2 min)
+// Part 2 – Speaking Countdown (3 min — student can stop any time)
 function startSeqSpeakCountdown() {
   clearInterval(state.seqSpeakTimer);
-  state.seqSpeakSecondsLeft = 120;
+  state.seqSpeakSecondsLeft = 180;
 
   const cdEl = document.getElementById('seq-p2-speak-countdown');
   const tmEl = document.getElementById('seq-p2-speak-time');
@@ -205,7 +205,7 @@ function startSeqSpeakCountdown() {
       if (state.seqIsRecording && state.seqRecognition) {
         try { state.seqRecognition.stop(); } catch (e) {}
       }
-      showToast('⏰ Hết 2 phút — tự động chuyển câu tiếp theo.', 'info');
+      showToast('⏰ Hết 3 phút — tự động chuyển câu tiếp theo.', 'info');
       hideSeqSpeakCountdown();
       confirmSeqAnswer();
     }

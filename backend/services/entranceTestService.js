@@ -59,8 +59,8 @@ const SECTION_DURATIONS_SEC = {
   reading: 20 * 60,
   listening: 10 * 60,
   writing: 20 * 60,
-  // Part 2 only: 1:10 prep + up to 2:00 speaking + ~50s to check/submit.
-  speaking: 4 * 60,
+  // Part 2 only: 1:10 prep + up to 3:00 speaking + ~50s to check/submit.
+  speaking: 5 * 60,
 };
 // Extra server-side time past sectionExpiresAt before a section is force-
 // finalized. Speaking needs it: the client auto-submits at 0:00 WITH the
@@ -68,7 +68,7 @@ const SECTION_DURATIONS_SEC = {
 // audio-less auto-finalize.
 const SUBMIT_GRACE_SEC = { speaking: 60 };
 const SPEAKING_PREP_SEC = 70;
-const SPEAKING_MAX_SEC = 120;
+const SPEAKING_MAX_SEC = 180;
 const SPEAKING_TRANSCRIPT_MAX = 10000;
 const ANSWER_MAX = 500;            // one Grammar / Reading / Listening answer
 const WRITING_ANSWER_MAX = 20000;  // Task 1 is ~150–300 words; 20k chars is far past any real essay
