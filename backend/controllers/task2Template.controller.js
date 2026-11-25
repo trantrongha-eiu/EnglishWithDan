@@ -41,3 +41,17 @@ exports.saveProgress = guard(async (req, res) => {
   if (!progress) return res.status(400).json({ success: false, message: 'Dữ liệu không hợp lệ' });
   res.json({ success: true, progress });
 });
+
+// Reading-check quizzes on the type guide (one row per type, both levels)
+const task2GuideQuizService = require('../services/task2GuideQuizService');
+
+exports.getGuideQuiz = guard(async (req, res) => {
+  const quiz = await task2GuideQuizService.getAll(req.user._id);
+  res.json({ success: true, quiz });
+});
+
+exports.saveGuideQuiz = guard(async (req, res) => {
+  const out = await task2GuideQuizService.saveResult(req.user._id, req.params.typeId, req.body || {});
+  if (out.error) return res.status(400).json({ success: false, message: out.error });
+  res.json({ success: true, progress: out.progress, pct: out.pct, passed: out.passed });
+});

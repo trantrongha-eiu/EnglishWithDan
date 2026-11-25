@@ -15,6 +15,7 @@ import Assemble from './task2Template/Assemble';
 import Apply from './task2Template/Apply';
 import RecallRun from './task2Template/RecallRun';
 import TypeGuide from './task2Template/Guide';
+import { guideAllPassed, guidePassedCount } from './task2Template/guideQuizRules';
 import { FullDialog, HistoryDialog } from './task2Template/Dialogs';
 import { copyText } from './task2Template/helpers';
 import { LeaveDialog } from './task2Template/Parts';
@@ -45,6 +46,14 @@ function Screen({ page, typeId, level, lv, rows, loading, failed, locked }) {
   const row = rows[typeId] || emptyProg(typeId, level);
   const isB7 = level === 'band7';
   const meta = TYPE_META[typeId] || {};
+  // Guide reading-check quizzes (one row per type, both levels): null while
+  // loading, 'off' if they could not be loaded (then nothing is locked).
+  const gq = page.guideQuiz;
+  const qp = gq === 'off' ? 'off' : (gq ? (gq[typeId] || { typeId, sections: {} }) : null);
+  const started = STEP_KEYS.some((k) => stepDone(row, k)) || (row.drillRounds || []).some(Boolean);
+  // The path opens after all six guide quizzes — students who already
+  // started this type keep going.
+  const guideOk = qp == null || qp === 'off' || !page.guides?.[typeId] || started || guideAllPassed(qp);
 
   const [view, setView] = useState('overview'); // overview · warmup · read · drill · assemble · apply · review · fix · exam
   const [act, setAct] = useState({ seq: 0 });
@@ -95,6 +104,11 @@ function Screen({ page, typeId, level, lv, rows, loading, failed, locked }) {
 
   const ctx = {
     tpl, typeId, level, isB7, row, guides: page.guides,
+    guideOk, guideDone: qp && qp !== 'off' ? guidePassedCount(qp) : 0,
+    onOpenGuide() {
+      const d = document.querySelector('#tpl-guide-area details.t2-guide');
+      if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    },
     homeworkPending: page.homework.some((h) => h.typeId === typeId && h.level === level && !h.completed),
     save: (patch) => page.save(patch, typeId),
     saveAttempt: (a) => page.saveAttempt(a, typeId, tpl),
@@ -115,6 +129,7 @@ function Screen({ page, typeId, level, lv, rows, loading, failed, locked }) {
     onStep(key) {
       const i = STEP_KEYS.indexOf(key);
       if (i < 0 || !stepUnlocked(row, i)) return;
+      if (i === 0 && !guideOk) { siteToast('Qua 6 quiz ở “Hướng dẫn dạng bài này” trước để mở lộ trình nha 🔒', 'info', 3000); ctx.onOpenGuide(); return; }
       if (key === 'drill') begin('drill', { init: drillRun(ctx, null, act.seq) });
       else begin(key);
     },
@@ -263,7 +278,11 @@ function Screen({ page, typeId, level, lv, rows, loading, failed, locked }) {
       </div>
 
       {/* Per-type reference guide */}
-      {!locked && <TypeGuide g={page.guides?.[typeId]} hidden={exam} />}
+      {!locked && (
+        <TypeGuide g={page.guides?.[typeId]} guides={page.guides} typeId={typeId} hidden={exam} qp={qp}
+          onQuizDone={(section, correct, total) => page.saveGuideQuiz(typeId, section, correct, total)}
+          onGuideDone={() => { if (view !== 'overview') backToPath(); setTimeout(() => document.querySelector('.pth-steps')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 80); }} />
+      )}
       {locked && <div id="tpl-guide-area" />}
 
       <main className="tpl-content-outer">
@@ -283,6 +302,7 @@ export default function Task2Template() {
   const [data, setData] = useState(null); // js/task2-generic-templates.js · 'error'
   const [prog, setProg] = useState({ level: null, rows: {} });
   const [guides, setGuides] = useState(null);
+  const [guideQuiz, setGuideQuiz] = useState(null); // { typeId: { sections } } · 'off'
   const [homework, setHomework] = useState([]);
   const [xp, setXp] = useState(loadXP);
 
@@ -293,6 +313,8 @@ export default function Task2Template() {
 
   const levelRef = useRef(level);
   useEffect(() => { levelRef.current = level; });
+  const gqRef = useRef(guideQuiz);
+  useEffect(() => { gqRef.current = guideQuiz; });
   const hwRef = useRef(homework);
   useEffect(() => { hwRef.current = homework; });
   const chain = useRef(Promise.resolve());
@@ -309,6 +331,14 @@ export default function Task2Template() {
     apiFetch('/task2/type-guides')
       .then((d) => { const m = {}; if (d && d.success && Array.isArray(d.guides)) d.guides.forEach((g) => { m[g.typeId] = g; }); if (alive) setGuides(m); })
       .catch(() => { if (alive) setGuides({}); });
+    apiFetch('/task2template/guide-quiz')
+      .then((d) => {
+        if (!alive) return;
+        if (!d || !d.success) { setGuideQuiz('off'); return; }
+        const m = {}; (d.quiz || []).forEach((r) => { m[r.typeId] = r; });
+        setGuideQuiz(m);
+      })
+      .catch(() => { if (alive) setGuideQuiz('off'); });
     return () => { alive = false; };
   }, [premium]);
 
@@ -376,8 +406,28 @@ export default function Task2Template() {
     }).then(showBadges).catch(() => {}).finally(refreshHomeworkSoon);
   }, [refreshHomeworkSoon]);
 
+  // A finished guide quiz: shown at once, then saved; the first pass of a
+  // section gives +5 XP.
+  const saveGuideQuiz = useCallback((tId, section, correct, total) => {
+    const pass = correct * 100 >= total * 90;
+    const pct = Math.round((correct / total) * 100);
+    const m0 = gqRef.current;
+    const first = pass && m0 && m0 !== 'off' && !(((m0[tId] || {}).sections || {})[section] || {}).passedAt;
+    setGuideQuiz((m) => {
+      if (!m || m === 'off') return m;
+      const row = m[tId] || { typeId: tId, sections: {} };
+      const cur = row.sections[section] || {};
+      const next = { best: Math.max(cur.best || 0, pct), tries: (cur.tries || 0) + 1, passedAt: cur.passedAt || (pass ? new Date().toISOString() : null) };
+      return { ...m, [tId]: { ...row, sections: { ...row.sections, [section]: next } } };
+    });
+    if (first) setXp(addXP(5));
+    apiFetch(`/task2template/guide-quiz/${tId}`, { method: 'POST', body: JSON.stringify({ section, correct, total }) })
+      .then((d) => { if (d && d.success && d.progress) setGuideQuiz((m) => (m && m !== 'off' ? { ...m, [tId]: d.progress } : m)); })
+      .catch(() => siteToast('Chưa lưu được kết quả quiz — kiểm tra kết nối mạng.', 'warn', 3000));
+  }, []);
+
   const page = {
-    data: data === 'error' ? null : data, guides, homework, xp, save, saveAttempt, refreshHomeworkSoon,
+    data: data === 'error' ? null : data, guides, guideQuiz, saveGuideQuiz, homework, xp, save, saveAttempt, refreshHomeworkSoon,
     addXP: (n) => setXp(addXP(n)),
   };
   return (

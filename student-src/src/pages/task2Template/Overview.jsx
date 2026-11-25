@@ -12,6 +12,7 @@ function coachLine(ctx, homework) {
   const firstOpen = STEP_KEYS.findIndex((k) => !(row.steps || {})[k]);
   const weak = weakSentences(row, tpl);
   const known = knownCount(row, tpl); const total = allSentencesOf(tpl).length;
+  if (!ctx.guideOk) return { mood: 'think', text: `Trước khi luyện, đọc “Hướng dẫn dạng bài này” ở trên và làm quiz từng mục (đúng ≥ 90%) nha — đã qua ${ctx.guideDone}/6 mục. Nhất là 🔍 Nhận diện đề: nhìn đề là biết dạng gì, cần viết gì!` };
   if (reviewDue(row)) return { mood: 'think', text: 'Đến hạn ôn rồi nè! Ôn nhanh 3 phút bây giờ thì mấy câu template sẽ nằm trong đầu lâu hơn nhiều đó 🔔' };
   if (homework.some((h) => h.typeId === typeId && h.level === ctx.level && !h.completed) && firstOpen >= 0) return { mood: 'wink', text: `Cô/thầy giao dạng này làm bài về nhà đó. Mình làm tiếp bước ${STEPS[firstOpen].num} ${STEPS[firstOpen].title} nha 📌` };
   if (firstOpen === 0 && !(row.drillRounds || []).some(Boolean)) return { mood: 'excited', text: `Chào cậu! Tớ là Lulu 🍊 Dạng này có ${total} câu mẫu. Bắt đầu với ① Khung bài nha — chỉ 3 phút thôi!` };
@@ -113,7 +114,8 @@ export default function Overview({ ctx, homework, onLevel, onReset }) {
       <div className="pth-steps">
         {STEPS.map((s, i) => {
           const done = !!steps[s.key];
-          const open = stepUnlocked(row, i);
+          const guideLock = i === 0 && !ctx.guideOk;
+          const open = stepUnlocked(row, i) && !guideLock;
           const current = i === firstOpen;
           let meta2 = '';
           if (s.key === 'warmup' && done) meta2 = `Xếp đúng ngay lần đầu: ${row.warmupScore || 0}%`;
@@ -127,9 +129,11 @@ export default function Overview({ ctx, homework, onLevel, onReset }) {
                 <div className="pth-step-title"><i className={`fas ${s.icon}`} /> {s.title}</div>
                 <div className="pth-step-desc">{s.desc}</div>
                 {meta2 && <div className="pth-step-meta">{meta2}</div>}
+                {guideLock && <div className="pth-step-meta">🔒 Qua 6 quiz ở “Hướng dẫn dạng bài này” để mở ({ctx.guideDone}/6)</div>}
               </div>
               <div className="pth-step-act">
-                {!open ? <span className="pth-lock" title="Làm xong bước trước để mở"><i className="fas fa-lock" /></span>
+                {guideLock ? <button className="pth-btn pth-btn--primary" onClick={ctx.onOpenGuide}><i className="fas fa-book-open" /> Học hướng dẫn</button>
+                  : !open ? <span className="pth-lock" title="Làm xong bước trước để mở"><i className="fas fa-lock" /></span>
                   : <button className={`pth-btn ${current ? 'pth-btn--primary' : ''}`} onClick={() => ctx.onStep(s.key)}>
                     {done ? <><i className="fas fa-rotate-right" /> Luyện lại</> : current ? <><i className="fas fa-play" /> Bắt đầu</> : <><i className="fas fa-play" /> Mở</>}
                   </button>}
