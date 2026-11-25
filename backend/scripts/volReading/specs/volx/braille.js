@@ -1,0 +1,72 @@
+// Extra (not a Vol test): "Braille" — the passage students report as "Louis Braille" (Q4/2026, noted under "VOL 10" but in none
+// of izone's Vol 10 Test 1–10). Text, questions and key from czieltslegend.com / ieltscareerzone "BEST IELTS Academic Reading
+// Test 334" (Passage 1, Q1–13); every key checked against the text (all correct). The other online version (ieltsmaterial
+// "The Braille System", 15 questions) is a different, weaker practice set — not used. Not in the bank. Seeded 2026-11-25.
+// Text kept as printed ("Charles Berbier" — the historical inventor is Barbier; no answer depends on it).
+const { matching, notes } = require('../../vr_build');
+const PARAS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+module.exports = {
+  vol: 'x', test: 3, part: 1, title: 'Braille', text: 'braille.txt',
+  groups: [
+    matching(1, PARAS, [
+      'Braille died before his native country officially began to use Braille as their communication of choice with blind people.',
+      'A system previous to Braille’s was too big for a single finger to read a symbol at one time.',
+      'Braille can be used with a variety of different languages.',
+      'It took Louis Braille nine years to create his reading system for the blind.',
+      'Braille can be used to read highlighted text on a computer.',
+      'Braille is able to show when punctuation is used.',
+      'Braille displays are better than screen readers for people who are deaf as well as blind.',
+    ], { instruction: 'Reading Passage 1 has seven paragraphs, A–G. Which paragraph contains the following information? Write the correct letter, A–G, in boxes 1–7 on your answer sheet.' }),
+    notes(8, 13, [
+      'Braille reading is usually done by moving the hands’ __Q8__ along a line of raised dots.',
+      'Berbier’s reading system was devised to help __Q9__ with reading safely at night.',
+      'The dots in Berbier’s reading system represented either a letter or a __Q10__.',
+      'Louis Braille’s accident with an __Q11__ left him blind for the rest of his life.',
+      'Braille uses __Q12__ that allow Braille books to be shorter than they would be otherwise.',
+      'A Braille display is __Q13__ that can be used in conjunction with a computer.',
+    ], { instruction: 'Complete the sentences below. Write NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 8–13 on your answer sheet.' }),
+  ],
+  key: { 1: 'D', 2: 'B', 3: 'G', 4: 'C', 5: 'E', 6: 'A', 7: 'F', 8: 'index fingers / fingers', 9: 'soldiers', 10: 'phonetic sound / sound',
+    11: 'awl', 12: 'contractions', 13: 'hardware' },
+  expl: {
+    1: ['Braille qua đời trước khi đất nước ông chính thức dùng chữ Braille làm phương thức giao tiếp cho người mù.', 'Đoạn D',
+      '“Braille passed away in 1853 at the age of 43, a year before his home country of France adopted Braille as its official communication system for blind individuals.”',
+      'Ông mất năm 1853, một năm trước khi Pháp chính thức áp dụng chữ Braille → D'],
+    2: ['Một hệ thống có trước Braille quá lớn để một ngón tay đọc được một ký hiệu trong một lần chạm.', 'Đoạn B',
+      '“Berbier based his night writing system on a raised 12-dot cell” … “The problem with the military code was that the human fingertip could not feel all the dots with one touch.”',
+      'Ô 12 chấm của Berbier quá lớn, đầu ngón tay không cảm nhận hết trong một lần chạm → B'],
+    3: ['Chữ Braille có thể dùng cho nhiều ngôn ngữ khác nhau.', 'Đoạn G',
+      '“Today, Braille code is transcribed in many different languages worldwide.”',
+      '“transcribed in many different languages” = used with a variety of different languages → G'],
+    4: ['Louis Braille mất chín năm để tạo ra hệ thống đọc cho người mù.', 'Đoạn C',
+      '“he spent the next nine years developing and refining the system of raised dots that has come to be known by his name, Braille”',
+      'Chín năm phát triển và hoàn thiện hệ thống chấm nổi → C'],
+    5: ['Chữ Braille có thể dùng để đọc văn bản được đánh dấu trên máy tính.', 'Đoạn E',
+      '“Once connected to the computer, the Braille display will acquire the currently highlighted text on the screen.”',
+      'Màn hình Braille lấy phần văn bản đang được chọn trên máy tính rồi hiển thị bằng chữ nổi → E'],
+    6: ['Chữ Braille có thể thể hiện dấu câu.', 'Đoạn A',
+      '“Braille also contains equivalents for punctuation marks and provides symbols to show letter groupings.”',
+      'Có ký hiệu tương đương với dấu câu → A'],
+    7: ['Màn hình Braille tốt hơn trình đọc màn hình đối với người vừa điếc vừa mù.', 'Đoạn F',
+      '“As screen readers only let users hear the text on the screen, Braille displays are more useful for users who are both deaf and blind.”',
+      '“more useful for users who are both deaf and blind” = better … for people who are deaf as well as blind → F'],
+    8: ['Đọc chữ Braille thường được thực hiện bằng cách di chuyển ______ của bàn tay dọc theo dòng chấm nổi.', 'Đoạn A',
+      '“Both hands are usually involved in the reading process, and reading is generally done with the index fingers.”',
+      'Thường đọc bằng ngón trỏ → index fingers'],
+    9: ['Hệ thống đọc của Berbier được tạo ra để giúp ______ đọc an toàn vào ban đêm.', 'Đoạn B',
+      '“Charles Berbier developed a unique system known as ‘night writing,’ so that soldiers could communicate safely during the night”',
+      '“night writing” giúp binh lính liên lạc an toàn ban đêm → soldiers'],
+    10: ['Các chấm trong hệ thống của Berbier biểu thị một chữ cái hoặc một ______.', 'Đoạn B',
+      '“Each dot or combination of dots within the cell denoted a letter or a phonetic sound.”',
+      '“denoted” = represented → phonetic sound'],
+    11: ['Tai nạn với một ______ đã khiến Louis Braille bị mù suốt đời.', 'Đoạn C',
+      '“While playing in his father’s shop when he was three, Louis injured his eye with an awl.”',
+      'Cậu bé bị dùi (awl) đâm vào mắt, nhiễm trùng rồi mù hẳn → awl'],
+    12: ['Chữ Braille dùng ______ giúp sách Braille ngắn hơn so với bình thường.', 'Đoạn D',
+      '“the literary Braille codes for English and many other languages employ contractions” … “The use of contractions permits faster Braille reading and helps reduce the size of Braille books”',
+      'Cách viết tắt (contractions) giúp giảm kích thước sách → contractions'],
+    13: ['Màn hình Braille là ______ có thể dùng cùng với máy tính.', 'Đoạn E',
+      '“Braille displays are hardware that enable users to read in Braille the text displayed on the computer screen.”',
+      'Màn hình Braille là phần cứng → hardware'],
+  },
+};

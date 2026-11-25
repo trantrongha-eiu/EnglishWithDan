@@ -1,0 +1,77 @@
+// Vol 10 - Test 8 - Passage 3. Source: izone.edu.vn "Giải chi tiết đề VOL 10 – Test 8 Reading" (PDF đề trên Google Drive công
+// khai + bảng đáp án). Not in the bank (dedupe10b.js 2026-11-25). Key = izone table (written lower-case here).
+// Q36–40 = "Label the diagram" (drawing "The structure of the 1996 and 2000 Olympic torches") → typed as label lines, bottom-up
+// in question order. Text: paragraphs 1–2 ran together in the PDF → split at "The reintroduction of flame".
+// Q39 key joins the two gases of “35 per cent propane … 65 per cent butane” (free).
+const { notes, matching } = require('../../vr_build');
+const TORCHES = ['ancient Greek Olympic flames', 'Berlin Games torch (1936)', '1952 Winter Games flame', '1956 Games torch',
+  'Munich Games torch (1972)', '1996 torch (Atlanta)', '2000 torch (Sydney)', '2002 torch (Salt Lake City)'];
+module.exports = {
+  free: ['propane and butane'], vol: 10, test: 8, part: 3, title: 'The Olympic Torch', text: 't8p3.txt',
+  groups: [
+    notes(27, 29, [
+      'The Olympic torch, as requested by the Olympic Committee, will be carefully designed so that it is capable of withstanding all kinds of __Q27__. Generally, the design of the modern Olympic torch enjoys the __Q28__ value. The torch must be copied, and thousands of torches are constructed to accommodate thousands of runners who will carry them through each leg of the Olympic relay. Each runner has an opportunity to purchase the torch as a(n) __Q29__ at the end of his or her leg of the relay.',
+    ], { instruction: 'Complete the summary below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 27–29 on your answer sheet.' }),
+    matching(30, TORCHES, [
+      'first liquid fuel',
+      'not environmentally friendly',
+      'beginning to record the runners’ name',
+      'potentially risky as it burnt the runner’s arms',
+      'special for a theme of ‘Light’',
+      'not lit in Greek',
+    ], { title: 'List of Olympic torches', instruction: 'Look at the following statements (Questions 30–35) and the list of Olympic torches below. Match each statement with the correct Olympic torch, A–H. Write the correct letter, A–H, in boxes 30–35 on your answer sheet.' }),
+    notes(36, 40, [
+      'Bottom: __Q36__ coated by aluminum base',
+      'Valve: a brass valve with many small __Q37__',
+      'Middle: pressurised fuel rises from the improved __Q38__',
+      'Fuel: the liquid fuel mix of __Q39__ stored in',
+      'Top: burner system of a __Q40__',
+    ], { title: 'The structure of the 1996 and 2000 Olympic torches', instruction: 'Label the diagram below. Choose NO MORE THAN THREE WORDS from the passage for each answer. Write your answers in boxes 36–40 on your answer sheet.' }),
+  ],
+  key: { 27: 'severe weather conditions', 28: 'aesthetic and practical', 29: 'treasurable souvenir', 30: 'E', 31: 'F', 32: 'B', 33: 'D',
+    34: 'H', 35: 'C', 36: 'fuel tank', 37: 'openings', 38: 'handle', 39: 'propane and butane', 40: 'double flame' },
+  expl: {
+    27: ['Ngọn đuốc được thiết kế để có thể chịu được mọi loại ______.', 'Đoạn 3',
+      '“After the torch is completed, it has to succeed in going through all sorts of severe weather conditions.”',
+      '“going through all sorts of” = withstanding all kinds of → severe weather conditions'],
+    28: ['Nhìn chung, thiết kế đuốc Olympic hiện đại có giá trị ______.', 'Đoạn 3',
+      '“The group that wins the competition will come up with a design for a torch that has both aesthetic and practical value.”',
+      'Thiết kế thắng cuộc có cả giá trị thẩm mỹ và thực tiễn → aesthetic and practical'],
+    29: ['Mỗi người chạy có cơ hội mua cây đuốc như một ______ khi kết thúc chặng của mình.', 'Đoạn 4',
+      '“Every single runner can choose to buy his or her torch as a treasurable souvenir when he or she finishes his or her part of the relay.”',
+      '“choose to buy” = purchase; “finishes his or her part of the relay” = at the end of his or her leg → treasurable souvenir'],
+    30: ['Lần đầu dùng nhiên liệu lỏng', 'Đoạn 6',
+      '“To promote the security rate, liquid fuels made its first appearance at the 1972 Munich Games.”',
+      '“made its first appearance” = first; Munich 1972 → E'],
+    31: ['Không thân thiện với môi trường', 'Đoạn 7',
+      '“The torch in 1996 was fuelled by propylene” … “it would produce plenty of smoke which was detrimental to the environment”',
+      'Đuốc 1996 dùng propylene tạo nhiều khói “detrimental to the environment” → F'],
+    32: ['Bắt đầu ghi tên người chạy', 'Đoạn 5',
+      '“The first torch in the modern Olympics (the 1936 Berlin Games)” … “The name of the runner was also inscribed on the platform as a token of thanks.”',
+      'Tên người chạy được khắc (inscribed = record) trên đuốc Berlin 1936 → B'],
+    33: ['Có thể nguy hiểm vì làm bỏng tay người chạy', 'Đoạn 5',
+      '“In the 1956 Olympics, the torch in the final relay was ignited by magnesium and aluminium, but some flaming pieces fell off and seared the runner’s arms.”',
+      '“seared the runner’s arms” = burnt the runner’s arms → D'],
+    34: ['Đặc biệt dành cho chủ đề “Light”', 'Đoạn 9',
+      '“As for the torch of 2002 Olympics in Salt Lake City, the top section was made of glass in which the flame burned, for the purpose of echoing the theme of ‘Light the Fire Within’ of that Olympics.”',
+      'Đuốc Salt Lake City 2002 có phần trên bằng kính để thể hiện chủ đề “Light the Fire Within” → H'],
+    35: ['Không được thắp ở Hy Lạp', 'Đoạn 2',
+      '“However, in that year the torch was lit not in Olympia, Greece, but in Norway, which was considered as the birthplace of skiing.”',
+      'Năm 1952 (Thế vận hội mùa đông) ngọn lửa được thắp ở Na Uy chứ không phải Hy Lạp → C'],
+    36: ['______ được bọc bởi phần đế nhôm', 'Đoạn 6',
+      '“The torch at the 1996 Atlanta Summer Olympics is equipped with an aluminium base that accommodates a tiny fuel tank.”',
+      'Đế nhôm chứa (accommodates) một bình nhiên liệu nhỏ → fuel tank'],
+    37: ['Một van đồng có nhiều ______ nhỏ', 'Đoạn 6',
+      '“it is squeezed through a brass valve that has thousands of little openings”',
+      '“thousands of little openings” = many small … → openings'],
+    38: ['Nhiên liệu nén đi lên từ ______ đã được cải tiến', 'Đoạn 6',
+      '“As the fuel ascends through the modified handle”',
+      '“ascends” = rises; “modified” = improved → handle'],
+    39: ['Hỗn hợp nhiên liệu lỏng gồm ______ được chứa bên trong', 'Đoạn 7',
+      '“For the fuel, they decided to go with a combination of 35 per cent propane” … “and 65 per cent butane”',
+      'Hỗn hợp (combination = mix) 35% propane và 65% butane → propane and butane'],
+    40: ['Hệ thống đốt của một ______', 'Đoạn 8',
+      '“Both the 1996 and 2000 torches adopted a double flame burning system”',
+      '“double flame burning system” = burner system of a … → double flame'],
+  },
+};

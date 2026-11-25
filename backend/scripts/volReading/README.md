@@ -468,3 +468,34 @@ Dò toàn ngân hàng (479 bài): (1) chữ cái dính vào lựa chọn, (2) gi
 (3) câu "Trích" nằm cạnh tên người/địa điểm khác với key, (4) kết luận "→ X" khác key → ~80 cờ, xem tay từng cái:
 chỉ bài này sai thật; còn lại là câu chọn 2 đáp án hoặc giải thích có nhắc phương án sai để loại. rd_deep_audit.js giờ
 báo thêm FORMAT "starts with a stuck letter".
+
+## Vol 10 — 2026-11-25 (Reading T6–10 xong: 5 đề full, 13 bài mới) + 2 bài lẻ học sinh báo trúng
+Thầy gửi danh sách bài học sinh báo trúng (Q4/2026) → "chưa có thì seed thêm". izone đã đăng Vol 10 **Test 6–10** Reading
+(`/luyen-thi-ielts/giai-de-vol-10-test-N-reading/`, PDF Drive công khai). Tải về `web/vol10/izone/{pdf,article}/test-6…10-reading.*`;
+`py web/vol10/extract.py` (chạy **không** `-I` — pymupdf nằm ở user site) → `web/vol10/txt/t<T>.txt`. Công cụ mới (git-ignored):
+`web/vol10/dedupe10b.js` (6-gram từng bài theo số dòng cắt), `kd2.js <T> <idSuffix> <from>` (key izone vs ngân hàng),
+`cutpara.js <T> <a> <b>` (cắt bài thành đoạn, nối đoạn bị ngắt trang), `splitat.js <file> "<đầu đoạn>"…` (PDF T9/T10 không có
+khoảng cách giữa các đoạn → tách tay).
+- Dùng lại nguyên trạng: T6 P2 carbon footprints (Vol 8 - T12, key 13/13), T9 P3 Practical Learning in the Classroom (Vol 8 - T1;
+  izone Q30 D và Q33 F bị loại: Q33 F là lỗi gõ — word list C = design; Q30 đoạn H liệt kê nhiều kỹ năng trong một dự án → giữ B).
+- Bản sao đánh số lại (copy_renum): "Spider Silk (Vol 10)" 1–13 (ngân hàng 14–26), "The moto car (Vol 10)" 14–27 (ngân hàng 27–40;
+  sửa tay group cuối "Question 27"/"box 27", Q20 nhận thêm "petrol-fueled" như key izone).
+- Mới 11 bài (bật, ảnh bìa CC0/PD trên R2): Risk Taking, The Pearl, Elephant Communication (= "The secret sound of elephants" học
+  sinh báo; Recent Actual Test 6 – T5 P3), Education Philosophy, How deserts are formed, The Olympic Torch, Songs of Stones,
+  Internal Promotion or External Hiring (bản khác của "We have Star performers!", 9 đoạn, câu hỏi khác → SAME_TEXT_OK[10].t9p2),
+  History of Refrigeration (Q1–14), Ancient People in Sahara (Q15–27), Texting the Television (Q28–40). T7 P3 bắt đầu từ Q28
+  (`start: 28`). Sơ đồ (T7 Q28–31 con voi, T8 Q36–40 cấu tạo đuốc) gõ thành dòng nhãn trong note-form (ảnh PDF có watermark).
+- Key izone sai đã sửa: T8 Q6 A → B ("mid-1800s" = thế kỷ 19). Ghi chú khác ở đầu từng spec.
+- Kiểm: pw_mini 13/13, pw_admin 13/13, pw_grade 13/13 100%, pw_full_tests "Vol 10 - Test 6…10" 5/5, `vr_audit.js 10` 0 problem
+  (10 đề, 400 câu). `_audit_reading_warnings` chỉ còn 3 bài Mindset (sentence-endings, có từ trước).
+- **Bài lẻ ngoài Vol** (`specs/volx/`, vol 'x' → `web/volx/`, tags `actual-test-2025`, `extra-reported`; Passage 3 Q27–40, bật):
+  "Rebranding Art Museums" (đề thật 22/2/2025; chữ + key ece.edu.vn) và "Language diversity" (= "Linguistic diversity" học sinh báo;
+  chữ + key ieltspracticeonline.com Practice 95, khớp key ieltsmaterial). Chưa seed: Louis Braille (chỉ có 2 bản luyện tập khác
+  nhau: ieltsmaterial "The Braille System" 15 câu, czieltslegend Test 334 13 câu — không rõ bản nào là đề thật), Science &
+  filmmaking, Biotechnology, Why we need sleep (không tìm thấy nguồn khớp tên).
+- SEO: `../seo/buildTestCatalog.js` chạy lại (178 Reading tests) + `stamp-asset-versions.js`.
+- Thêm cùng ngày (thầy: "bài nào ổn định không lỗi là seed luôn"): **"Braille"** (= "Louis Braille"; chữ + key czieltslegend/ieltscareerzone
+  "Academic Reading Test 334", P1 Q1–13, key soát đủ 13/13) và **"Science and Filmmaking"** (P3 Q27–40; chữ englishups.com, key trong
+  github.com/wongjiawei18/ielts-reading; Q38 nhận cả astrophysics / mathematics). Cả hai `specs/volx/` (t3p1, t4p3), bật, ảnh bìa, pw_mini /
+  pw_admin / pw_grade đạt. Vẫn chưa seed: Biotechnology, Face recognition (web đã có "Sorry – who are you?"), Why we need sleep — không có
+  nguồn khớp tên.

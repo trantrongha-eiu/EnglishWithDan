@@ -1,0 +1,70 @@
+// Vol 10 - Test 9 - Passage 2. Source: izone.edu.vn "Giải chi tiết đề VOL 10 – Test 9 Reading" (PDF đề trên Google Drive công
+// khai + bảng đáp án). Another version of the bank's "We have Star performers!" (Mocktest 55: 7 paragraphs, other questions;
+// 6-gram text overlap only ~25 %) → its own passage (SAME_TEXT_OK[10]). Key = izone table, checked against the passage.
+// The PDF prints the passage with no paragraph gaps → split at the paragraph letters. "high- paid" → high-paid.
+const { matching, notes, ynng } = require('../../vr_build');
+const PARAS = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
+module.exports = {
+  vol: 10, test: 9, part: 2, title: 'Internal Promotion or External Hiring', text: 't9p2.txt',
+  groups: [
+    matching(14, PARAS, [
+      'an example of the importance of systems in a non-business context',
+      'advice on how businesses can acquire the best people',
+      'a medical analogy to a star joining another company',
+      'a claim that stars may not make necessary adaptations when they change companies',
+      'an example of a company that suffered from a misplaced belief in the talents of its senior managers',
+    ], { instruction: 'Reading Passage 2 has nine paragraphs, A–I. Which paragraph contains the following information? Write the correct letter, A–I, in boxes 14–18 on your answer sheet.' }),
+    notes(19, 22, [
+      'Research into the working lives of a large number of successful people working as __Q19__ revealed that hiring stars had three common effects. The stars often failed to maintain their performance, as much of their success came from the factors making up their old company’s __Q20__. In fact, many of them soon left their new company to join another firm at a higher __Q21__. Secondly, there was often a negative effect on co-workers in their __Q22__ at the new company. Thirdly, investors reduced their commitment to the company.',
+    ], { title: 'Research published in the Harvard Business Review', instruction: 'Complete the summary below. Choose NO MORE THAN TWO WORDS from the passage for each answer. Write your answers in boxes 19–22 on your answer sheet.' }),
+    ynng(23, [
+      'The War for Talent had a greater impact than its authors had expected.',
+      'The economic situation of certain countries is leading to growing demand for foreign staff.',
+      'Enron failed through misfortune rather than poor management.',
+      'Promoting internally is nearly always more effective than bringing in stars from outside.',
+    ], { instruction: 'Do the following statements agree with the views of the writer in Reading Passage 2? In boxes 23–26 on your answer sheet, write YES if the statement agrees with the views of the writer, NO if the statement contradicts the views of the writer, NOT GIVEN if it is impossible to say what the writer thinks about this.' }),
+  ],
+  key: { 14: 'G', 15: 'I', 16: 'E', 17: 'D', 18: 'B', 19: 'analysts / top analysts', 20: 'working environment', 21: 'salary',
+    22: 'new team', 23: 'NOT GIVEN', 24: 'YES', 25: 'NO', 26: 'YES' },
+  expl: {
+    14: ['Một ví dụ về tầm quan trọng của hệ thống trong bối cảnh không phải kinh doanh.', 'Đoạn G',
+      '“This is as true in the world of football as in business.” … “Others put much more emphasis on developing systems” … “These clubs are often more successful than those with the stars.”',
+      'Bóng đá = bối cảnh ngoài kinh doanh; các câu lạc bộ chú trọng xây dựng hệ thống thành công hơn → G'],
+    15: ['Lời khuyên về cách doanh nghiệp có được những người giỏi nhất.', 'Đoạn I',
+      '“So if not by hiring stars, how can a company compete in the war for talent? It should grow its own.”',
+      'Tác giả khuyên doanh nghiệp tự đào tạo nhân tài (“grow its own”) và giữ chân họ → I'],
+    16: ['Một phép so sánh y học cho việc một ngôi sao gia nhập công ty khác.', 'Đoạn E',
+      '“Hiring a star has been compared to an organ transplant.”',
+      'Tuyển ngôi sao được ví như ghép nội tạng (organ transplant) = a medical analogy → E'],
+    17: ['Một nhận định rằng các ngôi sao có thể không chịu thích nghi cần thiết khi chuyển công ty.', 'Đoạn D',
+      '“Moreover, precisely because of their past success, stars were unwilling to learn new tricks”',
+      '“unwilling to learn new tricks” = may not make necessary adaptations → D'],
+    18: ['Ví dụ về một công ty chịu thiệt hại vì tin sai lầm vào tài năng của các nhà quản lý cấp cao.', 'Đoạn B',
+      '“The point was illuminated by the collapse of the major American company Enron, whose leaders” … “were so convinced of their own cleverness”',
+      'Enron sụp đổ vì lãnh đạo quá tin vào sự thông minh của mình (= misplaced belief in the talents of its senior managers) → B'],
+    19: ['Nghiên cứu về sự nghiệp của nhiều người thành công làm nghề ______.', 'Đoạn C',
+      '“a study of the careers of 1,000 top analysts, published in the Harvard Business Review”',
+      '“careers” = working lives; “1,000” = a large number → analysts'],
+    20: ['Phần lớn thành công của họ đến từ các yếu tố tạo nên ______ của công ty cũ.', 'Đoạn D',
+      '“Few people realise how much success is due to the working environment — systems, processes, leadership, accumulated embedded learning”',
+      'Thành công phụ thuộc vào môi trường làm việc gồm hệ thống, quy trình, lãnh đạo… (= the factors making up) → working environment'],
+    21: ['Nhiều người sớm rời công ty mới để sang công ty khác với mức ______ cao hơn.', 'Đoạn D',
+      '“So they left, increasing their salary as they did so — a surprisingly high 36 per cent moved on within three years.”',
+      '“increasing their salary” = at a higher … → salary'],
+    22: ['Ảnh hưởng tiêu cực đến đồng nghiệp trong ______ của họ ở công ty mới.', 'Đoạn E',
+      '“Secondly, the performance of their new team suffered as a result of the tensions and resentment created by their arrival.”',
+      '“suffered” = negative effect; đồng nghiệp trong nhóm mới → new team'],
+    23: ['Cuốn The War for Talent có tác động lớn hơn mong đợi của các tác giả.', 'Đoạn A',
+      '“This in essence has been the recruitment of the ambitious companies of the past decade, given definitive form by the consultancy McKinsey in the book The War for Talent.”',
+      'Bài chỉ nói cuốn sách định hình cách tuyển dụng; không nói gì về kỳ vọng của các tác giả → NOT GIVEN'],
+    24: ['Tình hình kinh tế của một số nước đang làm tăng nhu cầu tuyển nhân viên nước ngoài.', 'Đoạn A',
+      '“it has been warming up again as the economy tightens: labour shortages, for example, are the reason that many governments are welcoming workers from abroad”',
+      'Kinh tế khó khăn, thiếu lao động khiến nhiều chính phủ chào đón lao động nước ngoài → YES'],
+    25: ['Enron thất bại vì xui xẻo chứ không phải do quản lý kém.', 'Đoạn B',
+      '“whose leaders” … “were so convinced of their own cleverness that they believed that collective intelligence is the sum of a lot of individual intelligences” … “Enron believed in stars” … “because they didn’t believe in systems”',
+      'Tác giả cho rằng Enron sụp đổ vì niềm tin sai lầm của lãnh đạo (tin vào ngôi sao, không tin hệ thống) = poor management, không phải xui xẻo → NO'],
+    26: ['Đề bạt nội bộ gần như luôn hiệu quả hơn tuyển ngôi sao từ bên ngoài.', 'Đoạn I',
+      '“It should grow its own.” … “Bringing in high-paid talent from outside is rarely worthwhile, and the impact can be dire.”',
+      'Tuyển nhân tài từ ngoài “rarely worthwhile” (hiếm khi đáng) → tự phát triển người trong công ty gần như luôn tốt hơn → YES'],
+  },
+};

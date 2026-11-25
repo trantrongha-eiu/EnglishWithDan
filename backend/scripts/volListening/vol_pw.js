@@ -56,8 +56,10 @@ const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML,
     try {
       await page.goto(`${SITE}/listening.html?sectionId=${pub._id}&part=${draft.partNumber}&exam=practice`, { waitUntil: 'domcontentloaded' });
       // exam-mode popup → "Luyện tập"
-      const btn = page.locator('.ems-option, [data-mode="practice"], button:has-text("Luyện tập")').first();
-      await btn.waitFor({ timeout: 15000 }).then(() => btn.click()).catch(() => {});
+      // 2026-11: the popup's practice card has a "Bắt đầu Luyện tập" button (comma locators pick DOM order → try it first)
+      const startBtn = page.locator('button:has-text("Bắt đầu Luyện tập")').first();
+      const ok = await startBtn.waitFor({ timeout: 15000 }).then(() => startBtn.click()).then(() => true).catch(() => false);
+      if (!ok) { const btn = page.locator('.ems-option, [data-mode="practice"], button:has-text("Luyện tập")').first(); await btn.waitFor({ timeout: 5000 }).then(() => btn.click()).catch(() => {}); }
       await page.waitForSelector('.question-group', { timeout: 30000 });
       await page.waitForTimeout(600);
       const { start, end } = draft.questionRange;

@@ -1,0 +1,85 @@
+Agent:
+Hello, thank you for calling Iris Rentals. How can I help you?
+Client:
+Yes, hello there. I’m ringing just to make enquiries about renting a new property and I came across a listing on your website that I’m interested in.
+Agent:
+Oh yes.
+Client:
+I’d like to find out a few more details, if I may.
+Agent:
+Yes, of course. Can I take your name?
+Client:
+It’s Mary Collins.
+Agent:
+Okay, Mary. I’m just searching our system for the property details.
+Is there any information in particular that you were wanting?
+Client:
+Does the house have a gym?
+Agent:
+No, the house doesn’t have a gym, however the house has a large swimming pool, which will be great for exercise and really refreshing during summer.
+Client:
+Oh wow, that sounds lovely. What is the general layout of the house?
+Agent:
+This house is rather unusual as the living room is located upstairs with the bedrooms, and downstairs at ground floor is the dining room, which has a lovely view out over the swimming pool.
+Client:
+Does the house come with a car parking space on the street?
+Agent:
+Oh, there’s no need for that. The house comes with a big garage where you can park your cars and there’s also a lot of room for storage.
+It’s attached to the house through a door in the kitchen.
+Client:
+Oh, that’s perfect, it’ll make it far easier to carry my food shopping into the house.
+Agent:
+Oh yes, absolutely. You actually don’t even need to take your car to do the shopping as the local supermarket is just down the street.
+You can walk the distance easily.
+Client:
+Really? How convenient! Is there anywhere near to the house where I can take my children to play?
+Agent:
+Unfortunately there aren’t any playgrounds nearby, but there is a park near the supermarket that would be great for taking your children for a walk.
+It would also be a great place for you to meet your neighbours.
+Client:
+Yes, that’s true, I love taking long walks in the park.
+I’m sure there will be a playground at the local school anyway.
+Agent:
+Yes, absolutely. The community has its own primary school and there is a secondary school in the neighbouring community, so there are plenty of resources nearby for your children’s education.
+Client:
+OK, great. What are the rental costs for the property?
+Agent:
+The monthly rent is $980, which is very reasonable considering the size of the house and the amenities that it has to offer.
+Client:
+Does that figure include maintenance fees and bills?
+Agent:
+The bills are not included in that figure, but it does include any maintenance fees for the garden.
+Client:
+That sounds like a very reasonable price. We were hoping to move in on the 20th of April.
+Will the house be vacant for that date?
+Agent:
+The current tenants of the property are due to leave on the 20th, but the cleaners will need a few days to make sure that the house is clean and tidy.
+This would make the house officially available on the 23rd April.
+Client:
+Well everything about the house sounds perfect... exactly what I’m looking for.
+What date would it be possible to view the property?
+Agent:
+I have arranged for the tenant to leave the property on Friday so I can show the house to prospective renters.
+Would you be able to make that day?
+Client:
+Yes, I’m sure I could come on my lunch break. Would 1 o’clock be OK?
+Agent:
+I’m afraid that I have a meeting at 12.30, so I won’t be able to make that time. I have available appointments at 10.15 and 3.
+Client:
+OK, in that case can we schedule the appointment for 10.15?
+Agent:
+No problem, I’ll book it into my schedule.
+If you wouldn’t mind arriving 5 minutes early that would be great, just so we can get started on time.
+Client:
+Sure. What is the address?
+Agent:
+The postcode is GA58ER and the house is number 8 on Spring Street.
+It’s the second right off of Bath Street.
+Client:
+OK, that’s great.
+Agent:
+Do you have any more questions?
+Client:
+Nope... thank you for your help.
+Agent:
+No problem. See you on Friday. Bye!

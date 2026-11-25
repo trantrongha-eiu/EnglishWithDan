@@ -1,0 +1,83 @@
+// Vol 10 - Test 10 - Passage 1 (Q1–14). Source: izone.edu.vn "Giải chi tiết VOL 10 – Test 10 Reading" (PDF đề trên Google Drive
+// công khai + bảng đáp án). Not in the bank (dedupe10b.js 2026-11-25). Key = izone table, checked against the passage.
+// The PDF prints the passage with no paragraph gaps → split by sense (web/vol10/splitat.js). Text kept as printed
+// ("considerately in need", "Until 1851, Evans obtained…").
+const { matching, endings } = require('../../vr_build');
+const DATES = ['1550', '1799', '1803', '1840', '1949', '1973'];
+const PEOPLE = ['Thomas Moore', 'Frederick Tudor', 'Carl Von Linde', 'Nathaniel Wyeth', 'J.B. Sutherland', 'Fred Jones', 'Parker Earle'];
+module.exports = {
+  vol: 10, test: 10, part: 1, title: 'History of Refrigeration', text: 't10p1.txt',
+  groups: [
+    matching(1, DATES, [
+      'Vehicles with refrigerator were used to transport on the road.',
+      'Ice was sold around the United States for the first time.',
+      'Some kind of chemical refrigerant was found harmful to the atmosphere.',
+      'The term ‘refrigerator’ was firstly introduced.',
+      'Some chemicals were added to refrigerate wine.',
+    ], { title: 'List of Dates', instruction: 'Look at the following events (Questions 1–5) and the list of dates below. Match each event with the correct date, A–F. Write the correct letter, A–F, in boxes 1–5 on your answer sheet.' }),
+    matching(6, PEOPLE, [
+      'patented the idea that refrigerating system can be installed on tramcars',
+      'invented an ice-cutting technical method that could save money and time',
+      'enabled the cold storage technology to be applied in fruit',
+      'invented a cooling device applied into the trucking industry',
+      'created a new technique to liquefy the air',
+    ], { title: 'List of People', instruction: 'Look at the following opinions or deeds (Questions 6–10) and the list of people below. Match each opinion or deed with the correct person, A–G. Write the correct letter, A–G, in boxes 6–10 on your answer sheet.' }),
+    endings(11, [
+      'new developments, such as the application of Hydrofluorocarbons.',
+      'consumers’ demand for fresh food, especially for vegetables.',
+      'the discovery of chlorofluorocarbons (Freon).',
+      'regional transportation system for refrigeration for a long distance.',
+      'extensive spread of the refrigeration method.',
+    ], [
+      'A healthy dietary change between 1830 and the American Civil War was greatly associated with',
+      'The development of urbanisation was likely to cause',
+      'Problems due to water treatment contributed to',
+      'The risk of the environmental devastation from the refrigeration led to',
+    ]),
+  ],
+  key: { 1: 'D', 2: 'B', 3: 'F', 4: 'C', 5: 'A', 6: 'E', 7: 'D', 8: 'G', 9: 'F', 10: 'C', 11: 'B', 12: 'D', 13: 'E', 14: 'A' },
+  expl: {
+    1: ['Xe có hệ thống làm lạnh được dùng để vận chuyển trên đường.', 'Đoạn 7',
+      '“Since 1840, cars with the refrigerating system had been utilised to deliver and distribute milk and butter.”',
+      '“cars with the refrigerating system” = vehicles with refrigerator, “utilised to deliver and distribute” = used to transport; từ năm 1840 → D'],
+    2: ['Băng lần đầu tiên được bán khắp nước Mỹ.', 'Đoạn 4',
+      '“In 1799, as a commercial product, ice was first transported out of Canal Street in New York City to Charleston, South Carolina.”',
+      '“as a commercial product” (hàng hóa để bán) + “first transported” từ New York đến South Carolina → 1799 → B'],
+    3: ['Một loại chất làm lạnh hóa học được phát hiện là có hại cho khí quyển.', 'Đoạn 8',
+      '“Freon was safer for the people in the vicinity, but in 1973 it was discovered to have detrimental effects on the ozone layer.”',
+      '“detrimental effects on the ozone layer” = harmful to the atmosphere → 1973 → F'],
+    4: ['Thuật ngữ “refrigerator” lần đầu được đưa ra.', 'Đoạn 1',
+      '“The term ‘refrigerator’ was first introduced by a Maryland farmer Thomas Moore in 1803”',
+      'Năm 1803 → C'],
+    5: ['Một số hóa chất được thêm vào để làm lạnh rượu.', 'Đoạn 2',
+      '“adding such chemicals as sodium nitrate or potassium nitrate to water could lead to a lower temperature. In 1550 when this technique was first recorded, people used it to cool wine”',
+      'Kỹ thuật thêm hóa chất vào nước để làm lạnh rượu được ghi nhận năm 1550 → A'],
+    6: ['Được cấp bằng sáng chế cho ý tưởng lắp hệ thống làm lạnh trên toa xe.', 'Đoạn 7',
+      '“In 1867, refrigerated railroad cars are patented to J.B. Sutherland from Detroit, Michigan”',
+      '“refrigerated railroad cars are patented to” J.B. Sutherland → E'],
+    7: ['Phát minh phương pháp cắt băng giúp tiết kiệm tiền và thời gian.', 'Đoạn 4',
+      '“Wyeth invented an economical and speedy method to cut the ice into uniform blocks”',
+      '“economical and speedy” = save money and time → Nathaniel Wyeth → D'],
+    8: ['Giúp công nghệ bảo quản lạnh được áp dụng cho trái cây.', 'Đoạn 7',
+      '“In 1867, the first refrigerated car to carry fresh fruit was manufactured by Parker Earle of Illinois, who shipped strawberries on the Illinois Central Railroad.”',
+      'Toa lạnh đầu tiên chở trái cây tươi (dâu tây) do Parker Earle chế tạo → G'],
+    9: ['Phát minh thiết bị làm lạnh dùng trong ngành vận tải xe tải.', 'Đoạn 7',
+      '“Until 1949, the trucking industry began to be equipped with the refrigeration system with a roof-mounted cooling device, invented by Fred Jones.”',
+      'Thiết bị làm lạnh gắn trên nóc xe tải do Fred Jones phát minh → F'],
+    10: ['Tạo ra một kỹ thuật mới để hóa lỏng không khí.', 'Đoạn 6',
+      '“Linde later created a new method (‘Linde technique’) for liquefying large amounts of air in 1894.”',
+      '“created a new method … for liquefying large amounts of air” → Carl von Linde → C'],
+    11: ['Sự thay đổi chế độ ăn lành mạnh giữa năm 1830 và Nội chiến Mỹ gắn liền với', 'Đoạn 4',
+      '“Consumers’ soaring requirement for fresh food, especially for green vegetables, resulted in reform in people’s dieting habits between 1830 and the American Civil War”',
+      'Nhu cầu ngày càng tăng về thực phẩm tươi, nhất là rau xanh, dẫn đến thay đổi thói quen ăn uống → B'],
+    12: ['Sự phát triển của đô thị hóa có khả năng dẫn đến', 'Đoạn 4',
+      '“With the growth of the cities and towns, the distance between the consumer and the source of food was enlarged.”',
+      'Thành phố mở rộng làm khoảng cách giữa người tiêu dùng và nguồn thực phẩm xa hơn → cần vận chuyển hàng lạnh đường dài (sau đó là chuyến chở băng 1799, cải tiến của Tudor, Wyeth) → D'],
+    13: ['Các vấn đề về xử lý nước góp phần dẫn đến', 'Đoạn 5',
+      '“by the 1890s water pollution and sewage dumping made clean ice even more unavailable” … “As a result, the clean, mechanical refrigeration was considerately in need.”',
+      'Ô nhiễm nước khiến băng sạch khan hiếm, lan ra nhiều ngành → làm lạnh cơ học được cần đến rộng rãi = extensive spread of the refrigeration method → E'],
+    14: ['Nguy cơ tàn phá môi trường từ việc làm lạnh dẫn đến', 'Đoạn 8',
+      '“in 1973 it was discovered to have detrimental effects on the ozone layer. After that, new improvements were made, and Hydrofluorocarbons, with no known harmful effects, was used in the cooling system.”',
+      'Sau khi phát hiện Freon hại tầng ozone, có những cải tiến mới như dùng Hydrofluorocarbons → A'],
+  },
+};

@@ -584,3 +584,27 @@ không có → **terratern.com/live-learning/ielts/listening/practice-test-N/** 
   flow chart Q37–40 gõ thành notes. T4 P2 Q16–20 làm matching với dòng mô tả bước.
 - vol_pw chạy nhiều bài một lượt bị timeout từ bài thứ 2 → chạy từng bài. Kết quả: vol_pw nháp + LIVE 9/9, pw_fulltest Vol 10 - Test 3/4 40/40
   (bật), `vol_audit.js 10` 0 problem (237 trích dẫn), ảnh bìa CC0/PD trên R2, transcript timing chạy lại (alignTranscriptTiming).
+
+## Vol 10 — 2026-11-25 (T6, T7, T9 đề full + T8 P1, T10 P3/P4 bài lẻ; 15 phần mới)
+Thầy: "seed luôn listening và reading của toàn bộ các bài vol 10 còn thiếu". izone đã đăng Listening T5–T10 (bài viết + PDF Drive công khai,
+`web/vol10/izone/{article,pdf,pdftxt}/test-N-listening.*`), vẫn **không có audio**. Nguồn audio tìm được:
+- **DOL cache** (`../dolListening/web/dol`, 428 bài tải từ 2026-10-01, nhiều bài "clean" chưa nhập): Vol 10 phần lớn là "IELTS Recent Actual
+  Tests" → T6 = AT1_L4 (4 phần), T7 = AT1_L5, T9 = AT1_L6, T8 P1 = AT3_L6_S1, T10 P3 = AT3_L5_S3, T10 P4 = AT1_L3_S4. Dò bằng
+  `web/vol10/doltx.js` (6-gram transcript DOL vs chữ izone). `web/vol10/dolprep.js` tải mp3 DOL → `LISTENING/test T/part P.mp3` +
+  transcript có tên người nói → `specs/vol10_tx/tTpP.txt` (rồi sửa tay: cue lặp, "Q30"/"Q3" lọt vào chữ, ligature ﬁ/ﬂ, tên người nói).
+  (ieltspracticeonline "Practice Test 25/26" = T7/T9, audio Drive công khai — không cần dùng; terratern 68 = T8 P1; engnovate/ieltsonlinetests
+  chặn bot → không dùng.)
+- **Câu hỏi + key = đề Vol (izone)**, không lấy bản DOL: bản Vol khác dạng/đáp án ở nhiều chỗ (T6 Q26 lựa chọn khác, Q37–40 chữ cái A–G; T7 P1
+  bộ câu khác hẳn bài ngân hàng "Apartment Rental In Calgary’s Market" dù cùng băng → phần riêng "Apartments near the Campus"; T7 Q25–30 bảng
+  điền; T9 Q21–26 bản đồ (ảnh nhúng trong PDF izone → `web/vol10/img/t9p3_map.png`, kéo-thả tên chỗ); T10 P3 chỗ trống ngắn hơn).
+- Key izone sai/thiếu → nhận thêm biến thể: T9 Q1 Kingston / Southwest, Q20 "2 to 10" / 10, Q38 fear / afraid of; T10 Q27/29/30/35 bản ngắn + bản DOL.
+- Transcript DOL sai so với băng (Whisper `wb.js`): T9 P4 "up to months" → "up to **eight** months"; T10 P4 "with less walking" → "with less
+  effort than walking". Soát toàn bộ bằng `whisper_parts.js` + `web/vol10/wdiff2.js <id>` (diff_whisper.js chỉ dùng cho docx).
+- Clip: từ 0 (băng DOL có lời dẫn; P1 có cả phần giới thiệu đề) đến ~2 s sau "check your answers" (mốc lấy từ Whisper).
+- `vol_pw.js` sửa selector: popup chọn chế độ giờ có nút "Bắt đầu Luyện tập" (locator nhiều selector chọn theo thứ tự DOM → thử nút này trước).
+  Lỗi timeout lẻ tẻ khi chạy nhiều bài → chạy lại từng bài là qua. Map câu hỏi không được để `questionText` rỗng (DB validate) → "Question 21"….
+- Kết quả: 15 phần bật (ảnh bìa CC0/PD trên R2), vol_pw nháp + LIVE 15/15, đề full **Vol 10 - Test 6, 7, 9** (pw_fulltest 40/40, bật),
+  `vol_audit.js 10` 0 problem (518 trích dẫn), transcript timing chạy lại.
+- **Còn thiếu audio** (không tìm thấy ở DOL / terratern / ieltspracticeonline): T5 P1 Amateur Dramatic Society, P2 Clifton Bird Park, P4 Urban
+  biodiversity (P3 = bài ngân hàng "Education House"); T8 P2 Home Features, P4 History of Paint (P3 = "Choosing an Internship"); T10 P1 Insurance
+  Claim, P2 Home Improvement Store Plan; T1 P1/P3/P4, T2 P2/P4 (như 2026-11-05) → chưa có đề full T1, T2, T5, T8, T10.

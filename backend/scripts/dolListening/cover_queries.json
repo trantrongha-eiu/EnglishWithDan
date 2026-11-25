@@ -3,6 +3,8 @@
  "436848": "newspaper photo | baseball player",
  "436854": "hotel reception | restaurant waiter service",
  "436861": "electric motorcycle | motorbike workshop",
+ "566784": "university library interior | library reading room",
+ "566791": "nile crocodile | crocodile river bank",
  "712218": "cafe barista | coffee shop counter",
  "712897": "driverless car | autonomous vehicle",
  "848605": "microphones press conference | press room microphones",
@@ -451,5 +453,18 @@
  "19ef23": "car rental keys | rental car airport",
  "19ef2f": "hotel reception desk | hotel lobby",
  "19ef3c": "roof garden city | green roof plants",
- "19ef4a": "beach sand closeup | coastal erosion beach"
+ "19ef4a": "beach sand closeup | coastal erosion beach",
+ "ce0216": "recycling bins | recycling boxes",
+ "ce0223": "job interview | writing a CV",
+ "ce0230": "university advisor meeting | mature student",
+ "ce023c": "university campus buildings | university library",
+ "ce024a": "apartment living room | student apartment",
+ "ce0256": "recycling bins street | garbage truck",
+ "ce0262": "student writing essay | psychology textbook",
+ "ce026f": "dry Australian landscape | water dam reservoir",
+ "ce027c": "house with swimming pool | family house garden",
+ "ce0288": "house cleaning | cleaning service",
+ "ce0296": "airport security | sniffer dog airport",
+ "56679e": "business office meeting | company founder",
+ "5667ab": "penny-farthing bicycle | vintage bicycle"
 }
