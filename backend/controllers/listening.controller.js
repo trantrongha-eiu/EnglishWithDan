@@ -162,11 +162,13 @@ exports.getSectionAnswerKey = async (req, res) => {
 
 exports.listDictationSections = async (req, res) => {
   try {
-    const [sections, drills] = await Promise.all([
+    const [sections, drills, reportConfig] = await Promise.all([
       listeningService.listDictationSections(),
       listeningService.listDictationDrills(),
+      // "🚩 Báo lỗi câu" button on/off + its reasons (admin /dictation-reports)
+      require('../services/dictationReportService').getSettings().catch(() => null),
     ]);
-    res.json({ success: true, sections, drills });
+    res.json({ success: true, sections, drills, reportConfig });
   } catch (err) { console.error('[Listening]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
 };
 

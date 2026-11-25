@@ -76,6 +76,7 @@ function ActionQueue() {
     { to: '/writing-grades', icon: '✍️', label: 'Bài Writing chờ chấm', hint: 'Chấm AI / xác nhận điểm', n: badges.pendingGrades, tone: 'hot' },
     { to: '/entrance-test', icon: '🚪', label: 'Test đầu vào chờ duyệt', hint: 'Học sinh chưa thấy điểm tới khi duyệt', n: badges.pendingEntranceReviews, tone: 'hot' },
     { to: '/messages', icon: '✉️', label: 'Tin nhắn chưa đọc', hint: 'Hộp thư đến của bạn', n: badges.pendingMessages },
+    { to: '/dictation-reports', icon: '🚩', label: 'Câu Dictation bị báo lỗi', hint: 'Học sinh báo câu sai / audio lệch', n: badges.dictationReports, tone: 'warn' },
     { to: '/monitoring?tab=mock', icon: '⚠️', label: 'Lượt thi bị đánh dấu vi phạm', hint: 'Thi thử Full / Test Simulation', n: badges.violations, tone: 'warn' },
     ...(isAdmin ? [
       { to: '/upgrade-requests', icon: '⭐', label: 'Yêu cầu nâng cấp Premium', hint: 'Chờ duyệt', n: badges.pendingUpgrades, tone: 'hot' },

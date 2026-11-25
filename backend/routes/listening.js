@@ -13,6 +13,7 @@ const requirePremium = require('../middleware/requirePremium');
 const requireReviewComplete = require('../middleware/requireReviewComplete');
 const { userRateLimiter } = require('../middleware/rateLimit');
 const listeningController = require('../controllers/listening.controller');
+const dictationReportService = require('../services/dictationReportService');
 
 // Mirrors routes/reading.js. See middleware/rateLimit.js — per-user key,
 // IP fallback, staff bypass, 429 { success:false, message }. These are a
@@ -69,6 +70,31 @@ router.get('/dictation/section/:id/translations', auth, contentLimiter, requireP
 // reading/listening /practice/save (BUG-009) and the section-fetch route
 // just above: full access for a free account's first 24h, then locked.
 router.post('/dictation/save-attempt', auth, requirePremium('Bạn cần nâng cấp lên Premium để luyện tập.'), listeningController.saveDictationAttempt);
+
+// "🚩 Báo lỗi câu này" — a student reports one dictation sentence as wrong
+// (services/dictationReportService.js, handled on admin /dictation-reports).
+// The button + reasons come with GET /dictation/list (reportConfig).
+const reportLimiter = userRateLimiter({
+  max: 30,
+  message: 'Bạn đã gửi nhiều báo lỗi quá, thử lại sau ít phút nhé.',
+  name: 'listening:dictation-report',
+});
+const REPORT_ERRORS = {
+  disabled:   [403, 'Tính năng báo lỗi đang tạm tắt.'],
+  bad_reason: [400, 'Vui lòng chọn lý do báo lỗi.'],
+  need_note:  [400, 'Vui lòng ghi rõ lỗi ở ô mô tả.'],
+  not_found:  [404, 'Không tìm thấy câu này.'],
+};
+router.post('/dictation/report', auth, reportLimiter, async (req, res) => {
+  try {
+    const r = await dictationReportService.submitReport(req.user, req.body || {});
+    if (r.status !== 'ok') {
+      const [code, message] = REPORT_ERRORS[r.status] || [400, 'Không gửi được báo lỗi.'];
+      return res.status(code).json({ success: false, message });
+    }
+    res.json({ success: true, updated: r.updated, message: r.updated ? 'Đã cập nhật báo lỗi của bạn.' : 'Đã gửi báo lỗi — cảm ơn bạn! Thầy cô sẽ kiểm tra câu này.' });
+  } catch (err) { console.error('[Dictation report]', err); res.status(500).json({ success: false, message: 'Lỗi server' }); }
+});
 
 // STUDENT – Gap-fill practice (điền từ vào chỗ trống trên toàn bộ transcript
 // trong khi nghe liên tục) — cùng shape review-exempt drill với Dictation ở

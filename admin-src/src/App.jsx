@@ -56,6 +56,7 @@ const ReviewBypassCodes = lazy(() => import('./pages/ReviewBypassCodes'));
 const TipLecturePacks = lazy(() => import('./pages/TipLecturePacks'));
 const Tips = lazy(() => import('./pages/Tips'));
 const Shadowing = lazy(() => import('./pages/Shadowing'));
+const DictationReports = lazy(() => import('./pages/DictationReports'));
 const SpeakingPart2 = lazy(() => import('./pages/SpeakingPart2'));
 const Shop = lazy(() => import('./pages/Shop'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -108,6 +109,7 @@ export default function App() {
                 <Route path="tip-packs" element={<TipLecturePacks />} />
                 <Route path="tips" element={<Tips />} />
                 <Route path="shadowing" element={<Shadowing />} />
+                <Route path="dictation-reports" element={<DictationReports />} />
                 <Route path="speaking-part2" element={<SpeakingPart2 />} />
                 <Route path="shop" element={<Shop />} />
                 <Route path="reading-stats" element={<ReadingStats />} />

@@ -5,6 +5,7 @@ import { hasPremiumAccess } from '../utils/plan';
 import SearchMatch from '../utils/searchMatch';
 import { bindDict, openUpgrade, siteToast } from '../utils/shell';
 import { PASS_RATIO, fmtTime, diffSentence } from '../utils/dictation';
+import Modal from '../components/Modal';
 
 // ⌨️ Luyện Dictation — /app/dictation, ?sectionId= (a Listening section, one
 // audio file) or ?drill= (spelling / numbers clips from many files). The
@@ -89,7 +90,59 @@ function Meaning({ index, translations, done }) {
   return <div className="dict-vi" id="dict-vi" style={vi ? undefined : { display: 'none' }}>{vi && <><b>Nghĩa:</b> {vi}</>}</div>;
 }
 
-function Practice({ lesson, onBack }) {
+// 🚩 "Báo lỗi câu này": the student picks a reason (set on admin
+// /dictation-reports → Cấu hình) and may describe it; the sentence itself
+// is looked up on the server by lesson + index.
+function ReportModal({ lesson, index, sentence, typed, config, onClose, onSent }) {
+  const [reason, setReason] = useState('');
+  const [note, setNote] = useState('');
+  const [sending, setSending] = useState(false);
+  const needNote = reason === 'other';
+
+  async function send() {
+    if (!reason) { siteToast('Chọn lý do báo lỗi nhé.', 'warn'); return; }
+    if (needNote && !note.trim()) { siteToast('Ghi rõ lỗi ở ô mô tả giúp thầy cô nhé.', 'warn'); return; }
+    setSending(true);
+    try {
+      const target = lesson.kind === 'drill' ? { drillSlug: lesson.slug } : { sectionId: lesson._id };
+      const d = await apiFetch('/listening/dictation/report', {
+        method: 'POST',
+        body: JSON.stringify({ ...target, sentenceIndex: index, reason, note: note.trim(), typedText: typed.trim() }),
+      });
+      siteToast(d.message || 'Đã gửi báo lỗi — cảm ơn bạn!', 'success');
+      onSent(index);
+      onClose();
+    } catch (e) {
+      siteToast(e.message || 'Không gửi được báo lỗi, thử lại sau nhé.', 'error');
+      setSending(false);
+    }
+  }
+
+  return (
+    <Modal title={`🚩 Báo lỗi câu ${index + 1}`} onClose={onClose}
+      footer={<>
+        <button className="btn btn-ghost" onClick={onClose} disabled={sending}>Huỷ</button>
+        <button className="btn btn-primary" id="dict-report-send" onClick={send} disabled={sending}>{sending ? 'Đang gửi…' : 'Gửi báo lỗi'}</button>
+      </>}>
+      <div className="dx-report">
+        <p className="dx-report-intro">Câu này có gì sai? Thầy cô sẽ kiểm tra và sửa lại — cảm ơn bạn đã giúp bài luyện tốt hơn 💛</p>
+        <div className="dx-report-reasons" role="radiogroup" aria-label="Lý do báo lỗi">
+          {config.reasons.map((r) => (
+            <label key={r.key} className={`dx-report-reason${reason === r.key ? ' on' : ''}`}>
+              <input type="radio" name="dict-report-reason" value={r.key} checked={reason === r.key} onChange={() => setReason(r.key)} />
+              {r.label}
+            </label>
+          ))}
+        </div>
+        <textarea className="dx-report-note" id="dict-report-note" rows={3} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)}
+          placeholder={needNote ? 'Mô tả lỗi (bắt buộc)…' : 'Mô tả thêm (không bắt buộc) — vd: audio nói "eleven" nhưng đáp án ghi "ten"'} />
+        {lesson.kind === 'drill' && sentence?.answer && <div className="dx-report-hint">Đáp án hiện tại: <b>{sentence.answer}</b></div>}
+      </div>
+    </Modal>
+  );
+}
+
+function Practice({ lesson, onBack, reportConfig }) {
   const { sentences } = lesson;
   const total = sentences.length;
   const audioRef = useRef(null);
@@ -112,6 +165,14 @@ function Practice({ lesson, onBack }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [tip, setTip] = useState(() => Math.floor(Math.random() * TIPS.length));
   const [translations, setTranslations] = useState(lesson.kind === 'section' ? null : []);
+  const [reportFor, setReportFor] = useState(null); // sentence index whose 🚩 dialog is open
+  const [reported, setReported] = useState(NO_SET);
+  const canReport = !!reportConfig?.enabled && !!reportConfig.reasons?.length && lesson.kind !== 'loading';
+  const openReport = (i) => {
+    audioRef.current?.pause();
+    setPlaying(false);
+    setReportFor(i);
+  };
 
   const sentence = sentences[index];
   const result = results[index];
@@ -241,7 +302,8 @@ function Practice({ lesson, onBack }) {
     let alone = false;
     const down = (e) => { alone = e.key === 'Control' ? (!e.repeat || alone) : false; };
     const up = (e) => {
-      if (e.key === 'Control' && alone) restart();
+      // not while the 🚩 report dialog is open
+      if (e.key === 'Control' && alone && !document.querySelector('.modal-overlay')) restart();
       alone = false;
     };
     document.addEventListener('keydown', down);
@@ -435,6 +497,13 @@ function Practice({ lesson, onBack }) {
               <span className="dict-counter">Câu <span id="dict-cur-num">{index + 1}</span>/<span id="dict-total-num">{total || 1}</span></span>
               <button className="dict-nav-arrow" id="dict-next-btn" title="Câu sau" disabled={index >= total - 1} onClick={() => goTo(index + 1)}><i className="fas fa-arrow-right" /></button>
               {done.has(index) && <span className="dx-done-pill"><i className="fas fa-check" /> Đã xong</span>}
+              {canReport && total > 0 && (
+                <button className={`dx-report-btn${reported.has(index) ? ' sent' : ''}`} id="dict-report-btn"
+                  title={reported.has(index) ? 'Bạn đã báo lỗi câu này — bấm để sửa lại báo lỗi' : 'Báo lỗi câu này (đáp án sai, audio bị cắt…)'}
+                  onClick={() => openReport(index)}>
+                  <i className="fas fa-flag" /> <span>{reported.has(index) ? 'Đã báo lỗi' : 'Báo lỗi'}</span>
+                </button>
+              )}
               <div className="dict-gear-wrap">
                 <button className="dict-gear" id="dict-gear-btn" title="Cài đặt" onClick={() => setSettingsOpen((o) => !o)}><i className="fas fa-cog" /></button>
                 <div className={`dict-settings${settingsOpen ? ' show' : ''}`} id="dict-settings">
@@ -522,6 +591,10 @@ function Practice({ lesson, onBack }) {
                 {s.answer && <><b className="dict-t-answer">{s.answer}</b> — </>}{s.text}
                 {s.sourceTitle && <> <span className="dict-t-src">{s.sourceTitle}</span></>}
                 {prefs.showVi && translations?.[i] && <div className="dict-t-vi">{translations[i]}</div>}
+                {canReport && (
+                  <button className={`dict-t-report${reported.has(i) ? ' sent' : ''}`} title={`Báo lỗi câu ${i + 1}`} aria-label={`Báo lỗi câu ${i + 1}`}
+                    onClick={(e) => { e.stopPropagation(); openReport(i); }}><i className="fas fa-flag" /></button>
+                )}
               </li>
             ))}
           </ol>
@@ -544,6 +617,11 @@ function Practice({ lesson, onBack }) {
       </details>
 
       <audio id="dict-audio" ref={audioRef} preload="metadata" />
+      {reportFor !== null && sentences[reportFor] && (
+        <ReportModal lesson={lesson} index={reportFor} sentence={sentences[reportFor]} config={reportConfig}
+          typed={reportFor === index ? typed : ''} onClose={() => setReportFor(null)}
+          onSent={(i) => setReported((s) => new Set(s).add(i))} />
+      )}
     </div>
   );
 }
@@ -619,7 +697,7 @@ export default function Dictation() {
       .then((d) => (d.lessons || []).filter((l) => l.category === 'spelling-numbers'))
       .catch(() => []);
     Promise.all([apiFetch('/listening/dictation/list'), spell]).then(([data, videos]) => {
-      if (alive) setList({ status: 'ready', sections: data.sections || [], drills: data.drills || [], spell: videos });
+      if (alive) setList({ status: 'ready', sections: data.sections || [], drills: data.drills || [], spell: videos, reportConfig: data.reportConfig || null });
     }).catch(() => {
       if (alive) setList((l) => ({ ...l, status: 'error' }));
     });
@@ -724,7 +802,7 @@ export default function Dictation() {
         </div>
       </div>
 
-      {opening && <Practice key={lesson === LOADING_LESSON ? 'loading' : target} lesson={lesson} onBack={closeLesson} />}
+      {opening && <Practice key={lesson === LOADING_LESSON ? 'loading' : target} lesson={lesson} onBack={closeLesson} reportConfig={list.reportConfig} />}
     </div>
   );
 }

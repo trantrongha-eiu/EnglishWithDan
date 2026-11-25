@@ -41,6 +41,7 @@ export const NAV_GROUPS = [
   { id: 'listening', label: 'Listening', items: [
     { to: '/listening-tests', icon: '🎧', label: 'Full đề Listening', student: 'listening.html?mode=full' },
     { to: '/listening-sections', icon: '🎵', label: 'Bài lẻ Listening & Dictation', student: 'listening.html?mode=single · dictation.html' },
+    { to: '/dictation-reports', icon: '🚩', label: 'Báo lỗi Dictation', badge: 'dictationReports', badgeTitle: 'Câu Dictation học sinh báo lỗi, chưa xử lý', student: 'app/dictation (nút 🚩 Báo lỗi)' },
     { to: '/tips?skill=listening', icon: '💡', label: 'Listening Tips', student: 'listening.html?mode=tips' },
   ] },
   { id: 'writing', label: 'Writing', items: [

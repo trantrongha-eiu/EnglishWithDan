@@ -602,7 +602,8 @@ async function open(page, url, state = makeState()) {
       { index: 1, isCorrect: true, promptVi: 'Cuốn sách mà tôi đọc rất hay.', userAnswer: 'The book is good.', structureNote: 'which' },
       { index: 2, isCorrect: false, promptVi: 'Người đàn ông sống ở đây.', userAnswer: '', modelAnswer: 'He is a doctor.' },
     ] } });
-    if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills });
+    if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills, reportConfig: state.dictReport === undefined ? { enabled: true, thankOnFix: true, reasons: [{ key: 'wrong_text', label: 'Đáp án sai chữ' }, { key: 'cut_audio', label: 'Audio bị cắt' }, { key: 'other', label: 'Lỗi khác' }] } : state.dictReport });
+    if (p === '/listening/dictation/report') return json({ success: true, message: 'Đã gửi báo lỗi — cảm ơn bạn!' });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)\/translations$/);
     if (m) return json({ success: true, translations: ['Xin chào bạn tôi.', 'Hôm nay trời đẹp.', ''] });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)$/);
@@ -2027,6 +2028,48 @@ test.describe('inside the React app', () => {
     await expect(page.locator('.dict-num-btn').first()).toHaveClass(/done/);
     await expect(page.locator('#dict-cur-num')).toHaveText('2', { timeout: 4000 });
     await expect(page.locator('#dict-input')).toHaveValue('');
+  });
+
+  test('dictation: 🚩 every sentence can be reported (panel + transcript), with a reason and a note', async ({ page }) => {
+    const { log } = await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.fill('#dict-input', 'hello there my fiend');
+    await page.click('#dict-report-btn');
+    const dlg = page.locator('.modal-box[role=dialog]');
+    await expect(dlg).toContainText('Báo lỗi câu 1');
+    await expect(dlg.locator('.dx-report-reason')).toHaveCount(3);
+    // a reason has to be picked; "Lỗi khác" needs a note
+    await page.click('#dict-report-send');
+    expect(log.filter((l) => l.includes('/dictation/report'))).toHaveLength(0);
+    await dlg.locator('.dx-report-reason', { hasText: 'Lỗi khác' }).click();
+    await page.click('#dict-report-send');
+    expect(log.filter((l) => l.includes('/dictation/report'))).toHaveLength(0);
+    await dlg.locator('.dx-report-reason', { hasText: 'Đáp án sai chữ' }).click();
+    await page.fill('#dict-report-note', 'audio says "mate"');
+    await page.click('#dict-report-send');
+    await expect(dlg).toBeHidden();
+    await expect(page.locator('#dict-report-btn')).toHaveClass(/sent/);
+    await expect(page.locator('#dict-report-btn')).toContainText('Đã báo lỗi');
+    const sent = log.find((l) => l.startsWith('POST /listening/dictation/report'));
+    expect(JSON.parse(sent.slice(sent.indexOf('{')))).toEqual({ sectionId: 's1', sentenceIndex: 0, reason: 'wrong_text', note: 'audio says "mate"', typedText: 'hello there my fiend' });
+    // the next sentence isn't marked; the transcript has a 🚩 per line
+    await page.click('#dict-next-btn');
+    await expect(page.locator('#dict-report-btn')).not.toHaveClass(/sent/);
+    await page.click('.dx-tab[data-tab="transcript"]');
+    await expect(page.locator('.dict-t-report')).toHaveCount(3);
+    await page.locator('.dict-t-report').nth(2).click({ force: true });
+    await expect(dlg).toContainText('Báo lỗi câu 3');
+    await dlg.locator('.dx-report-reason', { hasText: 'Audio bị cắt' }).click();
+    await page.click('#dict-report-send');
+    await expect(dlg).toBeHidden();
+    await expect(page.locator('.dict-t-report').nth(2)).toHaveClass(/sent/);
+    expect(log.filter((l) => l.includes('/dictation/report')).at(-1)).toContain('"sentenceIndex":2,"reason":"cut_audio"');
+  });
+
+  test('dictation: no 🚩 button when the admin turned reports off', async ({ page }) => {
+    await open(page, '/app/dictation?sectionId=s1', { ...makeState(), dictReport: { enabled: false, reasons: [] } });
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await expect(page.locator('#dict-report-btn')).toHaveCount(0);
   });
 
   test('dictation: 80% of the words is enough — Enter then goes on, a fix can be re-checked', async ({ page }) => {
