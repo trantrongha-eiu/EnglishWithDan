@@ -207,6 +207,16 @@ exports.saveDictationAttempt = async (req, res) => {
   }
 };
 
+exports.getDictationMistakeStats = async (req, res) => {
+  try {
+    const stats = await listeningService.getDictationMistakeStats(req.user._id);
+    res.json({ success: true, ...stats });
+  } catch (err) {
+    console.error('[Dictation mistakes]', err);
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
 exports.listGapFillSections = async (req, res) => {
   try {
     const sections = await listeningService.listGapFillSections();

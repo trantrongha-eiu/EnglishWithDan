@@ -158,3 +158,32 @@ describe('DELETE /api/admin/dictation-attempts/:id', () => {
     expect(await DictationAttempt.findById(attempt._id)).toBeNull();
   });
 });
+
+describe('dictation mistakes ("🎯 Bạn hay nghe sai")', () => {
+  test('each sentence keeps its sorted mistakes; my-mistakes counts them per type, a re-saved sentence once', async () => {
+    const student = await createStudent();
+    const token = signTokenFor(student);
+    const section = await createListeningSection({ title: 'Part 2' });
+    const save = (answers) => request(app)
+      .post('/api/listening/dictation/save-attempt')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ sectionId: section._id, answers });
+    const s0 = { sentenceIndex: 0, isCorrect: false, matchedWords: 3, totalWords: 5,
+      mistakes: [{ type: 'ending_s', typed: 'book', word: 'books' }, { type: 'weak_form', typed: '', word: 'of' }, { type: 'BAD TYPE!', typed: 'x', word: 'y' }] };
+    const s1 = { sentenceIndex: 1, isCorrect: true, matchedWords: 4, totalWords: 4, mistakes: [{ type: 'ending_s', typed: 'car', word: 'cars' }] };
+
+    expect((await save([s0])).status).toBe(200);
+    // the same session saved again later, now with sentence 1 too
+    expect((await save([s0, s1])).status).toBe(200);
+
+    const saved = await DictationAttempt.findOne({ userId: student._id }).sort({ submittedAt: -1, _id: -1 }).lean();
+    expect(saved.answers[0].mistakes).toEqual([{ type: 'ending_s', typed: 'book', word: 'books' }, { type: 'weak_form', typed: '', word: 'of' }]);
+
+    const res = await request(app).get('/api/listening/dictation/my-mistakes').set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(res.body.sentences).toBe(2);
+    expect(res.body.types[0]).toEqual({ type: 'ending_s', count: 2, examples: [{ typed: 'book', word: 'books' }, { typed: 'car', word: 'cars' }] });
+    expect(res.body.types[1]).toMatchObject({ type: 'weak_form', count: 1 });
+    expect(res.body.types).toHaveLength(2);
+  });
+});

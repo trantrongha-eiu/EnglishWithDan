@@ -281,3 +281,54 @@ body { background: var(--bg); }
 .dx-report-note:focus { outline: none; border-color: var(--brand); }
 .dx-report-hint { margin-top: 8px; font-size: 13px; color: var(--text3); }
 @media (max-width: 560px) { .dx-report-btn span { display: none; } .dx-report-btn { padding: 5px 9px; } }
+
+/* ── Check insights (React /app/dictation): mistakes, linking, credit ── */
+.dx-bad.case { color: #7c3aed; text-decoration-color: #7c3aed; }
+.dx-legend.case u { color: #7c3aed; }
+.dict-num-btn.done.peek { background: color-mix(in srgb, #f59e0b 16%, transparent); border-color: #f59e0b; color: #b45309; }
+.dx-done-pill.peek { color: #b45309; background: color-mix(in srgb, #f59e0b 16%, transparent); }
+.dx-credit { margin-top: 10px; font-size: 12.5px; color: var(--text2); }
+.dx-credit b { color: var(--success); }
+.dx-credit-peek { color: #b45309; }
+.dx-credit-peek i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; vertical-align: 0; }
+.dx-caps-tip { margin: -4px 0 10px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13.5px; line-height: 1.5; color: var(--text); background: color-mix(in srgb, #7c3aed 10%, transparent); }
+.dx-foot-caps { color: var(--text2); }
+.dx-insight { margin: 0 0 10px; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg2, rgba(0,0,0,.03)); font-size: 14px; line-height: 1.55; }
+.dx-insight-head { font-weight: 700; font-size: 13px; color: var(--text2); margin-bottom: 6px; }
+.dx-insight-head i { margin-right: 4px; }
+.dx-insight ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.dx-mtag { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--brand) 12%, transparent); color: var(--brand-dark, var(--brand)); }
+.dx-mpair s { color: var(--danger); text-decoration-color: var(--danger); }
+.dx-mpair b { color: var(--success); }
+.dx-mnote { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.dx-link-line { font-size: 16px; line-height: 1.9; color: var(--text); overflow-wrap: anywhere; }
+.dx-link-mark { display: inline-block; margin: 0 1px; font-weight: 800; color: var(--brand); }
+.dx-link-mark.k-j, .dx-link-mark.k-w, .dx-link-mark.k-r { color: #0891b2; }
+.dx-link-mark.k-same, .dx-link-mark.k-elide { color: #b45309; }
+.dx-link-mark.k-tj, .dx-link-mark.k-dj, .dx-link-mark.k-h { color: #7c3aed; }
+.dx-link-notes { margin-top: 6px !important; gap: 4px !important; font-size: 13.5px; color: var(--text2); }
+.dx-link-notes b { color: var(--text); }
+.dx-say { font-weight: 700; color: var(--brand); }
+.dx-weak { margin-top: 8px; font-size: 13px; color: var(--text2); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.dx-weak-chip { padding: 1px 8px; border-radius: var(--radius-pill); border: 1px solid var(--border); background: var(--card, transparent); color: var(--text); }
+.dx-weak-chip i { font-style: normal; color: var(--text3); }
+.dx-tally { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12.5px; }
+.dx-tally-title { font-weight: 700; color: var(--text2); }
+.dx-tally-chip { padding: 2px 9px; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--danger) 9%, transparent); color: var(--text); }
+.dx-tally-chip b { color: var(--danger); }
+.dx-summary { margin: 4px 0 12px; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--success) 35%, transparent); background: var(--success-light); }
+.dx-summary-score { font-size: 15px; line-height: 1.5; color: var(--text); margin-bottom: 8px; }
+.dx-summary-ok { color: var(--success); font-weight: 700; }
+.dx-summary-low { color: #b45309; font-weight: 600; }
+.dx-summary .dx-tally { margin-top: 10px; }
+.dx-habits { margin: 0 0 16px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card, var(--bg2)); }
+.dx-habits-head { font-weight: 800; font-size: 15px; margin-bottom: 10px; color: var(--text); }
+.dx-habits-head span { font-weight: 500; font-size: 12.5px; color: var(--text3); }
+.dx-habits-list { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.dx-habit { padding: 10px 12px; border-radius: 10px; background: var(--bg2, rgba(0,0,0,.03)); }
+.dx-habit-title { font-weight: 700; font-size: 14px; color: var(--text); }
+.dx-habit-title b { color: var(--danger); }
+.dx-habit-ex { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; }
+.dx-habit-ex s { color: var(--danger); }
+.dx-habit-ex b { color: var(--success); }
+.dx-habit-tip { margin-top: 4px; font-size: 12.5px; color: var(--text2); line-height: 1.5; }

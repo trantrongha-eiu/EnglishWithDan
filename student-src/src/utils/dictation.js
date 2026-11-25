@@ -148,6 +148,15 @@ export function diffSentence(typed, sentence) {
   const flush = () => {
     const bads = run.filter((o) => o.type === 'bad');
     const gaps = run.filter((o) => o.type === 'gap');
+    // Word boundaries moved by linking: "a napple" for "an apple", "alot"
+    // for "a lot" — one mistake, the typed words for the sentence's words
+    const joined = (xs) => xs.join('');
+    if (!isDrill && bads.length && gaps.length && bads.length + gaps.length > 2
+      && joined(bads.map((b) => normWord(b.word))) === joined(gaps.map((g) => normWord(refWords[g.r])))) {
+      tokens.push({ kind: 'wrong', linking: true, typed: bads.map((b) => b.word).join(' '), word: gaps.map((g) => refWords[g.r]).join(' '), r: gaps[0].r, span: gaps.length });
+      run = [];
+      return;
+    }
     // pair them up in order: a typed word in the place of a missing one
     gaps.forEach((g, k) => {
       const b = bads[k];
@@ -166,6 +175,22 @@ export function diffSentence(typed, sentence) {
   const total = refWords.length;
   let perfect = ok === total && !count('extra');
   if (isDrill && !perfect && typedWords.map(normWord).join('') === refWords.map(normWord).join('')) perfect = true;
+  // A name typed right but without its capital ("kippax") is still wrong
+  const caseErrors = isDrill && perfect ? capitalErrors(typed, sentence.answer) : [];
+  if (caseErrors.length) {
+    const left = caseErrors.map((c) => normWord(c.word));
+    const caseTokens = refWords.map((word, r) => {
+      const at = left.indexOf(normWord(word));
+      if (at < 0) return { kind: 'ok', word, r };
+      left[at] = null;
+      return { kind: 'case', word, typed: caseErrors[at].typed, r };
+    });
+    const okCount = caseTokens.filter((t) => t.kind === 'ok').length;
+    return {
+      tokens: caseTokens, ok: okCount, total, ratio: total ? okCount / total : 0, perfect: false, passed: false,
+      typos: 0, wrong: 0, missing: 0, extra: 0, caseErrors,
+    };
+  }
   const ratio = perfect ? 1 : total ? ok / total : 0;
   return {
     tokens: perfect ? refWords.map((word, r) => ({ kind: 'ok', word, r })) : tokens,
@@ -173,5 +198,26 @@ export function diffSentence(typed, sentence) {
     passed: perfect || (!isDrill && ratio >= PASS_RATIO),
     typos: perfect ? 0 : count('typo'), wrong: perfect ? 0 : count('wrong'),
     missing: perfect ? 0 : count('miss'), extra: perfect ? 0 : count('extra'),
+    caseErrors: [],
   };
+}
+
+// Proper names: an answer word that starts with a capital ("Kippax", "South
+// Main Street") must be typed with that capital — IELTS marks "kippax"
+// wrong. ALL CAPS is always fine; codes like "SE10" keep any case. Only for
+// a typed answer whose letters already match the answer's.
+export function capitalErrors(typed, answer) {
+  const chars = (s) => [...String(s || '').replace(/[’‘ʼ`´]/g, "'")].filter((ch) => /[A-Za-z0-9']/.test(ch));
+  const t = chars(typed);
+  const out = [];
+  let pos = 0;
+  for (const w of String(answer || '').split(/[\s\-–—]+/)) {
+    const c = chars(w);
+    const first = t[pos];
+    if (/^[A-Z][a-z]/.test(c.join('')) && first && first !== first.toUpperCase()) {
+      out.push({ word: c.join(''), typed: t.slice(pos, pos + c.length).join('') });
+    }
+    pos += c.length;
+  }
+  return out;
 }

@@ -621,6 +621,44 @@ async function getDictationDrill(slug) {
   };
 }
 
+// A sentence's mistakes as the page sorted them — kept small: a known-shape
+// type key and short words, at most 8 per sentence.
+const MISTAKE_TYPE_RE = /^[a-z_]{2,20}$/;
+function safeMistakes(list) {
+  return list.slice(0, 8)
+    .filter(m => m && MISTAKE_TYPE_RE.test(String(m.type || '')))
+    .map(m => ({ type: String(m.type), typed: String(m.typed || '').slice(0, 40), word: String(m.word || '').slice(0, 40) }));
+}
+
+// "🎯 Bạn hay nghe sai": the student's dictation mistakes (the attempts'
+// 3-month TTL is the window), counted per type with a few recent examples.
+// Sentences re-saved by several attempts of one session count once.
+async function getDictationMistakeStats(userId) {
+  const attempts = await DictationAttempt.find({ userId, 'answers.mistakes.0': { $exists: true } })
+    .select('sectionId drillId answers.sentenceIndex answers.mistakes submittedAt')
+    .sort({ submittedAt: -1 }).limit(300).lean();
+  const seen = new Set();
+  const byType = new Map();
+  let sentences = 0;
+  for (const a of attempts) {
+    const lessonKey = String(a.drillId || a.sectionId);
+    for (const ans of a.answers || []) {
+      if (!ans.mistakes?.length) continue;
+      const key = `${lessonKey}:${ans.sentenceIndex}`;
+      if (seen.has(key)) continue; // the newest save of that sentence only
+      seen.add(key);
+      sentences += 1;
+      for (const m of ans.mistakes) {
+        const t = byType.get(m.type) || { type: m.type, count: 0, examples: [] };
+        t.count += 1;
+        if (t.examples.length < 3 && (m.typed || m.word)) t.examples.push({ typed: m.typed || '', word: m.word || '' });
+        byType.set(m.type, t);
+      }
+    }
+  }
+  return { sentences, types: [...byType.values()].sort((x, y) => y.count - x.count) };
+}
+
 async function saveDictationAttempt({ sectionId, drillSlug, sectionTitle, partNumber, answers }, userId) {
   let section;
   let drill = null;
@@ -638,7 +676,8 @@ async function saveDictationAttempt({ sectionId, drillSlug, sectionTitle, partNu
     sentenceIndex: Number(a.sentenceIndex),
     isCorrect: a.isCorrect === true,
     matchedWords: Number(a.matchedWords) || 0,
-    totalWords: Number(a.totalWords) || 0
+    totalWords: Number(a.totalWords) || 0,
+    ...(Array.isArray(a.mistakes) && a.mistakes.length ? { mistakes: safeMistakes(a.mistakes) } : {})
   })).filter(a => Number.isInteger(a.sentenceIndex));
   if (!safeAnswers.length) return null;
 
@@ -1556,7 +1595,7 @@ module.exports = {
   uploadTestAudio, uploadStandaloneAudio, uploadMapImage, uploadSectionAudio,
   updateTranscript,
   listAdminAttempts, getAdminAttemptsStats,
-  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, listDictationDrills, getDictationDrill, getDictationTranslations, saveDictationAttempt,
+  listPracticeSections, getPracticeSectionById, getSectionAnswerKey, listDictationSections, listDictationDrills, getDictationDrill, getDictationTranslations, saveDictationAttempt, getDictationMistakeStats,
   listGapFillSections, gapFillSectionIdsFor, getGapFillSectionById, getGapFillGlossary, saveGapFillAttempt, generateSectionGapFill, updateSectionGapFill,
   getWarmUpSectionById, buildSectionWarmUp, generateSectionWarmUp, getSectionWarmUp, updateSectionWarmUp,
   listAdminSections, getAdminSection, createAdminSection, updateAdminSection, hideAdminSection, deleteAdminSectionPermanent, bulkSetSectionsActive,

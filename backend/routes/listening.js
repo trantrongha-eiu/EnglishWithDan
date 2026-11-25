@@ -50,6 +50,8 @@ router.get('/practice/answer-key/:id', auth, answerKeyLimiter, requirePremium('B
 // STUDENT – Dictation practice (chép chính tả từng câu) — lists whichever
 // sections have already been through scripts/bulkAlignListeningDictation.js.
 router.get('/dictation/list', auth, contentLimiter, listeningController.listDictationSections);
+// "🎯 Bạn hay nghe sai" on the Dictation page: the student's own mistakes by type
+router.get('/dictation/my-mistakes', auth, contentLimiter, listeningController.getDictationMistakeStats);
 // Fetch one section's full data (audioUrl + dictationSentences + transcript)
 // for the dictation player. Dedicated route — same content + premium gate as
 // /practice/by-id/:id, but WITHOUT requireReviewComplete: dictation is an

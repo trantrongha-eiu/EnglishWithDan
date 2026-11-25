@@ -604,6 +604,7 @@ async function open(page, url, state = makeState()) {
     ] } });
     if (p === '/listening/dictation/list') return state.failDictList ? json({ success: false }, 500) : json({ success: true, sections: state.dictSections, drills: state.dictDrills, reportConfig: state.dictReport === undefined ? { enabled: true, thankOnFix: true, reasons: [{ key: 'wrong_text', label: 'Đáp án sai chữ' }, { key: 'cut_audio', label: 'Audio bị cắt' }, { key: 'other', label: 'Lỗi khác' }] } : state.dictReport });
     if (p === '/listening/dictation/report') return json({ success: true, message: 'Đã gửi báo lỗi — cảm ơn bạn!' });
+    if (p === '/listening/dictation/my-mistakes') return json({ success: true, ...(state.dictHabits || { sentences: 0, types: [] }) });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)\/translations$/);
     if (m) return json({ success: true, translations: ['Xin chào bạn tôi.', 'Hôm nay trời đẹp.', ''] });
     m = p.match(/^\/listening\/dictation\/section\/(\w+)$/);
@@ -2141,6 +2142,83 @@ test.describe('inside the React app', () => {
     await expect(page.locator('.dict-reveal-answer')).toHaveText('0491 577 248');
     await expect(page.locator('#dict-check-btn')).toHaveCount(0);
     await expect(page.locator('#dict-next-sentence-btn')).toBeVisible();
+  });
+
+  test('dictation: typed first, then "Hiện đáp án" — a right answer still counts', async ({ page }) => {
+    const { log } = await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.click('#dict-gear-btn');
+    await page.locator('#opt-autonext').uncheck();
+    await page.click('#dict-gear-btn');
+    await page.fill('#dict-input', 'hello there my friend');
+    await page.click('#dict-reveal-btn');
+    await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
+    await expect(page.locator('.dict-peek-note')).toHaveCount(0);
+    await expect(page.locator('#dict-credit')).toContainText('1/3');
+    await expect(page.locator('.dict-num-btn').first()).not.toHaveClass(/peek/);
+    // a wrong one shown that way is the answer seen first: no credit
+    await page.locator('.dict-num-btn').nth(1).click();
+    await page.fill('#dict-input', 'it is lovely');
+    await page.click('#dict-reveal-btn');
+    await page.fill('#dict-input', 'It is a lovely day.');
+    await page.click('#dict-check-btn');
+    await expect(page.locator('.dx-done-pill')).toContainText('không tính điểm');
+    await expect(page.locator('.dict-num-btn').nth(1)).toHaveClass(/peek/);
+    await expect(page.locator('#dict-credit')).toContainText('1/3');
+    await page.evaluate(() => window.__go('/classroom'));
+    await expect.poll(() => log.length).toBe(1);
+    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":true');
+    expect(log[0]).toContain('"sentenceIndex":1,"isCorrect":false');
+    // the first check's mistakes go along: "a" left out
+    expect(log[0]).toContain('"mistakes":[{"type":"weak_form","typed":"","word":"a"}');
+  });
+
+  test('dictation: a check shows the meaning, what kind of mistakes, and how the sentence links', async ({ page }) => {
+    await open(page, '/app/dictation?sectionId=s1');
+    await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.fill('#dict-input', 'hello dere my');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('Incorrect');
+    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Xin chào bạn tôi.');
+    await expect(page.locator('#dict-mistakes li[data-type="sound"]')).toContainText('dere');
+    await expect(page.locator('#dict-mistakes li[data-type="sound"]')).toContainText('/θ/ /ð/');
+    await expect(page.locator('#dict-mistakes li[data-type="missed"]')).toHaveCount(1);
+    // nothing in it links (a comma pause, then a consonant), so no card
+    await expect(page.locator('#dict-linking')).toHaveCount(0);
+    await expect(page.locator('.dx-tally')).toContainText('Nghe nhầm âm');
+    // the second sentence links "It‿is‿a"
+    await page.locator('.dict-num-btn').nth(1).click();
+    await page.fill('#dict-input', 'it is a lovely day');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-linking .dx-link-notes')).toContainText('It‿is');
+    await expect(page.locator('#dict-linking .dx-link-notes')).toContainText('i-tis');
+  });
+
+  test('dictation: a name must start with a capital; ALL CAPS is fine', async ({ page }) => {
+    await open(page, '/app/dictation?drill=spelling-1');
+    await page.locator('.dict-num-btn').nth(1).waitFor();
+    await expect(page.locator('.dx-foot-caps')).toContainText('Caps Lock');
+    await page.locator('.dict-num-btn').nth(1).click();
+    await page.fill('#dict-input', 'smith');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('viết hoa chữ cái đầu');
+    await expect(page.locator('#dict-status')).toContainText('smith → Smith');
+    await expect(page.locator('#dict-caps-tip')).toContainText('Caps Lock');
+    await expect(page.locator('#dict-diff .dx-bad.case')).toHaveText('smith');
+    await page.fill('#dict-input', 'SMITH');
+    await page.keyboard.press('Enter');
+    await expect(page.locator('#dict-status')).toContainText('Correct!');
+  });
+
+  test('dictation: the list shows what the student often mishears', async ({ page }) => {
+    await open(page, '/app/dictation', { ...makeState(), dictHabits: { sentences: 12, types: [
+      { type: 'ending_s', count: 5, examples: [{ typed: 'book', word: 'books' }] },
+      { type: 'weak_form', count: 3, examples: [{ typed: '', word: 'of' }] },
+    ] } });
+    await expect(page.locator('#dict-habits')).toContainText('Bạn hay nghe sai');
+    await expect(page.locator('#dict-habits .dx-habit')).toHaveCount(2);
+    await expect(page.locator('#dict-habits .dx-habit').first()).toContainText('Âm cuối -s / -es ×5');
+    await expect(page.locator('#dict-habits .dx-habit').first()).toContainText('book → books');
   });
 
   test('dictation: leaving stops the audio; a bad link returns to the list', async ({ page }) => {

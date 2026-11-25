@@ -7,11 +7,21 @@
  */
 const mongoose = require('mongoose');
 
+// One wrong word at a sentence's first check, sorted by the page
+// (student-src utils/dictationInsights.js MISTAKE_TYPES: ending_s,
+// weak_form, sound, case…) — "Bạn hay nghe sai" adds these up.
+const DictationMistakeSchema = new mongoose.Schema({
+  type:  String,
+  typed: String,
+  word:  String
+}, { _id: false });
+
 const DictationAnswerSchema = new mongoose.Schema({
   sentenceIndex: Number,
-  isCorrect:     Boolean, // perfect word-for-word match against the sentence
+  isCorrect:     Boolean, // typed right (≥80% of the words; a drill exact) without seeing the answer first
   matchedWords:  Number,
-  totalWords:    Number
+  totalWords:    Number,
+  mistakes:      { type: [DictationMistakeSchema], default: undefined }
 }, { _id: false });
 
 const DictationAttemptSchema = new mongoose.Schema({
