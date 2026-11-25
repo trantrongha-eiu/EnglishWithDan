@@ -1424,7 +1424,7 @@ function getRdFilteredPassages(skipTypeFilter = false) {
   });
   if (!q) return list;
   const label = { passage1: 'passage 1', passage2: 'passage 2', passage3: 'passage 3' };
-  const text = p => [p.title, (p.__isActual || p.isActualTest) ? 'actual test' : (label[p.category] || '')];
+  const text = p => [p.title, p.source || '', (p.__isActual || p.isActualTest) ? 'actual test' : (label[p.category] || '')];
   return window.SearchMatch
     ? window.SearchMatch.filter(list, q, text)
     : list.filter(p => (p.title || '').toLowerCase().includes(q.toLowerCase()));
@@ -1509,9 +1509,11 @@ function _rdRenderPassageCard(p) {
   const qCount    = p.questionCount || 0;
   const catCls    = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
   const catName   = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';
+  // Cambridge passages: "Cam 15" badge + "Cam 15 - Test 1" line over the title
+  const camBook   = (/^Cam \d+/.exec(p.source || '') || [''])[0];
   const badgeLabel= isActual
     ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
-        <span class="practice-card-cat-badge at" style="position:static">Actual</span>
+        <span class="practice-card-cat-badge at" style="position:static">${camBook ? escHtml(camBook) : 'Actual'}</span>
         <span class="practice-card-cat-badge ${catCls}" style="position:static;font-size:9px;padding:2px 6px">${catName}</span>
        </div>`
     : `<span class="practice-card-cat-badge ${cls}">Passage ${pNum}</span>`;
@@ -1538,6 +1540,7 @@ function _rdRenderPassageCard(p) {
       ${window.SynonymPrompt ? window.SynonymPrompt.btnHtml('rd-passage', p._id, 'cover') : ''}
     </div>
     <div class="practice-card-body">
+      ${p.source ? `<div class="practice-card-src">${escHtml(p.source)}</div>` : ''}
       <div class="practice-card-title">${escHtml(p.title)}</div>
       <div class="practice-card-qtypes">${qtypes.map(t => `· ${t}`).join('<br>')}</div>
       <button class="${btnCls}" onclick="event.stopPropagation();startPractice('${p._id}','${category}')">${btnText}</button>

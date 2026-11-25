@@ -497,7 +497,7 @@ async function listPracticePassages(category, userId) {
   const passages = await Passage.aggregate([
     { $match: filter },
     { $project: {
-      title: 1, category: 1, isActualTest: 1, questionRange: 1, questionGroups: 1, questions: 1, thumbnailUrl: 1,
+      title: 1, category: 1, isActualTest: 1, source: 1, questionRange: 1, questionGroups: 1, questions: 1, thumbnailUrl: 1,
       firstImg: { $regexFind: { input: { $ifNull: ['$content', ''] }, regex: '<img[^>]*\\ssrc="([^"]+)"' } },
     } },
     ...(category === 'all' ? [{ $sort: { _id: -1 } }] : []),
@@ -505,6 +505,7 @@ async function listPracticePassages(category, userId) {
   const safePassages = passages.map(p => ({
     _id: p._id, title: p.title, category: p.category, questionRange: p.questionRange,
     isActualTest: p.isActualTest === true,
+    source: p.source || '',
     // an explicit cover image wins; otherwise the first image inside the passage
     thumbnail: toCardThumbnail(p.thumbnailUrl || p.firstImg?.captures?.[0] || ''),
     questionCount: (p.questionGroups || []).reduce((s, g) => s + (g.questions?.length || 0), 0) || (p.questions?.length || 0),

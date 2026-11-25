@@ -152,7 +152,7 @@ ${ld.map(o => `  <script type="application/ld+json">${JSON.stringify(o)}</script
 <body>
 
 <nav class="navbar" id="navbar">
-  <a href="/" class="nav-logo"><img src="img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img"></a>
+  <a href="/" class="nav-logo"><img src="/img/big_logo.png" alt="Daniel Hà English Education" class="nav-logo-img"></a>
   <div class="nav-links">
     <a href="/">Trang chủ</a>
     <a href="/courses">Khóa học</a>

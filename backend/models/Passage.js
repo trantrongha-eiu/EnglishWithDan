@@ -131,6 +131,8 @@ const PassageSchema = new mongoose.Schema({
   tags:          [String],
   isActive:      { type: Boolean, default: true },
   isActualTest:  { type: Boolean, default: false },
+  // Original book, shown on the bài lẻ card: "Cam 15 - Test 1" (scripts/renameCamReadingTests.js)
+  source:        { type: String, default: '' },
   // Cover image for the practice list card. Optional: when empty, the list
   // uses the first <img> inside `content` (see readingService.listPracticePassages).
   thumbnailUrl:  { type: String, default: '' },
