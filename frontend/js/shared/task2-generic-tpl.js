@@ -29,7 +29,7 @@
     if (!loading) {
       loading = new Promise((resolve, reject) => {
         const s = document.createElement('script');
-        s.src = '/js/task2-generic-templates.js?v=a07e561334';
+        s.src = '/js/task2-generic-templates.js?v=83b6efa0b5';
         s.onload  = () => window.TASK2_GENERIC_TEMPLATES ? resolve(window.TASK2_GENERIC_TEMPLATES) : reject(new Error('templates'));
         s.onerror = () => { loading = null; reject(new Error('templates')); };
         document.head.appendChild(s);

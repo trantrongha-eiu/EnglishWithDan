@@ -1,9 +1,13 @@
-// Generic Task 2 templates for the "Full template" pop-up on task2-template.html.
-// Fill-in frames with (placeholders) that work for any topic, copied verbatim
-// from the book "IELTS Writing Task 2 Template Bank" (task 2 writing/
-// IELTS_Writing_Task2_TemplateBank.docx), Part B, Band 6+ and Band 7+ boxes.
-// The practice modes keep using the topic-based sentences from the API;
-// only the pop-up reads this file.
+// Generic Task 2 templates — fill-in frames with (placeholders) that work for
+// any topic: the Band 6+ and Band 7+ boxes of the Writing book, Phần II · Task 2
+// Template Bank (writing/IELTS_Writing_EnglishWithDan_Ban_Hoc_Vien (2).docx,
+// 2026-11-13 edition), copied verbatim. Labels = the book's bold sub-heads.
+// Only the Vietnamese of Type 06 Band 7+ "Đồng ý một phần — cách chia Body" is
+// ours (the book gives none).
+// Used by the Task 2 Templates page (/app/task2-template + legacy
+// task2-template.html), the "Xem template" panels (writing.html,
+// task2-practice.html) and the writer's Template tab on task2-practice.html
+// — one source, so every page shows the same template.
 // Shape: { band6|band7: { typeId: { name, sections: [{ title, lines: [{ label?, en, vi }] }] } } }
 window.TASK2_GENERIC_TEMPLATES = {
  "band6": {
@@ -818,8 +822,8 @@ window.TASK2_GENERIC_TEMPLATES = {
        "vi": "Nguyên nhân của (vấn đề) vừa phức tạp vừa đa chiều."
       },
       {
-       "en": "One primary factor is (cause 1), which contributes significantly to this issue. It is widely acknowledged that (clause), making it a central driver of this trend.",
-       "vi": "Một yếu tố chính là..., điều này góp phần đáng kể vào vấn đề. Nhiều người thừa nhận rằng..., khiến nó trở thành động lực chính của xu hướng này."
+       "en": "One primary factor is (cause 1), which contributes significantly to this issue. There is little doubt that (clause), making it a central driver of this trend.",
+       "vi": "Một yếu tố chính là..., điều này góp phần đáng kể vào vấn đề. Hầu như không thể nghi ngờ rằng..., khiến nó trở thành động lực chính của xu hướng này."
       },
       {
        "en": "For example, (specific example) clearly demonstrates how this cause leads to wider consequences.",
@@ -839,8 +843,8 @@ window.TASK2_GENERIC_TEMPLATES = {
        "vi": "Tác động của (vấn đề) vừa mang tính tức thời vừa lâu dài."
       },
       {
-       "en": "One significant consequence is (effect 1). Research has consistently shown that (clause).",
-       "vi": "Một hậu quả đáng kể là... Nghiên cứu đã liên tục chỉ ra rằng..."
+       "en": "One significant consequence is (effect 1). This is particularly evident in (specific situation), where (clause).",
+       "vi": "Một hậu quả đáng kể là... Điều này thể hiện rõ ở..., nơi mà..."
       },
       {
        "en": "Furthermore, this phenomenon inevitably leads to (noun phrase). More alarmingly, the long-term implications may include (serious effect).",
@@ -890,23 +894,41 @@ window.TASK2_GENERIC_TEMPLATES = {
      ]
     },
     {
-     "title": "② Body 1 & 2 – Reasons · Lý do",
+     "title": "② Body 1 – Reason 1 · Lý do 1",
      "lines": [
       {
-       "en": "One compelling reason why (your position) is that (reason).",
-       "vi": "Một lý do thuyết phục khiến... là..."
+       "en": "One compelling reason why I hold this view is that (reason 1).",
+       "vi": "Một lý do thuyết phục khiến tôi giữ quan điểm này là..."
       },
       {
        "en": "It is undeniable that (key point) plays a crucial role in (related aspect).",
        "vi": "Không thể phủ nhận rằng... đóng vai trò quan trọng trong..."
       },
       {
-       "en": "This can be attributed to the fact that (explanation). For instance, (specific example), which clearly illustrates that (analysis).",
-       "vi": "Điều này có thể là do... Ví dụ,..., điều này minh chứng rõ ràng rằng..."
+       "en": "This can be attributed to the fact that (explanation). Consequently, (result), thereby (verb-ing) (further outcome).",
+       "vi": "Điều này có thể là do... Do đó,..., từ đó..."
       },
       {
-       "en": "Research has consistently shown that (finding), thereby reinforcing the view that (argument).",
-       "vi": "Nghiên cứu đã liên tục chỉ ra rằng..., từ đó củng cố quan điểm rằng..."
+       "en": "For instance, (specific example), which clearly illustrates that (analysis).",
+       "vi": "Ví dụ,..., điều này minh chứng rõ ràng rằng..."
+      },
+      {
+       "en": "Admittedly, there is some truth in the claim that (opposing point). This is because (explanation), and (example) shows that this concern is not unfounded.",
+       "vi": "Phải thừa nhận rằng ý kiến... có phần đúng. Điều này là bởi vì..., và... cho thấy mối lo ngại này không phải là không có cơ sở.",
+       "label": "Đồng ý một phần — cách chia Body 1"
+      }
+     ]
+    },
+    {
+     "title": "③ Body 2 – Reason 2 (+ counter-argument) · Lý do 2 (+ phản biện)",
+     "lines": [
+      {
+       "en": "A further consideration is that (reason 2), which has far-reaching implications for (group / area).",
+       "vi": "Một điểm cần xét thêm là..., điều này có ảnh hưởng sâu rộng đến..."
+      },
+      {
+       "en": "This is particularly evident in (specific context), where (observation), thereby reinforcing the view that (argument).",
+       "vi": "Điều này thể hiện rõ ở..., nơi..., từ đó củng cố quan điểm rằng..."
       },
       {
        "en": "While some may argue that (opposing view), this perspective fails to take into account that (counterargument).",
@@ -914,13 +936,19 @@ window.TASK2_GENERIC_TEMPLATES = {
        "label": "Câu phản biện — dùng khi nhắm Band 7.5+"
       },
       {
-       "en": "Admittedly, (concession); nevertheless, the overall impact remains predominantly positive / negative.",
-       "vi": "Thừa nhận rằng...; tuy nhiên, tác động tổng thể vẫn chủ yếu là tích cực / tiêu cực."
+       "en": "Admittedly, (concession); nevertheless, (your position) remains the more convincing position.",
+       "vi": "Thừa nhận rằng...; tuy nhiên, quan điểm của tôi vẫn thuyết phục hơn.",
+       "label": "Câu phản biện — dùng khi nhắm Band 7.5+"
+      },
+      {
+       "en": "Nevertheless, I would argue that (your main position) carries greater weight. The most significant reason is that (reason), which means that (result). A case in point is (specific example).",
+       "vi": "Tuy nhiên, tôi cho rằng... có sức nặng hơn. Lý do quan trọng nhất là..., điều này có nghĩa là... Một ví dụ điển hình là...",
+       "label": "Đồng ý một phần — cách chia Body 2"
       }
      ]
     },
     {
-     "title": "③ Conclusion · Kết bài",
+     "title": "④ Conclusion · Kết bài",
      "lines": [
       {
        "en": "In conclusion, having examined the arguments presented, I maintain that (restate position).",
@@ -966,8 +994,8 @@ window.TASK2_GENERIC_TEMPLATES = {
        "vi": "Điều này chủ yếu là do... Do đó,..., từ đó..."
       },
       {
-       "en": "A clear illustration of this can be seen in (specific example).",
-       "vi": "Một minh chứng rõ ràng có thể thấy ở..."
+       "en": "This is particularly evident in (specific example), where (outcome).",
+       "vi": "Điều này thể hiện rõ ở..., nơi..."
       },
       {
        "en": "A further consideration is (reason 2), which has the potential to (result) in the long term.",

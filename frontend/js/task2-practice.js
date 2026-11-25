@@ -69,10 +69,10 @@ function weekLabel(w) {
 // the two halves are usually written on different devices.
 const ESSAY_TYPE_ID = { advantages_disadvantages:'type01', discuss_both_views:'type02', cause_solution:'type03', effect_solution:'type04', cause_effect:'type05', agree_disagree:'type06', positive_or_negative_development:'type07' };
 const LESSON_SECTIONS = [
-  { key: 'intro',      label: 'Mở bài',     en: 'Introduction', phase: 'class', tplIdx: 0, ph: 'Paraphrase đề bài + nêu hướng triển khai / quan điểm (thesis)...' },
-  { key: 'body1',      label: 'Thân bài 1', en: 'Body 1',       phase: 'class', tplIdx: 1, ph: 'Câu chủ đề (ý chính) → giải thích (because) → kết quả (result) → ví dụ (example)...' },
-  { key: 'body2',      label: 'Thân bài 2', en: 'Body 2',       phase: 'home',  tplIdx: 2, ph: 'Viết theo template Band 7.0: câu chủ đề → giải thích → kết quả → ví dụ...' },
-  { key: 'conclusion', label: 'Kết bài',    en: 'Conclusion',   phase: 'home',  tplIdx: 3, ph: 'In conclusion, … tóm tắt ý ở 2 thân bài + nêu ý kiến (nếu đề hỏi) · thử 1 câu điều kiện loại 1/2…' }
+  { key: 'intro',      label: 'Mở bài',     en: 'Introduction', phase: 'class', ph: 'Paraphrase đề bài + nêu hướng triển khai / quan điểm (thesis)...' },
+  { key: 'body1',      label: 'Thân bài 1', en: 'Body 1',       phase: 'class', ph: 'Câu chủ đề (ý chính) → giải thích (because) → kết quả (result) → ví dụ (example)...' },
+  { key: 'body2',      label: 'Thân bài 2', en: 'Body 2',       phase: 'home',  ph: 'Viết theo template Band 6+ / 7+: câu chủ đề → giải thích → kết quả → ví dụ...' },
+  { key: 'conclusion', label: 'Kết bài',    en: 'Conclusion',   phase: 'home',  ph: 'In conclusion, … tóm tắt ý ở 2 thân bài + nêu ý kiến (nếu đề hỏi) · thử 1 câu điều kiện loại 1/2…' }
 ];
 const LESSON_MIN_WORDS = 250;
 function sessionNumber(topicId) {
@@ -1334,7 +1334,7 @@ function renderTranslateStep(isCurrent) {
       ${_infoBody('translate', `<ul class="t2-info-list">
         <li>Mỗi câu là một ý chính của đề, dùng từ vựng vừa học. Câu làm xong sẽ hiện ở cột trái khi bạn viết bài.</li>
         <li>Chỉ khoảng <b>1/4 số câu phải gõ cả câu</b> — còn lại là chọn cụm đúng, điền cụm từ, nghe &amp; điền, ghép cụm.</li>
-        <li>Câu cuối: <b>tự viết đoạn kết bài</b> theo template Band 7.0 — tóm tắt ý thân bài, nêu ý kiến nếu đề hỏi, thử dùng câu điều kiện loại 1/2. AI chấm.</li>
+        <li>Câu cuối: <b>tự viết đoạn kết bài</b> theo template Band 7+ — tóm tắt ý thân bài, nêu ý kiến nếu đề hỏi, thử dùng câu điều kiện loại 1/2. AI chấm.</li>
         <li><b>Đúng ≥ ${T2_TRANSLATE_PASS}% số câu</b> là mở khoá phần viết trên lớp. Sai 3 lần thì câu tính sai và quay lại sau để làm lại.</li>
       </ul>`)}
       <div class="t2-mode-legend">${['mcq', 'gap', 'listen', 'type', 'order', 'write'].map(m => _modeBadge(m)).join('')}</div>
@@ -1486,7 +1486,7 @@ function renderHomeStep(isCurrent) {
       ${_stepHead(6, 'Viết Thân bài 2 + Kết bài', `${submitted ? '<span class="t2-step-tag ok"><i class="fas fa-check"></i> Đã nộp</span>' : ''}${_infoBtn('home')}`, done)}
       <div class="t2-sec-pills"><span class="t2-sec-c2">Thân bài 2</span><span class="t2-sec-c3">Kết bài</span></div>
       ${_infoBody('home', `<ul class="t2-info-list">
-        <li>Viết theo <b>template Band 7.0</b> (tab “Template” ở cột trái màn hình viết).</li>
+        <li>Viết theo <b>template Band 6+ / 7+</b> (tab “Template” ở cột trái màn hình viết).</li>
         <li><b>Kết bài:</b> chép lại đoạn kết bạn đã tự viết ở bước ③ rồi sửa cho khớp với 2 thân bài.</li>
         <li>Dùng từ vựng, ý tưởng và câu đã dịch — <b>tự viết bằng lời của bạn</b>, không chép bài mẫu.</li>
         <li>Đủ 4 phần (≥ ${LESSON_MIN_WORDS} từ) → bấm <b>Nộp bài chấm AI</b>.</li>
@@ -1969,8 +1969,8 @@ function _noteMySentence(q, answer, isOk) {
   s.isCorrect = !!isOk;
 }
 
-// Type guides (outline + model essay) and the Band 7.0 templates — both
-// premium endpoints, loaded once per page. null = not loaded yet.
+// Type guides (outline + model essay, premium endpoint) and the book
+// templates (js/task2-generic-templates.js), loaded once per page. null = not loaded yet.
 let _guideCache = null;
 let _tplCache = null;
 let _guideLoading = null;
@@ -1985,18 +1985,35 @@ function _loadGuides() {
   }
   return _guideLoading;
 }
+// Templates = js/task2-generic-templates.js, the SAME file the Task 2
+// Templates page (/app/task2-template) teaches from — the Band 6+ / Band 7+
+// frames of the Writing book (Phần II · Template Bank). Never the old
+// Task2Template DB rows (/api/task2/templates), which predate the book.
+// Shape: { band6|band7: { typeNN: { name, sections: [{ title, lines: [{ label?, en, vi }] }] } } }
 function _loadTemplates() {
   if (_tplCache) return Promise.resolve(_tplCache);
+  if (!window.Task2GenericTpl) return Promise.resolve(_tplCache = {});
   if (!_tplLoading) {
-    _tplLoading = apiFetch('/api/task2/templates?level=band7')
-      .then(d => (_tplCache = d.templates || []))
-      .catch(() => (_tplCache = []))
+    _tplLoading = Task2GenericTpl.load()
+      .then(d => (_tplCache = d || {}))
+      .catch(() => (_tplCache = {}))
       .finally(() => { _tplLoading = null; });
   }
   return _tplLoading;
 }
 function _guideFor(t) { return (_guideCache || []).find(g => g.typeId === ESSAY_TYPE_ID[t.essayType]) || null; }
-function _templateFor(t) { return (_tplCache || []).find(x => x.typeId === ESSAY_TYPE_ID[t.essayType]) || null; }
+function _tplTypeId(t) {
+  return ESSAY_TYPE_ID[t.essayType] || (window.Task2GenericTpl && Task2GenericTpl.guessType(t.prompt || '')) || null;
+}
+function _templateFor(t, level) {
+  const lv = (_tplCache || {})[level || 'band7'] || {};
+  return lv[_tplTypeId(t)] || null;
+}
+// Template section for a writer paragraph (intro / body1 / body2 / conclusion), by title.
+const _TPL_SEC_RE = { intro: /Introduction/i, body1: /Body 1/i, body2: /Body 2/i, conclusion: /Conclusion/i };
+function _tplSection(tpl, key) {
+  return ((tpl && tpl.sections) || []).find(s => _TPL_SEC_RE[key].test(s.title)) || null;
+}
 
 // ════════════════════════════════════════════════════════
 //  SPLIT-SCREEN WRITER — reference (left) · essay (right)
@@ -2105,7 +2122,7 @@ function renderCompose() {
           ${_composeTplHtml()}
           ${C.phase === 'class'
             ? `<div class="t2c-tip"><b>🏫 Trên lớp:</b> viết <b>Mở bài</b> (cá nhân) rồi <b>Thân bài 1</b> (thảo luận nhóm → tự viết). Dùng câu đã dịch ở cột trái làm điểm tựa — ${_isStaffUser() ? 'bấm <b>＋</b> để chèn vào chỗ con trỏ rồi sửa cho liền mạch' : '<b>tự gõ lại</b> từng câu (không dán) để nhớ lâu hơn, rồi sửa cho liền mạch'}.</div>`
-            : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template Band 7.0 (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
+            : `<div class="t2c-tip is-home"><b>🏠 Về nhà:</b> viết <b>Thân bài 2</b> + <b>Kết bài</b> theo template Band 6+ / 7+ (tab <b>Template</b>). Dùng ý tưởng và câu đã dịch, nhưng <b>viết bằng lời của bạn</b> — đừng chép nguyên bài mẫu.</div>`}
           ${LESSON_SECTIONS.map(renderComposeSection).join('')}
           <div class="t2c-foot">
             <span class="t2c-foot-note">Bài tự lưu khi bạn gõ. Đủ 4 phần (${filled}/4) và ≥ ${LESSON_MIN_WORDS} từ thì nộp để AI chấm.</span>
@@ -2120,10 +2137,10 @@ function renderComposeSection(s) {
   const C = state.compose;
   const txt = state.lesson.sections[s.key] || '';
   const active = s.phase === C.phase;
-  const tpl = _templateFor(state.selectedTopic);
-  const tplTitle = tpl?.sections?.[s.tplIdx]?.title || '';
+  const tpl = _templateFor(state.selectedTopic, C.tplLevel);
+  const tplTitle = _tplSection(tpl, s.key)?.title || '';
   // "② Body 1 – Advantages · Ưu điểm" → "Advantages · Ưu điểm"
-  const focus = (tplTitle.split(/[–-]/)[1] || '').trim();
+  const focus = (tplTitle.split(/\s[–-]\s/)[1] || '').trim();
   return `
     <section class="t2c-sec ${active ? 'is-active' : 'is-other'}">
       <div class="t2c-sec-head">
@@ -2196,10 +2213,13 @@ function pickComposeTpl(typeId) {
   state.compose.tplType = typeId;
   renderComposeTplBody();
 }
+// One level for the whole writer: the "Xem template" panel and the
+// reference column's Template tab always show the same Band.
 function setComposeTplLevel(level) {
   if (state.compose.tplLevel === level) return;
   state.compose.tplLevel = level;
   renderComposeTplBody();
+  if (state.compose.tab === 'template') _refreshComposeRef();
 }
 function toggleComposeTplVi() {
   state.compose.tplVi = !state.compose.tplVi;
@@ -2380,30 +2400,28 @@ function _refVocab() {
       ${_insBtn(v.term)}
     </div>`).join('')}`;
 }
-// The Band 7.0 template for this essay type: blanks shown filled (bold)
-// and "(topic)" marked as the part the student must replace.
+// A template frame: escaped, each "(slot)" marked as the part to replace.
+function _tplLineHtml(en) {
+  return _escHtml(en || '').replace(/\([^()]*\)/g, m => `<mark>${m}</mark>`);
+}
+// The book template (Band 6+ / 7+, same as the Task 2 Templates page) for
+// this essay type; the sections of the current phase start open.
 function _refTemplate() {
   if (_tplCache === null) return '<p class="t2c-note"><i class="fas fa-spinner fa-spin"></i> Đang tải template...</p>';
-  const tpl = _templateFor(state.selectedTopic);
-  if (!tpl || !(tpl.sections || []).length) return '<p class="t2c-note">Chưa có template cho dạng bài này.</p>';
   const C = state.compose;
-  const openIdx = new Set(LESSON_SECTIONS.filter(s => s.phase === C.phase).map(s => s.tplIdx));
-  const fill = (it) => {
-    const ans = it.answer || (it.answers || [])[0] || '';
-    return String(it.en || '').replace(/_{3,}/, ans);
-  };
-  const show = (it) => {
-    const ans = it.answer || (it.answers || [])[0] || '';
-    return _escHtml(it.en || '')
-      .replace(/_{3,}/, ans ? `<b>${_escHtml(ans)}</b>` : '___')
-      .replace(/\((topic|chủ đề)\)/gi, '<mark>($1)</mark>');
-  };
+  const level = C.tplLevel || 'band7';
+  const levels = `<div class="t2c-tpl-levels" role="tablist" aria-label="Trình độ template">${[['band6', '🌱 Band 6+'], ['band7', '🏆 Band 7+']].map(([k, l]) =>
+    `<button type="button" role="tab" aria-selected="${k === level}" class="t2c-tpl-lv${k === level ? ' active' : ''}" data-level="${k}" onclick="setComposeTplLevel('${k}')">${l}</button>`).join('')}</div>`;
+  const tpl = _templateFor(state.selectedTopic, level);
+  if (!tpl || !(tpl.sections || []).length) return `${levels}<p class="t2c-note">Chưa có template cho dạng bài này.</p>`;
+  const open = new Set(LESSON_SECTIONS.filter(s => s.phase === C.phase).map(s => _tplSection(tpl, s.key)).filter(Boolean));
   return `
-    <p class="t2c-note">Template Band 7.0 (${_escHtml(tpl.name)}). Thay <mark style="background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px">(topic)</mark> và ví dụ bằng nội dung của đề này — không chép nguyên văn.</p>
-    ${tpl.sections.map((sec, i) => `
-      <details class="t2c-tplsec" ${openIdx.has(i) ? 'open' : ''}>
+    ${levels}
+    <p class="t2c-note">Template ${level === 'band6' ? 'Band 6+' : 'Band 7+'} (${_escHtml(tpl.name)}) — giống trang Task 2 Templates. Thay phần <mark style="background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px">(…)</mark> bằng nội dung của đề này — không chép nguyên văn.</p>
+    ${tpl.sections.map(sec => `
+      <details class="t2c-tplsec" ${open.has(sec) ? 'open' : ''}>
         <summary>${_escHtml(sec.title)}</summary>
-        ${(sec.items || []).map(it => `<div class="t2c-tpl">${show(it)}${it.vi ? `<div class="t2c-sent-vi">${_escHtml(String(it.vi).replace(/^→\s*/, ''))}</div>` : ''}${_insBtn(fill(it))}</div>`).join('')}
+        ${(sec.lines || []).map(ln => `<div class="t2c-tpl">${ln.label ? `<div class="t2c-tpl-label">${_escHtml(ln.label)}</div>` : ''}${_tplLineHtml(ln.en)}${ln.vi ? `<div class="t2c-sent-vi">${_escHtml(String(ln.vi).replace(/^→\s*/, ''))}</div>` : ''}${_insBtn(ln.en)}</div>`).join('')}
       </details>`).join('')}`;
 }
 
@@ -3371,19 +3389,13 @@ function onConclInput(ta) {
   if (el) el.innerHTML = _conclChecksHtml(ta.value, state.selectedTopic);
   checkSubmitEnabled();
 }
-// The Band 7 template's "④ Conclusion" frames for this topic's essay type.
+// The Band 7+ book template's "④ Conclusion" frames for this topic's essay type.
 function _conclTplHtml() {
   if (_tplCache === null) return '<p class="t2c-note"><i class="fas fa-spinner fa-spin"></i> Đang tải template...</p>';
-  const tpl = _templateFor(state.selectedTopic);
-  const sec = tpl && (tpl.sections || []).find(s => /conclu|kết bài/i.test(s.title));
+  const sec = _tplSection(_templateFor(state.selectedTopic, 'band7'), 'conclusion');
   if (!sec) return '<p class="t2c-note">Chưa có template kết bài cho dạng này.</p>';
-  return (sec.items || []).map(it => {
-    const ans = it.answer || (it.answers || [])[0] || '';
-    const en = _escHtml(it.en || '')
-      .replace(/_{3,}/, ans ? `<b>${_escHtml(ans)}</b>` : '___')
-      .replace(/\(([^)]{2,40})\)/g, '<mark>($1)</mark>');
-    return `<li><div class="t2-concl-tpl-en">${en}</div>${it.vi ? `<div class="t2-concl-tpl-vi">${_escHtml(String(it.vi).replace(/^→\s*/, ''))}</div>` : ''}</li>`;
-  }).join('');
+  return (sec.lines || []).map(ln =>
+    `<li>${ln.label ? `<div class="t2-concl-tpl-vi">${_escHtml(ln.label)}</div>` : ''}<div class="t2-concl-tpl-en">${_tplLineHtml(ln.en)}</div>${ln.vi ? `<div class="t2-concl-tpl-vi">${_escHtml(String(ln.vi).replace(/^→\s*/, ''))}</div>` : ''}</li>`).join('');
 }
 function _renderConclusionQuestion(q) {
   const t = state.selectedTopic;
@@ -3403,7 +3415,7 @@ function _renderConclusionQuestion(q) {
   <div class="wp-task-label">✍️ Tự viết đoạn kết bài</div>
   <div class="t2-concl">
     <div class="t2-concl-block">
-      <div class="t2-concl-k">📘 Template kết bài · Band 7.0 <span>${_escHtml(ESSAY_LABELS[t.essayType] || '')}</span></div>
+      <div class="t2-concl-k">📘 Template kết bài · Band 7+ <span>${_escHtml(ESSAY_LABELS[t.essayType] || '')}</span></div>
       <ol class="t2-concl-tpl" id="t2-concl-tpl">${_conclTplHtml()}</ol>
       <p class="t2-concl-note">Thay phần <mark>(…)</mark> bằng ý của đề này — dùng khung câu, <b>đừng chép nguyên văn</b>.</p>
     </div>

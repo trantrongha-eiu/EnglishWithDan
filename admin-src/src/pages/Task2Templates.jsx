@@ -425,15 +425,6 @@ export default function Task2Templates() {
     });
   }
 
-  // ── Seed ──────────────────────────────────────────────────────────────
-  async function seedTemplates(force) {
-    try {
-      const data = await apiFetch('/admin/task2/templates/seed', { method: 'POST', body: JSON.stringify({ force }) });
-      showToast(data.message, data.success ? 'success' : 'error');
-      if (data.success) reload();
-    } catch (e) { showToast(e.message, 'error'); }
-  }
-
   // ── Section handlers (local state) ────────────────────────────────────
   function handleAddSection(title) {
     const updated = { ...activeTpl, sections: [...(activeTpl.sections || []), { title, items: [] }] };
@@ -514,18 +505,12 @@ export default function Task2Templates() {
           <h1 className="page-title">Task 2 Templates</h1>
           <p className="page-subtitle">
             {tab === 'content'
-              ? `${templates.length} template — câu luyện điền từ theo dạng bài IELTS Task 2`
+              ? `${templates.length} template (7 dạng × Band 6+ / 7+) — nội dung theo sách Writing, học sinh học ở trang Task 2 Templates. Sửa câu trong js/task2-generic-templates.js rồi chạy scripts/syncTask2TemplatesFromBook.js — sửa ở đây không hiện cho học sinh.`
               : 'Kết quả luyện tập & thi thử của học viên (Cloze / Dịch câu / Chunks / Build / Dictation)'}
           </p>
         </div>
         {tab === 'content' && (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => confirm('Seed lại toàn bộ 7 template mặc định? Dữ liệu hiện tại sẽ bị ghi đè.', () => seedTemplates(true))}>
-              🔄 Seed lại
-            </button>
-            <button className="btn btn-ghost" style={{ fontSize: 13 }} onClick={() => seedTemplates(false)}>
-              📥 Seed lần đầu
-            </button>
             <button className="btn btn-primary" onClick={() => { setEditingMeta(null); setShowTplMeta(true); }}>+ Thêm Template</button>
           </div>
         )}
@@ -576,8 +561,7 @@ export default function Task2Templates() {
               {templates.length === 0 && (
                 <tr>
                   <td colSpan={7} style={{ textAlign: 'center', color: 'var(--text3)', padding: 40 }}>
-                    Chưa có template nào.{' '}
-                    <button className="btn btn-primary" style={{ marginLeft: 8 }} onClick={() => seedTemplates(false)}>📥 Seed 7 template mặc định</button>
+                    Chưa có template nào — chạy <code>node backend/scripts/syncTask2TemplatesFromBook.js</code>.
                   </td>
                 </tr>
               )}

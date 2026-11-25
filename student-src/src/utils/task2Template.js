@@ -219,7 +219,7 @@ function buildType(type) {
       const isOpt = !!label && !ROLE_LABELS.has(label);
       const s = {
         si, ii, key: `${si}-${ii}`, en, vi, role: ROLE_LABELS.has(label) ? label : roleOf(en, si, n),
-        opt: isOpt ? optName(label) : '', optional: /7\.5/.test(label), alt: null, anchors: anchorsOf(en),
+        opt: isOpt ? optName(label) : '', optional: /7\.5|cách chia/.test(label), alt: null, anchors: anchorsOf(en),
       };
       const joinsPrev = prev && isOpt && (/NEGATIVE/i.test(label) || pre || (/^(Đồng ý|Lập trường)/.test(label) && /^(Đồng ý|Lập trường)/.test(prev.rawLabel || '')));
       if (joinsPrev) {

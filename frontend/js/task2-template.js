@@ -281,7 +281,7 @@ function buildType(type) {
       const prev = sentences[sentences.length - 1];
       let role = ROLE_LABELS.has(label) ? label : roleOf(en, si, n);
       const isOpt = !!label && !ROLE_LABELS.has(label);
-      const s = { si, ii, key: `${si}-${ii}`, en, vi, role, opt: isOpt ? _optName(label) : '', optional: /7\.5/.test(label), alt: null, anchors: _anchorsOf(en) };
+      const s = { si, ii, key: `${si}-${ii}`, en, vi, role, opt: isOpt ? _optName(label) : '', optional: /7\.5|cách chia/.test(label), alt: null, anchors: _anchorsOf(en) };
       const joinsPrev = prev && isOpt && (/NEGATIVE/i.test(label) || pre || (/^(Đồng ý|Lập trường)/.test(label) && /^(Đồng ý|Lập trường)/.test(prev.rawLabel || '')));
       if (joinsPrev) {
         if (prev.alt == null) prev.alt = ++altSeq;

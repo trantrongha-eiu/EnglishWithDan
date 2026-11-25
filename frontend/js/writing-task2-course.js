@@ -7,8 +7,8 @@
   'use strict';
 
   // Module 2 (Bảy dạng đề) lessons T2-L05..T2-L11 map 1:1 onto the 7
-  // typeId's already seeded into Task2Template (type01..type07 — see
-  // backend/scripts/seedTask2TemplatesBand6.js). Rather than re-authoring
+  // typeIds of the Task 2 Templates page (type01..type07 — the Writing
+  // book templates, js/task2-generic-templates.js). Rather than re-authoring
   // that template content inside the WT1-course exercise system, each of
   // those 7 lessons links straight into the existing task2-template.html
   // drills (deep-linked via its own ?type=&mode= URL params) for "Dịch câu"

@@ -12,17 +12,18 @@ const path = require('path');
 
 let t2;
 
-const TPL = [{
-  typeId: 'type03', level: 'band7', name: 'Cause – Solution',
+// Same shape as js/task2-generic-templates.js (the book templates).
+const TPL = { band7: { type03: {
+  name: 'Cause – Solution',
   sections: [
-    { title: '① Introduction – Mở bài', items: [{ en: 'In recent years, ...', answer: '' }] },
-    { title: '② Body 1', items: [] }, { title: '③ Body 2', items: [] },
-    { title: '④ Conclusion – Kết bài', items: [
-      { en: 'In conclusion, (noun phrase) remains a ___ issue that requires immediate and coordinated action.', answer: 'complex', vi: '→ Tóm lại, ...' },
-      { en: 'If governments, organizations, and individuals work ___, this issue can be significantly alleviated.', answer: 'collaboratively' }
+    { title: '① Introduction · Mở bài', lines: [{ en: 'In recent years, (problem) has become ...', vi: '...' }] },
+    { title: '② Body 1 – Causes · Nguyên nhân', lines: [] }, { title: '③ Body 2 – Solutions · Giải pháp', lines: [] },
+    { title: '④ Conclusion · Kết bài', lines: [
+      { en: 'In conclusion, (problem) remains a complex issue that requires immediate and coordinated action.', vi: 'Kết luận lại, ...' },
+      { en: 'Among the various measures discussed, I believe that (solution) would prove the most effective in the long term.', vi: 'Trong các giải pháp đã nêu, ...' }
     ] }
   ]
-}];
+} } };
 
 const TOPIC_CS = { _id: 't1', essayType: 'cause_solution', prompt: 'What are the causes of this issue, and what solutions can be implemented?', topicName: 'Stress', brainstormHints: [{ side: 'Causes', points: [] }, { side: 'Solutions', points: [] }] };
 
@@ -91,7 +92,7 @@ describe('_renderConclusionQuestion', () => {
     const tpl = document.getElementById('t2-concl-tpl');
     expect(tpl.querySelectorAll('li')).toHaveLength(2);
     expect(tpl.textContent).toContain('remains a complex issue');
-    expect(tpl.querySelector('mark').textContent).toBe('(noun phrase)');
+    expect(tpl.querySelector('mark').textContent).toBe('(problem)');
     expect(document.querySelector('.t2-concl-hints').textContent).toMatch(/câu điều kiện loại 1 hoặc 2/);
     expect(document.querySelector('.t2-concl-hints').textContent).toMatch(/không hỏi ý kiến/);
     expect(document.querySelector('.t2-concl-mine').textContent).toContain('Body one text.');
@@ -135,5 +136,32 @@ describe('sentences taken from Daniel\'s model essay', () => {
     t2.state.compose = { phase: 'class', tab: 'sentences', revealed: {} };
     document.body.innerHTML = window._refSentences();
     expect([...document.querySelectorAll('.t2c-group')].map(g => g.textContent)).toEqual(['Mở bài', 'Thân bài 1', 'Thân bài 2', 'Kết bài bạn tự viết']);
+  });
+});
+
+describe('writer "Template" tab = the book templates (same file as the Task 2 Templates page)', () => {
+  beforeEach(() => {
+    t2.setTpl({
+      band6: { type03: { name: 'Cause – Solution', sections: [
+        { title: '① Introduction · Mở bài', lines: [{ en: 'In recent years, (problem) has become an increasingly common issue in many parts of the world.', vi: 'Trong những năm gần đây, ...', label: 'Mở đề' }] },
+        { title: '② Body 1 – Causes · Nguyên nhân', lines: [] }, { title: '③ Body 2 – Solutions · Giải pháp', lines: [] },
+        { title: '④ Conclusion · Kết bài', lines: [] }] } },
+      band7: TPL.band7,
+    });
+    Object.assign(t2.state, { selectedTopic: TOPIC_CS });
+    Object.assign(t2.state.compose || (t2.state.compose = {}), { phase: 'class', tab: 'template' });
+  });
+
+  test('Band 7+ by default, Band 6+ on demand — never the old DB templates', () => {
+    t2.state.compose.tplLevel = null;
+    let html = window._refTemplate();
+    expect(html).toContain('Template Band 7+ (Cause – Solution)');
+    expect(html).toContain('<mark>(problem)</mark> remains a complex issue');
+    t2.state.compose.tplLevel = 'band6';
+    html = window._refTemplate();
+    expect(html).toContain('Template Band 6+');
+    expect(html).toContain('increasingly common issue');
+    expect(html).toContain('t2c-tpl-label');
+    expect(window.apiFetch).not.toHaveBeenCalledWith(expect.stringContaining('/api/task2/templates'));
   });
 });

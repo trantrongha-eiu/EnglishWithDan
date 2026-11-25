@@ -1646,7 +1646,7 @@ Removed with `scripts/updateTask1Context.js`: it re-added the "data context" box
 
 ## Task 2 Templates
 
-`backend/routes/admin/task2Templates.js` — 6 endpoints, all `teacherOnly`. Manages `Task2Template` documents — structured essay-writing scaffolds (sentence starters with blanks) grouped by essay type. This file is large in raw byte count because it embeds a 7-template `SEED_TEMPLATES` data constant (essay-scaffold content, not logic) used only by the `seed` route.
+`backend/routes/admin/task2Templates.js` — 6 endpoints, all `teacherOnly`. Manages `Task2Template` documents — 7 essay types × Band 6+ / Band 7+, content copied from the Writing book templates (`frontend/js/task2-generic-templates.js`) by `backend/scripts/syncTask2TemplatesFromBook.js`. Students read the book file, not these rows; the rows remain as homework anchors.
 
 ### GET /api/admin/task2/templates
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
@@ -1660,11 +1660,8 @@ Removed with `scripts/updateTask1Context.js`: it re-added the "data context" box
 ### POST /api/admin/task2/templates/seed
 **Auth:** Bearer token required · **Permissions:** teacherOnly · **Rate limit:** none
 
-**Request:** `{ "force": false }`
-**Response** (already seeded, `force` not set): `{ "success": false, "message": "Đã có 7 template. Gửi force:true để ghi đè." }`
-**Response** (seeded fresh, or `force: true`): `{ "success": true, "message": "Đã seed 7 template mặc định." }`
-**Validation:** If `existing > 0` and `force` is falsy, returns early with `success: false` but **HTTP 200**, not 400 — a caller checking only the HTTP status rather than the `success` field would miss this. If `force: true`, **all existing templates are deleted first** (`deleteMany({})`) before the 7 seed templates are reinserted — this is a destructive overwrite of any manually-edited templates.
-**Error responses:** `401`, `403`, `500`
+**Request:** any body (ignored)
+**Response:** `{ "success": false, "message": "Template Task 2 giờ lấy từ sách Writing (Band 6+ / 7+). … chạy: node backend/scripts/syncTask2TemplatesFromBook.js" }` — the old built-in seed sets were removed 2026-11-25.
 
 ---
 
