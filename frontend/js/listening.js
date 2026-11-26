@@ -2280,7 +2280,11 @@ function goToReview() {
     document.getElementById('review-band-badge').textContent = `Band Score: ${r.bandScore.toFixed(1)}`;
     window.setTimeBadge?.('review-time-badge', r.timeTaken);
     const reviewImgEl = document.getElementById('review-result-img');
-    if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(r.bandScore || 0); reviewImgEl.style.display = ''; }
+    if (reviewImgEl) reviewImgEl.style.display = 'none';
+    // Big meme under the questions (was a 34px thumb in the topbar).
+    const reviewMemeEl = document.getElementById('review-result-meme');
+    const reviewMemeImg = document.getElementById('review-result-meme-img');
+    if (reviewMemeEl && reviewMemeImg) { reviewMemeImg.src = resultImgSrcForBand(r.bandScore || 0); reviewMemeEl.style.display = ''; }
     state.audioPartIdx = null;
     _partAudioPos = {};
     if (_hasPartAudio(true)) {

@@ -2442,3 +2442,10 @@ body.eye-protection .review-questions-panel { background: #faf8f3 !important; }
 .gf-blank.ts-active { box-shadow: 0 0 0 3px rgba(14, 165, 233, .45); }
 [data-theme="dark"] .ts-active-block { background: rgba(56, 189, 248, .12); box-shadow: 0 0 0 4px rgba(56, 189, 248, .12); }
 .gf-blank.ts-active.ts-now { box-shadow: 0 0 0 3px rgba(14, 165, 233, .9); }
+
+/* Review screen: result meme shown big under the questions (2026-11-26) */
+.review-result-meme { text-align: center; margin: 28px 0 96px; }
+.review-result-meme img {
+  width: 100%; max-width: 420px; height: auto; border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.12);
+}

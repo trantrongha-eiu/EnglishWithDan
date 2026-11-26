@@ -3115,3 +3115,10 @@ body.tool-hl .check-box { user-select: none; }
   display: inline-flex; align-items: center; gap: 10px; transition: background .15s;
 }
 .mock-done-btn:hover { background: #2563eb; }
+
+/* Review screen: result meme shown big under the questions (2026-11-26) */
+.review-result-meme { text-align: center; margin: 28px 0 96px; }
+.review-result-meme img {
+  width: 100%; max-width: 420px; height: auto; border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.12);
+}

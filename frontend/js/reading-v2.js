@@ -3799,7 +3799,11 @@ function renderReview(attempt, answerKeyWithheld) {
   if (badge) badge.textContent = `Band: ${attempt.bandScore?.toFixed(1)}`;
   window.setTimeBadge?.('review-time-badge', attempt.duration);
   const reviewImgEl = document.getElementById('review-result-img');
-  if (reviewImgEl) { reviewImgEl.src = resultImgSrcForBand(attempt.bandScore || 0); reviewImgEl.style.display = ''; }
+  if (reviewImgEl) reviewImgEl.style.display = 'none';
+  // Big meme under the questions (was a small thumb in the topbar).
+  const reviewMemeEl = document.getElementById('review-result-meme');
+  const reviewMemeImg = document.getElementById('review-result-meme-img');
+  if (reviewMemeEl && reviewMemeImg) { reviewMemeImg.src = resultImgSrcForBand(attempt.bandScore || 0); reviewMemeEl.style.display = ''; }
 
   // Build reviewMap: { questionNumber: { userAnswer, correctAnswer, isCorrect, explanation } }
   const reviewMap = {};
