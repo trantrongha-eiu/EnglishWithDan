@@ -6,6 +6,7 @@ import {
 } from '../../utils/task2Template';
 import { LuluSays, RoleTag } from './Parts';
 import { Recall } from './Items';
+import MemeImg from '../../components/MemeImg';
 
 // Recall runs, one sentence at a time from its Vietnamese meaning:
 //   review: up to 6 weakest sentences, band rules, schedules the next review
@@ -89,7 +90,7 @@ export default function RecallRun({ ctx, mode, items: startItems, from = '', sta
       <>
         {!isExam && bar}
         <div className="pth-wrap"><div className="pth-card pth-done">
-          {isExam && <img src={examTierImage(pct)} alt="" loading="lazy" className="pth-tier-img" />}
+          {isExam && <MemeImg src={examTierImage(pct)} loading="lazy" className="pth-tier-img" />}
           <LuluSays text={line} pct={pct} stacked solo={false} />
           <div className={`pth-score ${pct >= 60 ? 'is-ok' : 'is-bad'}`}>{pct}%</div>
           <p className="pth-muted">{correct}/{total} câu nhớ đúng{isExam ? ` · ⏱ ${fmtMMSS(r.secs)}` : ''}</p>

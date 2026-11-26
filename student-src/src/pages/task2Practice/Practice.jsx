@@ -2,13 +2,14 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../../utils/api';
 import { mascotHtml, siteToast } from '../../utils/shell';
 import {
-  AI_TYPES, cheerImage, drillMode, ESSAY_BADGE_CLASS, ESSAY_LABELS, gfBlanks, GF_MAX_TRIES, LEVEL_COLORS, MC_TYPES, ORD_MAX_TRIES,
+  AI_TYPES, memeImage, drillMode, ESSAY_BADGE_CLASS, ESSAY_LABELS, gfBlanks, GF_MAX_TRIES, LEVEL_COLORS, MC_TYPES, ORD_MAX_TRIES,
   Q_LABELS, qid, sentenceParts, spanPieces, store, topicCompletedCount, translateGateMessage,
   WBW_MAX_REQUEUES, WBW_MAX_WORD_ERRORS, WBW_REQUEUE_GAP, WBW_TYPES,
 } from '../../utils/task2Practice';
 import { BusyButton, Html, ModeBadge, QuitDialog } from './Parts';
 import { QuestionCard } from './Question';
 import { newSession, nextUid, prepFor, saveDraft } from './lib';
+import MemeImg from '../../components/MemeImg';
 
 // A Luyện tập / Dịch câu / Ôn câu sai run and its "done" screen. Every answer
 // saves a resumable draft; a run that reaches the last question is saved as
@@ -37,7 +38,7 @@ function Done({ s, ctx, onRetryWrong }) {
   return (
     <>
       <div className="t2-done">
-        <img src={cheerImage(pct).slice(1)} alt="" style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
+        <MemeImg src={memeImage(pct).slice(1)} style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
         {mascot ? <Html html={mascot} style={{ display: 'contents' }} /> : <div className="t2-done-icon">{pct >= 80 ? '🎉' : pct >= 50 ? '👍' : '📚'}</div>}
         <div className={`t2-done-score ${scoreClass}`}>{pct}%</div>
         <div className="t2-done-sub">Hoàn thành {s.done} câu · {t.topicName || ''}</div>

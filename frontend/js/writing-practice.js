@@ -1315,12 +1315,12 @@ function showTestResults(data) {
   const expandCount = results.length - (countable ?? results.length);
   const { emoji, message: msg } = getScoreMessage(score);
   const expandNote = expandCount > 0 ? ` <span style="font-size:13px;opacity:.7">(+ ${expandCount} câu mở rộng)</span>` : '';
-  const wpImgSrc = score >= 90 ? '/img/cheer/cheer-top.jpg'
-                  : score >= 70 ? '/img/cheer/cheer-great.jpg'
-                  : score >= 60 ? '/img/cheer/cheer-good.jpg'
-                  : score >= 50 ? '/img/cheer/cheer-ok.jpg'
-                  : score >= 45 ? '/img/cheer/cheer-try.jpg'
-                  : '/img/cheer/cheer-rest.jpg';
+  const wpImgSrc = score >= 90 ? (window.memeSrc || String)('/img/vocab_writingabove90%25.jpg')
+                  : score >= 70 ? (window.memeSrc || String)('/img/above7.5.jpg')
+                  : score >= 60 ? (window.memeSrc || String)('/img/band_6_7.jpg')
+                  : score >= 50 ? (window.memeSrc || String)('/img/writingbelow60%25.jpg')
+                  : score >= 45 ? (window.memeSrc || String)('/img/writingbelow50%25.jpg')
+                  : (window.memeSrc || String)('/img/writingbelow45%25.jpg');
   document.getElementById('test-score-header').innerHTML = `
     <img src="${wpImgSrc}" alt="" style="display:block;width:100%;max-width:220px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
     ${window.Mascot && window.Mascot.reactHtml ? window.Mascot.reactHtml({ pct: score, text: msg, stacked: true }) : ''}

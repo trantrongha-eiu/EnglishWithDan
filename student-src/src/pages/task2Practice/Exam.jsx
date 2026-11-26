@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '../../utils/api';
 import { mascotHtml, scoreMessage, siteToast, useLeaveWarning } from '../../utils/shell';
-import { cheerImage, LEVEL_COLORS, Q_LABELS, qid } from '../../utils/task2Practice';
+import { memeImage, LEVEL_COLORS, Q_LABELS, qid } from '../../utils/task2Practice';
 import { BusyButton, Html, QuitDialog } from './Parts';
 import { prepFor } from './lib';
 import { QuestionCard } from './Question';
+import MemeImg from '../../components/MemeImg';
 
 // "Thi thử cả tuần": random questions from the week's topics, 2 minutes a
 // question, no hints; graded together by /api/task2/exam/submit.
@@ -18,7 +19,7 @@ function ExamDone({ r, ctx }) {
   return (
     <>
       <div style={{ textAlign: 'center', padding: '32px 20px 16px' }}>
-        <img src={cheerImage(r.score).slice(1)} alt="" style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
+        <MemeImg src={memeImage(r.score).slice(1)} style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
         {mascot ? <Html html={mascot} style={{ display: 'contents' }} /> : <div style={{ fontSize: 52 }}>{emoji}</div>}
         <div className={`t2-done-score ${scoreClass}`}>{r.score}%</div>
         <div style={{ fontSize: 15, color: '#6b7280', marginBottom: 16 }}>{mascot ? '' : message + ' '}Đúng {r.correct} / {r.total} câu</div>

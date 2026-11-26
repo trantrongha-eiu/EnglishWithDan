@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { resultImage, spawnConfetti } from '../../utils/shell';
 import { GUIDE_PASS, passedPct } from './guideQuizRules';
+import MemeImg from '../../components/MemeImg';
 
 // One reading-check quiz on a guide section: one question at a time, the
 // answer and the reason right after each pick, then the score. Passing
@@ -34,7 +35,7 @@ export default function GuideQuiz({ items, sectionTitle, nextLabel, onFinish, on
     const wrong = items.map((x, k) => ({ x, a: answers[k] })).filter((r) => r.a && !r.a.ok);
     return (
       <div className="gq gq-result">
-        <img className="gq-res-img" src={resultImage(pass ? 95 : pct >= 70 ? 75 : 55)} alt="" />
+        <MemeImg className="gq-res-img" src={resultImage(pass ? 95 : pct >= 70 ? 75 : 55)} />
         <div className="gq-res-score">{correct}/{n} · {pct}%</div>
         {pass ? (
           <div className="gq-res-msg is-pass">🎉 Đạt rồi! Cậu đã hiểu mục “{sectionTitle}”.{nextLabel ? ` Mục tiếp theo đã mở: ${nextLabel}.` : ''}</div>

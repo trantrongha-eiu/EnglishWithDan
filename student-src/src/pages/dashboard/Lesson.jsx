@@ -14,6 +14,7 @@ import {
 import {
   bindDict, mascotHtml, openUpgrade, resultImage, scoreMessage, setActivePractice, spawnConfetti, useLeaveWarning,
 } from '../../utils/shell';
+import MemeImg from '../../components/MemeImg';
 
 // Vocab Topic lesson: Learn / Quiz / Results (port of dashboard-lesson.js).
 //   /dashboard/lesson/:lessonId   ?from=topics → Back returns to the list
@@ -223,7 +224,7 @@ function ResultsTab({ lesson, session, onRetake }) {
             <Mascot html={mascotHtml({ pct: session.score, text: msg.message, stacked: true })}>
               <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 10 }}>{msg.emoji} {msg.message}</div>
             </Mascot>
-            <img src={resultImage(session.score)} alt="" style={{ width: '100%', maxWidth: 200, borderRadius: 12, objectFit: 'cover' }} />
+            <MemeImg src={resultImage(session.score)} style={{ width: '100%', maxWidth: 200, borderRadius: 12, objectFit: 'cover' }} />
           </div>
           {session.wrongWords.length > 0 && (
             <div className="fb-card" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: 16, marginBottom: 20 }}>

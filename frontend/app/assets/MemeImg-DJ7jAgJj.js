@@ -1,0 +1,1 @@
+import{i as e,n as t,t as n}from"./jsx-runtime-DyZJNswf.js";var r=e(t(),1),i=n();function a({src:e,...t}){let n=(0,r.useMemo)(()=>window.memeSrc?window.memeSrc(e):e,[e]);return(0,i.jsx)(`img`,{src:n,alt:``,...t})}export{a as t};

@@ -480,10 +480,10 @@ export function addXP(earned) {
 }
 
 export function examTierImage(pct) {
-  return pct >= 90 ? '/img/cheer/cheer-top.jpg'
-    : pct >= 50 ? '/img/cheer/cheer-ok.jpg'
-      : pct >= 45 ? '/img/cheer/cheer-try.jpg'
-        : '/img/cheer/cheer-rest.jpg';
+  return pct >= 90 ? '/img/vocab_writingabove90%25.jpg'
+    : pct >= 50 ? '/img/writingbelow60%25.jpg'
+      : pct >= 45 ? '/img/writingbelow50%25.jpg'
+        : '/img/writingbelow45%25.jpg';
 }
 
 export const MODE_LABELS = { path: 'Ghép cả bài', review: 'Ôn nhanh', translation: 'Dịch câu', chunks: 'Chunks', build: 'Build', dictation: 'Dictation' };

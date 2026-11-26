@@ -598,10 +598,6 @@
   // hit; the ORIGINAL is still stashed on the node, so switching back is
   // exact (no reverse patterns needed). Order matters — first match wins.
   var PATTERNS = [
-    // dashboard streak banner right after a long streak ended (dashboard.js LOST_STREAK_MSGS)
-    [/^Chuỗi (\d+) ngày tạm nghỉ rồi — không sao đâu! Học 1 từ hôm nay là bắt đầu chuỗi mới nha\.$/, "Your $1-day streak is taking a break — that's okay! Learn 1 word today to start a new one."],
-    [/^Cậu đã giữ được (\d+) ngày liền — giỏi lắm đó! Mình cùng làm lại từ hôm nay nha\.$/, "You kept it up for $1 days in a row — that's great! Let's start again from today."],
-    [/^(\d+) ngày chăm chỉ vẫn là của cậu mà\. Học 1 từ thôi là chuỗi mới bắt đầu liền!$/, 'Those $1 hard-working days are still yours. Learn just 1 word and a new streak begins!'],
     [/^Còn (\d[\d.]*) ngày$/, 'Left: $1 days'],
     [/^Còn (\d+) ngày nữa$/, '$1 days left'],
     [/^(\d+) ngày$/, '$1 days'],
@@ -714,7 +710,7 @@
     if (window.__ewsI18nExtra) { _extraState = 2; extend(window.__ewsI18nExtra); return; }
     _extraState = 1;
     var sc = document.createElement('script');
-    sc.src = '/js/shared/i18n-en.js?v=98766f7a8a';
+    sc.src = '/js/shared/i18n-en.js?v=ff3f4aa2b6';
     sc.async = true;
     sc.onload = function () { _extraState = 2; };
     sc.onerror = function () { _extraState = 0; };

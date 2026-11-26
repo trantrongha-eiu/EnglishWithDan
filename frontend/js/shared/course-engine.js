@@ -1849,18 +1849,18 @@
 
   function scoreMessage(pct) {
     if (typeof window.getScoreMessage === 'function') return window.getScoreMessage(pct);
-    if (pct >= 80) return { emoji: '🥳', message: 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟' };
-    if (pct >= 60) return { emoji: '😊', message: 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪' };
-    if (pct >= 40) return { emoji: '🌱', message: 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛' };
-    return { emoji: '🤗', message: 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷' };
+    if (pct >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
+    if (pct >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng Daniel biết bạn làm được hơn 👀' };
+    if (pct >= 40) return { emoji: '🥲', message: 'Hơn 40% rồi nhưng sai nhiều vậy chưa ổn nha — cày thêm đi!' };
+    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
   }
 
   function moodImage(pct) {
-    return pct >= 90 ? 'img/cheer/cheer-top.jpg'
-      : pct >= 70 ? 'img/cheer/cheer-great.jpg'
-        : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
-          : pct >= 20 ? 'img/cheer/cheer-try.jpg'
-            : 'img/cheer/cheer-rest.jpg';
+    return pct >= 90 ? (window.memeSrc || String)('img/vocab_writingabove90%25.jpg')
+      : pct >= 70 ? (window.memeSrc || String)('img/above7.5.jpg')
+        : pct >= 50 ? (window.memeSrc || String)('img/vocab50_70%25.jpg')
+          : pct >= 20 ? (window.memeSrc || String)('img/vocabbelow50%25.jpg')
+            : (window.memeSrc || String)('img/listening_readingbelow20%25.jpg');
   }
 
   function ringColor(pct) {

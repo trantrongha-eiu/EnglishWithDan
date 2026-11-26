@@ -1768,7 +1768,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=03cb7c5298';
+    i18nScript.src = '/js/shared/i18n.js?v=4fc1002517';
     document.body.appendChild(i18nScript);
   }
 
@@ -4406,14 +4406,55 @@
   'use strict';
 
   function getScoreMessage(score) {
-    // Always encouraging — never teasing, whatever the score.
-    if (score >= 80) return { emoji: '🥳', message: 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟' };
-    if (score >= 60) return { emoji: '😊', message: 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪' };
-    if (score >= 40) return { emoji: '🌱', message: 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛' };
-    return { emoji: '🤗', message: 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷' };
+    if (score >= 80) return { emoji: '😎', message: 'Ôi học giỏi vậy? Đi dạy lại đi chứ 🔥' };
+    if (score >= 60) return { emoji: '🤔', message: 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀' };
+    if (score >= 40) return { emoji: '🥲', message: 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha — cày thêm đi!' };
+    return { emoji: '😤', message: 'Học cho đàng hoàng zô coiii!' };
   }
 
   window.getScoreMessage = getScoreMessage;
+})();
+
+// ── Result-screen memes: random pick per score tier ──
+// Every result screen still names its classic meme file (img/above7.5.jpg,
+// img/listening_readingbelow20%25.jpg, …); call sites wrap that path as
+// (window.memeSrc || String)('img/…') and get either the classic meme or one
+// of the extra memes of the same tier (img/memes/*.jpg) at random, so the
+// screen does not show the same picture every time. Provenance of the extra
+// pictures: backend/scripts/data/memeImages.json.
+(function () {
+  'use strict';
+
+  var TIER_OF = {
+    'vocab_writingabove90%.jpg': 'top', 'above7.5.jpg': 'top',
+    'band_6_7.jpg': 'good', 'vocab50_70%.jpg': 'good',
+    'writingbelow60%.jpg': 'mid', 'listening_readingbelow60%.jpg': 'mid', 'listening_readingbelow50%.jpg': 'mid',
+    'writingbelow50%.jpg': 'low', 'vocabbelow50%.jpg': 'low', 'listening_readingbelow40%.jpg': 'low',
+    'writingbelow45%.jpg': 'bottom', 'listening_readingbelow30%.jpg': 'bottom', 'listening_readingbelow20%.jpg': 'bottom',
+    'meme_prevent_paste.jpg': 'paste',
+    'loststreak.jpg': 'streak'
+  };
+  var EXTRA = {
+    top: ['top-1', 'top-2', 'top-3', 'top-4'],
+    good: ['good-1', 'good-2', 'good-3'],
+    mid: ['mid-1', 'mid-2', 'mid-3'],
+    low: ['low-1', 'low-2', 'low-3', 'low-4'],
+    bottom: ['bottom-1', 'bottom-2', 'bottom-3', 'bottom-4'],
+    paste: ['paste-1', 'paste-2'],
+    streak: ['streak-1', 'streak-2']
+  };
+
+  function memeSrc(src) {
+    var m = /^(\/?)img\/([^/?#]+)$/.exec(String(src || ''));
+    if (!m) return src;
+    var name;
+    try { name = decodeURIComponent(m[2]); } catch (e) { name = m[2]; }
+    var extra = EXTRA[TIER_OF[name]] || [];
+    var k = Math.floor(Math.random() * (extra.length + 1));
+    return k === extra.length ? src : m[1] + 'img/memes/' + extra[k] + '.jpg';
+  }
+
+  window.memeSrc = memeSrc;
 })();
 
 // ── Streak fire-color ladder ──

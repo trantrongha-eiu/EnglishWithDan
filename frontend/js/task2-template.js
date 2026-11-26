@@ -2063,10 +2063,10 @@ function _recallRunFinish() {
   renderRecallRun();
 }
 function _examTierImageSrc(pct) {
-  return pct >= 90 ? 'img/cheer/cheer-top.jpg'
-       : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
-       : pct >= 45 ? 'img/cheer/cheer-try.jpg'
-       : 'img/cheer/cheer-rest.jpg';
+  return pct >= 90 ? (window.memeSrc || String)('img/vocab_writingabove90%25.jpg')
+       : pct >= 50 ? (window.memeSrc || String)('img/writingbelow60%25.jpg')
+       : pct >= 45 ? (window.memeSrc || String)('img/writingbelow50%25.jpg')
+       : (window.memeSrc || String)('img/writingbelow45%25.jpg');
 }
 
 // ══════════════════════════════════════════════════════════════════

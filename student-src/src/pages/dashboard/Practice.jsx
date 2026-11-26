@@ -21,6 +21,7 @@ import VocabGoalCards from './VocabGoalCards';
 import {
   bindDict, luluSay, mascotHtml, openUpgrade, reportLearningResult, resultImage, scoreMessage, setActivePractice, spawnConfetti, useLeaveWarning,
 } from '../../utils/shell';
+import MemeImg from '../../components/MemeImg';
 
 // Notebook practice. Port of dashboard.js's book practice (Quiz /
 // Flashcard / Điền từ / Listen / Translate / Mixed), with the homework
@@ -442,7 +443,7 @@ function Results({ s, hammer, backLabel, onRetryWrong, onRestart, onBack }) {
             <img src="/img/buaDaniel.jpg" alt="Búa Daniel" className="hammer-earned-icon" /> 🎉 Bạn vừa nhận <b>1 búa Daniel</b>!
           </div>
         )}
-        <img src={resultImage(pct)} alt="" style={{ width: '100%', maxWidth: 200, borderRadius: 12, margin: '12px auto 4px', objectFit: 'cover', display: 'block' }} />
+        <MemeImg src={resultImage(pct)} style={{ width: '100%', maxWidth: 200, borderRadius: 12, margin: '12px auto 4px', objectFit: 'cover', display: 'block' }} />
         {wrongWords.length > 0 && (
           <>
             <div style={{ marginBottom: 10, textAlign: 'center' }}>

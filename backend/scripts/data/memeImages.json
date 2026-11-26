@@ -1,0 +1,159 @@
+{
+ "note": "Extra result-screen memes (frontend/img/memes/*.jpg, 540px, caption baked in). Photos from Wikimedia Commons, CC0 / public domain only, captioned via backend/scripts/memeImages/render.js (picks.json). Added 2026-11-26 when the classic memes came back; window.memeSrc (js/shared/utils.js) picks one per score tier.",
+ "images": {
+  "top-1": {
+   "caption": "Ê bạn kia! Giỏi dữ vậy ta 😏",
+   "file": "File:Joseph Ducreux - Self-portrait of the artist as a mocker.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Joseph_Ducreux_-_Self-portrait_of_the_artist_as_a_mocker.jpg",
+   "license": "Public domain",
+   "artist": "Joseph Ducreux"
+  },
+  "top-2": {
+   "caption": "Cao thủ đã xuất hiện 😎",
+   "file": "File:USCG Bomb dog Ricky, wearing doggles, for a helicopter exercise 170816-G-RU729-882.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:USCG_Bomb_dog_Ricky,_wearing_doggles,_for_a_helicopter_exercise_170816-G-RU729-882.jpg",
+   "license": "Public domain",
+   "artist": "Brandyn Hill"
+  },
+  "top-3": {
+   "caption": "Điểm cao quá, mừng muốn xỉu",
+   "file": "File:Fawn and white Welsh Corgi puppy standing on rear legs and sticking out the tongue (cropped).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Fawn_and_white_Welsh_Corgi_puppy_standing_on_rear_legs_and_sticking_out_the_tongue_(cropped).jpg",
+   "license": "CC0",
+   "artist": "Huoadg5888Minor edits made by Subsidiary account"
+  },
+  "top-4": {
+   "caption": "Cười tươi vì điểm cao chứ sao",
+   "file": "File:Character Head 48.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Character_Head_48.jpg",
+   "license": "Public domain",
+   "artist": "Franz Xaver Messerschmidt"
+  },
+  "good-1": {
+   "caption": "Ổn áp phết đấy chứ!",
+   "file": "File:Smiling pit bull terrier at camp pendleton.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Smiling_pit_bull_terrier_at_camp_pendleton.jpg",
+   "license": "Public domain",
+   "artist": ""
+  },
+  "good-2": {
+   "caption": "Cũng ra gì đấy... nhưng chưa phải đỉnh đâu nha",
+   "file": "File:Character Head 37.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Character_Head_37.jpg",
+   "license": "Public domain",
+   "artist": "Franz Xaver Messerschmidt"
+  },
+  "good-3": {
+   "caption": "Gần tới rồi! Cố thêm xíu nữa thôiii",
+   "file": "File:WHATTTTT?! (16851828572).jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:WHATTTTT%3F!_(16851828572).jpg",
+   "license": "Public domain",
+   "artist": "U.S. Geological Survey from Reston, VA, USA"
+  },
+  "mid-1": {
+   "caption": "Ủa đáp án đúng là cái này hả?",
+   "file": "File:Black dog head tilt.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Black_dog_head_tilt.jpg",
+   "license": "CC0",
+   "artist": "Reid Campbell"
+  },
+  "mid-2": {
+   "caption": "Tạm được... nhưng tui thấy nhiều câu sai lắm nha",
+   "file": "File:Alpaca face.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Alpaca_face.jpg",
+   "license": "Public domain",
+   "artist": "Daniella00 at English Wikipedia"
+  },
+  "mid-3": {
+   "caption": "Ngồi suy nghĩ lại cuộc đời một chút",
+   "file": "File:JapaneseMacaqueM2218.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:JapaneseMacaqueM2218.jpg",
+   "license": "Public domain",
+   "artist": "No machine-readable author provided. Fg2 assumed (based on copyright claims)."
+  },
+  "low-1": {
+   "caption": "Đọc đề xong buồn ngủ luôn",
+   "file": "File:Cat on laptop yawning.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cat_on_laptop_yawning.jpg",
+   "license": "CC0",
+   "artist": "acebrand"
+  },
+  "low-2": {
+   "caption": "Daniel khi chấm bài này",
+   "file": "File:Character Head 25.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Character_Head_25.jpg",
+   "license": "Public domain",
+   "artist": "Franz Xaver Messerschmidt"
+  },
+  "low-3": {
+   "caption": "Nhìn điểm xong im lặng 3 giây",
+   "file": "File:Savannah Cat closeup.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Savannah_Cat_closeup.jpg",
+   "license": "Public domain",
+   "artist": "Jason Douglas"
+  },
+  "low-4": {
+   "caption": "Sai nhiều vậy là thầy giận đó nha",
+   "file": "File:Hatred or Jealousy (from Heads Representing the Various Passions of the Soul; as they are Expressed in the Human Countenance- Drawn by that Great Master Monsieur Le Brun) MET DP854028.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Hatred_or_Jealousy_(from_Heads_Representing_the_Various_Passions_of_the_Soul;_as_they_are_Expressed_in_the_Human_Countenance-_Drawn_by_that_Great_Master_Monsieur_Le_Brun)_MET_DP854028.jpg",
+   "license": "CC0",
+   "artist": "Charles Le Brun / Robert Sayer"
+  },
+  "bottom-1": {
+   "caption": "Khi nhìn thấy điểm của mình",
+   "file": "File:The Scream Pastel.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:The_Scream_Pastel.jpg",
+   "license": "Public domain",
+   "artist": "Edvard Munch"
+  },
+  "bottom-2": {
+   "caption": "Não tôi sau khi làm bài",
+   "file": "File:Cat yawning - DSC00577.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Cat_yawning_-_DSC00577.jpg",
+   "license": "CC0",
+   "artist": "Lemon tart"
+  },
+  "bottom-3": {
+   "caption": "Học kiểu này thì ngáp dài dài",
+   "file": "File:Joseph Ducreux (French) - Self-Portrait, Yawning - Google Art Project.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Joseph_Ducreux_(French)_-_Self-Portrait,_Yawning_-_Google_Art_Project.jpg",
+   "license": "Public domain",
+   "artist": "Joseph Ducreux"
+  },
+  "bottom-4": {
+   "caption": "Đang học bài... trong mơ",
+   "file": "File:Gracie Seyranian the Cat that sleeps funny.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Gracie_Seyranian_the_Cat_that_sleeps_funny.jpg",
+   "license": "CC0",
+   "artist": "TyedyeBrody"
+  },
+  "paste-1": {
+   "caption": "Định copy paste hả? Tui thấy hết rồi nha 👀",
+   "file": "File:Jacko laptop ..jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Jacko_laptop_..jpg",
+   "license": "Public domain",
+   "artist": "jet."
+  },
+  "paste-2": {
+   "caption": "Paste là không được đâu nha bạn hiền",
+   "file": "File:Character Head 40.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Character_Head_40.jpg",
+   "license": "Public domain",
+   "artist": "Franz Xaver Messerschmidt"
+  },
+  "streak-1": {
+   "caption": "STREAK CỦA TUIIII!!!",
+   "file": "File:Edvard-Munch-The-Scream.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Edvard-Munch-The-Scream.jpg",
+   "license": "CC0",
+   "artist": "Edvard Munch"
+  },
+  "streak-2": {
+   "caption": "Streak của tui... đi thật rồi",
+   "file": "File:Sadness (from Heads Representing the Various Passions of the Soul; as they are Expressed in the Human Countenance- Drawn by that Great Master Monsieur Le Brun) MET DP854030.jpg",
+   "page": "https://commons.wikimedia.org/wiki/File:Sadness_(from_Heads_Representing_the_Various_Passions_of_the_Soul;_as_they_are_Expressed_in_the_Human_Countenance-_Drawn_by_that_Great_Master_Monsieur_Le_Brun)_MET_DP854030.jpg",
+   "license": "CC0",
+   "artist": "Charles Le Brun / Robert Sayer"
+  }
+ }
+}

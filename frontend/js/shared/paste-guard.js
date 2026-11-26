@@ -3,11 +3,11 @@
  *
  * Blocks pasting/dragging text into a free-answer textarea (Writing Task 1/2
  * exam + practice, the "Viết lại" rewrite box, Speaking's transcript boxes)
- * and shows a cute picture (img/cheer/cheer-nudge.jpg) + a gentle reminder
+ * and shows a local meme (img/meme_prevent_paste.jpg) + a joking caption
  * instead of a plain toast — same idea across every site, one place to
  * change the wording/image/timing. Not for drill-mechanic paste blocking
  * (e.g. word-by-word typing drills, dictation) — those intentionally stay
- * silent (no popup) since pasting there breaks the exercise itself rather
+ * silent (no meme) since pasting there breaks the exercise itself rather
  * than being an anti-cheat concern.
  *
  * Usage: PasteGuard.attach(el, { hint: 'hãy tự gõ bài viết của bạn' })
@@ -15,7 +15,7 @@
 (function () {
   'use strict';
 
-  var IMG_SRC = '/img/cheer/cheer-nudge.jpg';
+  var MEME_SRC = 'img/meme_prevent_paste.jpg';
   var AUTO_HIDE_MS = 3200;
   var DEFAULT_HINT = 'tự gõ bài của bạn thôi nha!';
   var _hideTimer = null;
@@ -27,8 +27,8 @@
     el.id = 'paste-guard-popup';
     el.innerHTML =
       '<div class="pg-card">' +
-        '<img class="pg-meme" src="' + IMG_SRC + '" alt="">' +
-        '<div class="pg-title">Tự gõ mới nhớ lâu nè 🌷</div>' +
+        '<img class="pg-meme" src="' + MEME_SRC + '" alt="">' +
+        '<div class="pg-title">Tính lười biếng hảaa 😏</div>' +
         '<div class="pg-hint"></div>' +
       '</div>';
     document.body.appendChild(el);
@@ -60,6 +60,7 @@
     var root = document.fullscreenElement || document.body;
     if (el.parentNode !== root) root.appendChild(el);
     el.querySelector('.pg-hint').textContent = hint || DEFAULT_HINT;
+    el.querySelector('.pg-meme').src = (window.memeSrc || String)(MEME_SRC); // new meme each time
     el.classList.add('show');
     clearTimeout(_hideTimer);
     _hideTimer = setTimeout(function () { el.classList.remove('show'); }, AUTO_HIDE_MS);

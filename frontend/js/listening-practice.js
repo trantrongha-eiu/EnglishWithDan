@@ -1455,10 +1455,10 @@ async function _doSubmitLTPractice() {
     const ts = String(elapsed % 60).padStart(2, '0');
     const perQ = total ? Math.round(elapsed / total) : 0;
     const speed = perQ <= 45 ? '<i class="fas fa-bolt"></i> Rất nhanh' : perQ <= 80 ? 'Ổn' : 'Cần tăng tốc';
-    const encourage = pct >= 80 ? 'Giỏi quá trời! Cứ giữ phong độ này nha 🌟'
-                    : pct >= 60 ? 'Làm tốt lắm! Xem lại vài câu sai là lên level liền 💪'
-                    : pct >= 40 ? 'Cậu đang tiến bộ từng chút đó! Ôn lại phần sai là lần sau cao hơn 💛'
-                    : 'Không sao đâu, sai để học mà! Nghỉ xíu rồi mình làm lại nha 🌷';
+    const encourage = pct >= 80 ? 'Ôi học giỏi vậy? Đi dạy lại đi chứ 😏🔥'
+                    : pct >= 60 ? 'Tạm ổn đó... nhưng mà Daniel biết bạn làm được hơn 👀'
+                    : pct >= 40 ? 'Được hơn 40% rồi nhưng sai nhiều vậy là chưa ổn nha 🥲 Cày thêm đi!'
+                    : 'Học cho đàng hoàng zô coiii 😤';
     const timeLine = `<div class="ls-rb-time">
             <span><i class="fas fa-clock"></i> Thời gian: <strong>${tm}:${ts}</strong></span>
             <span>${speed} · ${perQ}s/câu</span>
@@ -1471,13 +1471,13 @@ async function _doSubmitLTPractice() {
     // below wipes them (review markup adds correct/wrong indicators the
     // live practice markup doesn't have, so raw HTML can't be reused).
     const savedQuestionHl = window.HighlightStore.extractTexts(inner.innerHTML);
-    const ltPracImgSrc = pct >= 75 ? 'img/cheer/cheer-great.jpg'
-                        : pct >= 60 ? 'img/cheer/cheer-good.jpg'
-                        : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
-                        : pct >= 40 ? 'img/cheer/cheer-try.jpg'
-                        : pct >= 30 ? 'img/cheer/cheer-rest.jpg'
-                        : pct >= 20 ? 'img/cheer/cheer-rest.jpg'
-                        : 'img/cheer/cheer-rest.jpg';
+    const ltPracImgSrc = pct >= 75 ? (window.memeSrc || String)('img/above7.5.jpg')
+                        : pct >= 60 ? (window.memeSrc || String)('img/band_6_7.jpg')
+                        : pct >= 50 ? (window.memeSrc || String)('img/listening_readingbelow60%25.jpg')
+                        : pct >= 40 ? (window.memeSrc || String)('img/listening_readingbelow50%25.jpg')
+                        : pct >= 30 ? (window.memeSrc || String)('img/listening_readingbelow40%25.jpg')
+                        : pct >= 20 ? (window.memeSrc || String)('img/listening_readingbelow30%25.jpg')
+                        : (window.memeSrc || String)('img/listening_readingbelow20%25.jpg');
     let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
             <img src="${ltPracImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">
             <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
@@ -1889,13 +1889,13 @@ async function loadLTPracticeReview(attemptId) {
         const barVar = pct >= 70 ? 'good' : pct >= 40 ? 'mid' : 'bad';
         const tm = String(Math.floor(attempt.timeTaken / 60)).padStart(2, '0');
         const ts = String(attempt.timeTaken % 60).padStart(2, '0');
-        const ltHistImgSrc = pct >= 75 ? 'img/cheer/cheer-great.jpg'
-                            : pct >= 60 ? 'img/cheer/cheer-good.jpg'
-                            : pct >= 50 ? 'img/cheer/cheer-ok.jpg'
-                            : pct >= 40 ? 'img/cheer/cheer-try.jpg'
-                            : pct >= 30 ? 'img/cheer/cheer-rest.jpg'
-                            : pct >= 20 ? 'img/cheer/cheer-rest.jpg'
-                            : 'img/cheer/cheer-rest.jpg';
+        const ltHistImgSrc = pct >= 75 ? (window.memeSrc || String)('img/above7.5.jpg')
+                            : pct >= 60 ? (window.memeSrc || String)('img/band_6_7.jpg')
+                            : pct >= 50 ? (window.memeSrc || String)('img/listening_readingbelow60%25.jpg')
+                            : pct >= 40 ? (window.memeSrc || String)('img/listening_readingbelow50%25.jpg')
+                            : pct >= 30 ? (window.memeSrc || String)('img/listening_readingbelow40%25.jpg')
+                            : pct >= 20 ? (window.memeSrc || String)('img/listening_readingbelow30%25.jpg')
+                            : (window.memeSrc || String)('img/listening_readingbelow20%25.jpg');
 
         let html = `<div class="ls-result-bar ls-result-bar--${barVar}">
                 <img src="${ltHistImgSrc}" alt="" loading="lazy" style="display:block;width:100%;max-width:200px;border-radius:12px;margin:0 auto 12px;object-fit:cover">

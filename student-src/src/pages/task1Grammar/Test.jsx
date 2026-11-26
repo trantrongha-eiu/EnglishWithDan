@@ -5,6 +5,7 @@ import { testResultImage } from '../../utils/writingPractice';
 import { Rearrange } from '../writingPractice/Inputs';
 import { Blanks, McOptions, T1Chart } from './Parts';
 import { SECONDS_PER_QUESTION } from './useT1Test';
+import MemeImg from '../../components/MemeImg';
 
 function mmss(s) {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
@@ -99,7 +100,7 @@ function Results({ result, onRetry }) {
   return (
     <>
       <div className="wp-test-score-header" id="test-score-header">
-        <img src={testResultImage(score)} alt="" style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
+        <MemeImg src={testResultImage(score)} style={{ display: 'block', width: '100%', maxWidth: 220, borderRadius: 12, margin: '0 auto 12px', objectFit: 'cover' }} />
         {lulu ? <div style={{ display: 'contents' }} dangerouslySetInnerHTML={{ __html: lulu }} /> : <div className="wp-done-icon">{emoji}</div>}
         <h2 className={scoreClass}>{score}%</h2>
         <p>{lulu ? '' : message + ' '}Đúng {correct} / {total} câu</p>

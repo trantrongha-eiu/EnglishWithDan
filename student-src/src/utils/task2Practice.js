@@ -648,13 +648,13 @@ export function buildVocabQuiz(list, seed) {
   });
 }
 
-export function cheerImage(pct) {
-  if (pct >= 90) return '/img/cheer/cheer-top.jpg';
-  if (pct >= 70) return '/img/cheer/cheer-great.jpg';
-  if (pct >= 60) return '/img/cheer/cheer-good.jpg';
-  if (pct >= 50) return '/img/cheer/cheer-ok.jpg';
-  if (pct >= 45) return '/img/cheer/cheer-try.jpg';
-  return '/img/cheer/cheer-rest.jpg';
+export function memeImage(pct) {
+  if (pct >= 90) return '/img/vocab_writingabove90%25.jpg';
+  if (pct >= 70) return '/img/above7.5.jpg';
+  if (pct >= 60) return '/img/band_6_7.jpg';
+  if (pct >= 50) return '/img/writingbelow60%25.jpg';
+  if (pct >= 45) return '/img/writingbelow50%25.jpg';
+  return '/img/writingbelow45%25.jpg';
 }
 
 // Speaks a whole English sentence (Web Speech, best available voice)
