@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { apiFetch } from '../../utils/api';
 import { useToast } from '../../contexts/ToastContext';
@@ -13,11 +13,29 @@ import {
 // which also feeds the in-book "học N từ" bars. Hidden for a student in no
 // class; same #homework-card / .hw-* markup as the static page.
 
+// Thu gọn / mở rộng từng khung bài tập. Bài đã hoàn thành hoặc đã đóng (lưu
+// trữ) mặc định thu gọn; lựa chọn bấm tay được nhớ theo từng bài (per-browser).
+const COLLAPSE_KEY = 'hwCollapsed';
+function readCollapsePrefs() {
+  try { return JSON.parse(localStorage.getItem(COLLAPSE_KEY)) || {}; } catch { return {}; }
+}
+function saveCollapsePref(id, collapsed) {
+  try {
+    const prefs = readCollapsePrefs();
+    prefs[id] = collapsed;
+    const keys = Object.keys(prefs);
+    if (keys.length > 200) keys.slice(0, keys.length - 200).forEach(k => delete prefs[k]);
+    localStorage.setItem(COLLAPSE_KEY, JSON.stringify(prefs));
+  } catch { /* storage blocked — the choice just isn't remembered */ }
+}
+const collapsedByDefault = (a) => a.status === 'completed' || !!a.archived;
+
 function scrollToAssignment(id) {
   const el = document.querySelector(`.hw-item[data-id="${id}"]`);
   if (!el) return;
   const group = el.closest('details');
   if (group) group.open = true;
+  window.dispatchEvent(new CustomEvent('hw-expand', { detail: id }));
   el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   el.classList.add('hw-item--flash');
   setTimeout(() => el.classList.remove('hw-item--flash'), 1600);
@@ -247,15 +265,41 @@ function AssignmentBlock({ a, onChanged }) {
   const pillCls = a.locked ? 'hw-pill--locked' : (a.late ? 'hw-pill--late' : st.cls);
   const cd = a.status !== 'completed' ? countdown(a.deadline) : null;
   const need = a.unlockNeed || 1;
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = readCollapsePrefs()[a._id];
+    return typeof saved === 'boolean' ? saved : collapsedByDefault(a);
+  });
+  // "Bài cũ cần làm" links jump here — open the box so its items show
+  useEffect(() => {
+    const onExpand = (e) => { if (e.detail === a._id) setCollapsed(false); };
+    window.addEventListener('hw-expand', onExpand);
+    return () => window.removeEventListener('hw-expand', onExpand);
+  }, [a._id]);
+  function toggle() {
+    const next = !collapsed;
+    setCollapsed(next);
+    saveCollapsePref(a._id, next);
+  }
+  const bodyId = `hw-body-${a._id}`;
   return (
-    <div className={`hw-item${a.locked ? ' hw-item--locked' : ''}`} data-id={a._id} data-status={a.status || 'not_started'}>
+    <div className={`hw-item${a.locked ? ' hw-item--locked' : ''}${collapsed ? ' hw-item--collapsed' : ''}`} data-id={a._id} data-status={a.status || 'not_started'}>
       <div className="hw-item-head">
-        <div>
+        <div className="hw-item-headtext" onClick={toggle}>
           <div className="hw-item-title">{a.title}</div>
-          <div className="hw-item-sub">{a.className}{a.teacherName ? ` · ${a.teacherName}` : ''}</div>
+          {collapsed
+            ? <div className="hw-item-sub">{a.done}/{a.total} hoàn thành · ⏰ {fmtDeadline(a.deadline)}</div>
+            : <div className="hw-item-sub">{a.className}{a.teacherName ? ` · ${a.teacherName}` : ''}</div>}
         </div>
-        <span className={`hw-pill ${pillCls}`} title={a.late ? 'Làm bù sau hạn — cứ 2 bài nộp trễ tính là 1 bài thiếu' : undefined}>{pill}</span>
+        <span className="hw-item-headright">
+          <span className={`hw-pill ${pillCls}`} title={a.late ? 'Làm bù sau hạn — cứ 2 bài nộp trễ tính là 1 bài thiếu' : undefined}>{pill}</span>
+          <button type="button" className="hw-collapse-btn" onClick={toggle}
+            aria-expanded={!collapsed} aria-controls={bodyId}
+            title={collapsed ? 'Mở rộng' : 'Thu gọn'} aria-label={collapsed ? 'Mở rộng bài tập' : 'Thu gọn bài tập'}>
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M5 7.5l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </span>
       </div>
+      {!collapsed && <div id={bodyId}>
       {a.locked && (
         <div className="hw-lock-note">
           🔒 <b>Bài này đang bị khoá.</b> Bạn còn {(a.lockedBy || []).length} bài tập cũ chưa hoàn thành —
@@ -286,6 +330,7 @@ function AssignmentBlock({ a, onChanged }) {
             ? <span className="hw-due hw-due--late">✔ Đã xong · nộp trễ (2 bài trễ = 1 bài thiếu)</span>
             : <span className="hw-due hw-due--ok">✔ Đã xong</span>}
       </div>
+      </div>}
     </div>
   );
 }
