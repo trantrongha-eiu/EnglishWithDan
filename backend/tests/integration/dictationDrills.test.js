@@ -127,7 +127,7 @@ describe('buildDictationDrills miner', () => {
     const name = by('Gerald');
     expect(name.clip.target).toBe('GERALD');
     expect(name.clip.nameTarget).toBe('GERALD');
-    expect(name.clip.parts).toEqual({ name: "Gerald. That's", core: 'G-E-R-A-L-D.', repeat: null });
+    expect(name.clip.parts).toEqual({ name: "Gerald. That's", nameWord: 'Gerald', namePrefix: null, core: 'G-E-R-A-L-D.', repeat: null });
 
     const num = by('4471 9082');
     expect(num.clip.parts.core).toBe('4471 9082');
@@ -138,5 +138,30 @@ describe('buildDictationDrills miner', () => {
     const price = by('£2 million');
     expect(price.clip.target).toBe('2');
     expect(price.clip.parts.core).toBe('£2 million');
+  });
+
+  test('the name is found further back, past a speaker label that follows it', () => {
+    const items = mineSource(src(
+      'WOMAN: My name is Samira Manuja. MAN: Can you spell that, please? WOMAN: M-A-N-U-J-A. ' +
+      'KAEDEN: Hi. It\'s Kaeden. CHARLOTTE: Sorry. KAEDEN: People get it wrong. It\'s K-A-E-D-E-N.',
+    ), decodeTiming);
+    const manuja = items.find((x) => x.answer === 'Manuja');
+    expect(manuja.clip.nameTarget).toBe('MANUJA');
+    expect(manuja.clip.parts.nameWord).toBe('Manuja');
+    expect(manuja.clip.parts.namePrefix).toBe('Samira');
+    const kaeden = items.find((x) => x.answer === 'Kaeden');
+    expect(kaeden.clip.parts.nameWord).toBe('Kaeden'); // the spoken one, not the "KAEDEN:" label
+  });
+
+  test('"double 67549" = 667549, and a letter-wrapped model number is one code', () => {
+    const items = mineSource(src(
+      "MAN: What's your number? WOMAN: It's double 67549. " +
+      "MAN: And the model number? WOMAN: It's S 654 391 X. MAN: Thanks.",
+    ), decodeTiming);
+    const answers = items.map((x) => x.answer);
+    expect(answers).toContain('667549');
+    expect(answers).not.toContain('67549');
+    expect(answers).toContain('S 654 391 X');
+    expect(items.find((x) => x.answer === 'S 654 391 X').kind).toBe('code');
   });
 });

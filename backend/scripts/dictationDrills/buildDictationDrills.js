@@ -14,10 +14,15 @@
  * cutClips.py finds each item in the audio, cuts at silence, checks the clip
  * by re-transcribing it, and writes one small mp3 per clip:
  *
- *   node scripts/dictationDrills/buildDictationDrills.js --export D:/tmp-dict
+ *   node scripts/dictationDrills/buildDictationDrills.js --export D:/tmp-dict [--all]
  *   py   scripts/dictationDrills/cutClips.py D:/tmp-dict
- *   node scripts/dictationDrills/buildDictationDrills.js --upload D:/tmp-dict
- *        → R2 + data/dictationDrillClips.json (only verified clips)
+ *   py   scripts/dictationDrills/cutClips.py D:/tmp-dict --verify large-v3-turbo
+ *        (2nd, bigger Whisper: the answer must be heard EXACTLY — every digit /
+ *        letter, a price's unit, the name before a spelling; set WHISPER_ROOT=
+ *        D:/hf-cache/hub to keep the model off C:)
+ *   node scripts/dictationDrills/buildDictationDrills.js --upload D:/tmp-dict [--fresh]
+ *        → R2 + data/dictationDrillClips.json (only clips that passed both)
+ *        --all + --fresh = re-cut everything and drop the old clip list.
  *   node scripts/dictationDrills/buildDictationDrills.js   → data JSON + stats
  *   node scripts/seedDictationDrills.js                    → upsert into Mongo
  *
@@ -104,7 +109,11 @@ function mineSource(src, decodeTiming) {
   const sentOf = (i) => sents.findIndex(([a, b]) => i >= a && i <= b);
   const used = new Set();
   const alnum = (w) => w.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-  const part = (from, to) => cleanText(tokens.slice(from, to + 1).join(' ')).replace(/[,;:]+$/, '');
+  const part = (from, to) => {
+    while (to >= from && /:$/.test(tokens[to])) to--; // the next speaker's label ("Thorn. Agent: T-H-O-R-N?")
+    if (to < from) return '';
+    return cleanText(tokens.slice(from, to + 1).join(' ')).replace(/[,;:]+$/, '');
+  };
   const timeAt = (i, dir) => { for (let k = i; k >= 0 && k < timing.length; k += dir) if (timing[k]) return timing[k]; return null; };
   // o: { hitEnd, target, nameIdx, nameTarget, repeatEnd }
   const push = (kind, hitIdx, answer, o = {}) => {
@@ -140,8 +149,10 @@ function mineSource(src, decodeTiming) {
       }
     }
     // the name part must still contain the name once labels are cleaned off
+    // (the name's own tokens only: label cleaning eats "Manuja. Man:" whole)
     let nameIdx = o.nameIdx == null ? null : o.nameIdx;
-    if (nameIdx != null && !alnum(part(nameIdx, hitIdx - 1)).includes(o.nameTarget)) nameIdx = null;
+    const nameEnd = o.nameEnd == null ? nameIdx : o.nameEnd;
+    if (nameIdx != null && !alnum(part(nameIdx, nameEnd)).includes(o.nameTarget)) nameIdx = null;
     const first = nameIdx == null ? hitIdx : nameIdx;
     const lastIdx = repeatEnd == null ? Math.max(coreEnd, sb) : repeatEnd;
     const from = timeAt(first, -1) || timeAt(first, 1);
@@ -160,7 +171,12 @@ function mineSource(src, decodeTiming) {
         target, near: hit[0], winStart, winEnd: Math.min(Math.max(to[1], hit[1]) + 3.5, winStart + 45),
         nameTarget: nameIdx == null ? null : o.nameTarget, hasRepeat: repeatEnd != null,
         parts: {
-          name: nameIdx == null ? null : part(nameIdx, hitIdx - 1),
+          name: nameIdx == null ? null : [part(nameIdx, nameEnd), nameEnd + 1 <= hitIdx - 1 ? part(nameEnd + 1, hitIdx - 1) : ''].filter(Boolean).join(' '),
+          nameWord: nameIdx == null ? null : part(nameIdx, nameEnd).replace(/[.,?!;:—–-]+$/, ''),
+          // a first name said right before ("Samira Manuja"): the name clip may need to start there
+          namePrefix: nameIdx != null && /^[A-Z][a-z]+$/.test(tokens[nameIdx - 1] || '')
+            && !/^(It's|I'm|My|That's|Yes|Oh|Well|So|And|But|The|In|At|On|Is|It|Its|Our|Your|His|Her|Mr|Mrs|Ms|Dr|Called|Name)$/.test(tokens[nameIdx - 1])
+            ? tokens[nameIdx - 1] : null,
           core: part(hitIdx, coreEnd),
           repeat: repeatEnd == null ? null : part(coreEnd + 1, repeatEnd),
         },
@@ -207,11 +223,19 @@ function mineSource(src, decodeTiming) {
     found.forEach((f) => { if (words.length && f.L.length <= 2) words[words.length - 1].L += f.L; else words.push({ ...f }); });
     const hitEnd = found[found.length - 1].next - 1;
     const target = found.map((f) => f.L).join('').toUpperCase();
-    // the name said just before its spelling ("Gerald Smith. That's G-E-R-…")
-    const first = words[0].L.toLowerCase();
-    let nameIdx = null;
-    for (let k = found[0].i - 1; k >= Math.max(0, found[0].i - 7); k--) {
-      if (tokens[k].replace(/[^A-Za-z]/g, '').toLowerCase() === first && !spellAt(k)) { nameIdx = k; break; }
+    // The whole name said before its spelling ("Gerald Smith. That's G-E-R-…",
+    // "My name is Samira Manuja. — Can you spell that? — M-A-N-U-J-A"): the
+    // student must hear the name first. Up to ~45 words back; a multi-word
+    // spelling ("S-A-M, D-R-E-S-S-L-E-R") needs all its words said together.
+    // cutClips.py keeps a nearby name in one clip and joins a far one on.
+    const whole = target.toLowerCase();
+    let nameIdx = null, nameEnd = null;
+    for (let k = found[0].i - 1; k >= Math.max(0, found[0].i - 45) && nameIdx == null; k--) {
+      for (let n = 1; n <= Math.min(3, words.length) && k + n <= found[0].i; n++) {
+        const run = tokens.slice(k, k + n);
+        if (run.some((w, x) => spellAt(k + x) || /:$/.test(w))) break; // spelled, or a speaker label ("KAEDEN:")
+        if (run.join('').replace(/[^A-Za-z]/g, '').toLowerCase() === whole) { nameIdx = k; nameEnd = k + n - 1; break; }
+      }
     }
     // …and the spelling repeated right after ("G-E-R-A-L-D? — Yes, G-E-R-A-L-D.")
     let repeatEnd = null;
@@ -220,7 +244,7 @@ function mineSource(src, decodeTiming) {
       if (r && r.L.toUpperCase() === target) { repeatEnd = r.next - 1; break; }
     }
     push('spell', found[0].i, words.map((f) => capWord(f.L, f.i)).join(' '), {
-      hitEnd, target, nameIdx, nameTarget: nameIdx == null ? null : first.toUpperCase(), repeatEnd,
+      hitEnd, target, nameIdx, nameEnd, nameTarget: nameIdx == null ? null : target, repeatEnd,
     });
   });
 
@@ -230,7 +254,22 @@ function mineSource(src, decodeTiming) {
     const txt = toks.join(' ');
     const at = (needle) => { const k = toks.findIndex((w) => w.includes(needle)); return k < 0 ? -1 : a + k; };
     // `said` = the item as written: it may span several tokens ("07958 847 222")
-    const put = (kind, i, answer, said) => { if (i >= 0) push(kind, i, answer, { hitEnd: i + said.trim().split(/\s+/).length - 1 }); };
+    const put = (kind, i, answer, said) => {
+      if (i < 0) return;
+      let hitEnd = i + said.trim().split(/\s+/).length - 1;
+      if (kind !== 'address' && kind !== 'price') {
+        // "It's double 67549" = 667549: the digit the transcript wrote once is said twice
+        const rep = (tokens[i - 1] || '').replace(/[^a-z]/gi, '').toLowerCase();
+        if ((rep === 'double' || rep === 'triple') && /^\d/.test(answer)) {
+          answer = answer[0].repeat(rep === 'double' ? 1 : 2) + answer;
+          i--;
+        }
+        // "S 654 391 X": a lone letter on either side belongs to the code
+        if (/^[A-Z]$/.test(tokens[i - 1] || '') && !/^(I|A)$/.test(tokens[i - 1])) { answer = `${tokens[i - 1]} ${answer}`; i--; kind = 'code'; }
+        if (/^[A-Z][.,?!]?$/.test(tokens[hitEnd + 1] || '') && !/^(I|A)\b/.test(tokens[hitEnd + 1])) { answer = `${answer} ${tokens[hitEnd + 1][0]}`; hitEnd++; kind = 'code'; }
+      }
+      push(kind, i, answer, { hitEnd });
+    };
     let m;
     if ((m = txt.match(POSTCODE))) put('postcode', at(m[1].split(/\s/)[0]), m[1], m[1]);
     else if ((m = txt.match(ADDRESS))) put('address', at(m[1]), `${m[1]} ${m[2]} ${m[3]}`, m[0]);
@@ -317,7 +356,8 @@ async function run() {
   const exportDir = flag('--export');
   if (exportDir) {
     fs.mkdirSync(exportDir, { recursive: true });
-    const todo = items.filter((x) => !clips[x.clip.key]).map((x) => ({ ...x.clip, kind: x.kind, answer: x.answer, audioUrl: x.audioUrl }));
+    const all = process.argv.includes('--all'); // re-cut every candidate, not only new ones
+    const todo = items.filter((x) => all || !clips[x.clip.key]).map((x) => ({ ...x.clip, kind: x.kind, answer: x.answer, audioUrl: x.audioUrl }));
     fs.writeFileSync(path.join(exportDir, 'candidates.json'), JSON.stringify(todo));
     console.log(`[dictationDrills] ${todo.length} candidates → ${exportDir} (${items.length - todo.length} already cut)`);
     await mongoose.disconnect();
@@ -328,9 +368,11 @@ async function run() {
     const r2 = require('../../services/r2Service');
     const rows = fs.readFileSync(path.join(uploadDir, 'results.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
     const live = new Set(items.map((x) => x.clip.key));
+    // --fresh: the map is rebuilt from this run only (after an --all export + cutClips --verify)
+    if (process.argv.includes('--fresh')) for (const k of Object.keys(clips)) delete clips[k];
     let sent = 0;
     for (const r of rows) {
-      if (r.status !== 'ok' || !live.has(r.key) || clips[r.key]) continue;
+      if (r.status !== 'ok' || !r.verified || !live.has(r.key) || clips[r.key]) continue;
       const audioUrl = await r2.putObject(`listening/dictation-clips/${r.file}`, fs.readFileSync(path.join(uploadDir, 'clips', r.file)), 'audio/mpeg');
       clips[r.key] = { audioUrl, dur: r.dur, text: r.text };
       sent++;
