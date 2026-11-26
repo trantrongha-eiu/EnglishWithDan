@@ -556,6 +556,9 @@ audio.addEventListener('ended', () => _setDictPlayIcon(false));
 /* ══════════════ CHECKING ══════════════ */
 // Curly apostrophes count as a plain ' (transcripts use ’, keyboards ').
 function normWord(w) { return w.toLowerCase().replace(/[’‘ʼ`´]/g, "'").replace(/[^a-z0-9']/g, ''); }
+// "OK" in the transcript typed as "okay" (or "O.K.") is the same word.
+const _DICT_SAME_WORD = { okay: 'ok' };
+function _dictMatchWord(w) { const n = normWord(w); return _DICT_SAME_WORD[n] || n; }
 
 // Scorable words; pure punctuation tokens ("–", "…") are dropped.
 function dictWords(text) {
@@ -580,7 +583,7 @@ function answerWords(text) {
 // consumes a reference word carries its index `r`.
 function _dictAlign(typedWords, refWords) {
   const n = typedWords.length, m = refWords.length;
-  const a = typedWords.map(normWord), b = refWords.map(normWord);
+  const a = typedWords.map(_dictMatchWord), b = refWords.map(_dictMatchWord);
   const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
   for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
     dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] + 1 : Math.max(dp[i - 1][j], dp[i][j - 1]);

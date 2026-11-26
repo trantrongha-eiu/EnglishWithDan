@@ -8,6 +8,11 @@ export function fmtTime(seconds) {
 // Curly apostrophes count as a plain ' (transcripts use ’, keyboards ')
 export const normWord = (w) => w.toLowerCase().replace(/[’‘ʼ`´]/g, "'").replace(/[^a-z0-9']/g, '');
 
+// Spellings of the same spoken word that both count as right: the
+// transcript's "OK" heard and typed as "okay" (or "O.K.") is not a mistake.
+const SAME_WORD = { okay: 'ok' };
+const matchWord = (w) => { const n = normWord(w); return SAME_WORD[n] || n; };
+
 // Scorable words; pure punctuation tokens ("–", "…") are dropped
 export const dictWords = (text) => (text || '').trim().split(/\s+/).filter((w) => normWord(w) !== '');
 
@@ -29,8 +34,8 @@ export function answerWords(text) {
 export function alignWords(typedWords, refWords) {
   const n = typedWords.length;
   const m = refWords.length;
-  const a = typedWords.map(normWord);
-  const b = refWords.map(normWord);
+  const a = typedWords.map(matchWord);
+  const b = refWords.map(matchWord);
   const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
   for (let i = 1; i <= n; i++) {
     for (let j = 1; j <= m; j++) {
