@@ -1,4 +1,4 @@
-const { evaluateBook, evaluateBooks } = require('../../../services/vocabGoalService');
+const { evaluateBook, evaluateBooks, evaluateList, wordKey } = require('../../../services/vocabGoalService');
 const { assignDefaultSlots, slotFromName } = require('../../../utils/defaultVocabBooks');
 
 const SINCE = new Date('2026-09-01T00:00:00Z');
@@ -158,5 +158,43 @@ describe('assignDefaultSlots', () => {
 describe('slotFromName', () => {
   test.each([['Sổ 1', 1], ['sổ 5', 5], ['  SỔ   2 ', 2], ['Sổ3', 3], ['Sổ 6', null], ['Sổ 10', null], ['Sổ của mẹ', null], ['So 1', null]])('%s -> %s', (name, slot) => {
     expect(slotFromName(name)).toBe(slot);
+  });
+});
+
+describe('wordKey', () => {
+  test('lower-cases, trims and squeezes spaces, nothing else', () => {
+    expect(wordKey('  Take   Off ')).toBe('take off');
+    expect(wordKey('Sustainable')).toBe('sustainable');
+    expect(wordKey('pass')).not.toBe(wordKey('pa'));
+  });
+});
+
+describe('evaluateList (Bộ từ của lớp)', () => {
+  const list = [{ word: 'mitigate' }, { word: 'Take off' }, { word: 'curb' }, { word: 'sustain' }];
+  const w = (word, at, correct) => ({ word, lastPracticedAt: at, lastPracticeCorrect: correct });
+
+  test('done = every listed word practised since the assignment, >= 70% right; counted once across books', () => {
+    const books = [
+      { _id: 'b1', words: [w('mitigate', AFTER, true), w('take  off', AFTER, true)] },
+      { _id: 'c', classBook: true, name: 'Từ của lớp', emoji: '📚', words: [w('Mitigate', BEFORE, false), w('curb', AFTER, true), w('sustain', AFTER, false)] },
+    ];
+    const r = evaluateList(list, books, SINCE);
+    expect(r).toMatchObject({ mode: 'list', target: 4, practiced: 4, correct: 3, needCorrect: 3, present: 4, completed: true, bookId: 'c' });
+    expect(r.reachedAt).toEqual(AFTER);
+  });
+
+  test('a word practised only before the assignment, or missing from every book, is not counted', () => {
+    const books = [{ _id: 'b1', words: [w('mitigate', BEFORE, true), w('curb', AFTER, true)] }];
+    const r = evaluateList(list, books, SINCE);
+    expect(r).toMatchObject({ practiced: 1, correct: 1, present: 2, completed: false });
+  });
+
+  test('the newest answer wins when the word lives in two books', () => {
+    const later = new Date(AFTER.getTime() + 60000);
+    const books = [
+      { _id: 'a', words: [w('curb', AFTER, true)] },
+      { _id: 'b', words: [w('CURB', later, false)] },
+    ];
+    expect(evaluateList([{ word: 'curb' }], books, SINCE)).toMatchObject({ practiced: 1, correct: 0, completed: false });
   });
 });

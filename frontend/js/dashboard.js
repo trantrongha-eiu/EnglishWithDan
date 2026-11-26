@@ -10,6 +10,7 @@ function authH() {
 
 // ── UI State ──────────────────────────────────
 let myBooks = [];
+const VOCAB_MAX_BOOKS = 10; // books per student incl. Sổ 1–5 (backend MAX_BOOKS_PER_USER; "Từ của lớp" not counted)
 let currentBookId = null;
 let currentBookData = null;
 let selectedWordIds = new Set();
@@ -816,11 +817,12 @@ function renderBookSidebar() {
 
     // Update book count badge & add button state
     const badge = document.getElementById('book-count-badge');
-    if (badge) badge.textContent = `${myBooks.length}`;
+    const ownCount = myBooks.filter(b => !b.classBook).length; // "Từ của lớp" not counted
+    if (badge) badge.textContent = `(${ownCount}/${VOCAB_MAX_BOOKS})`;
     const addBtn = document.getElementById('btn-add-book');
     if (addBtn) {
-        const atLimit = myBooks.length >= 15;
-        addBtn.title  = atLimit ? 'Đã đạt giới hạn 15 sổ' : 'Add new notebook';
+        const atLimit = ownCount >= VOCAB_MAX_BOOKS;
+        addBtn.title  = atLimit ? `Đã đủ ${VOCAB_MAX_BOOKS} sổ` : 'Tạo sổ mới';
         addBtn.style.opacity = atLimit ? '0.4' : '';
         addBtn.style.cursor  = atLimit ? 'not-allowed' : '';
     }
@@ -1016,10 +1018,10 @@ function renderBookContent(book) {
     const nameInp = document.getElementById('book-editable-name');
     nameInp.value = book.name;
     // Sổ 1–5 are fixed (teachers assign homework by them) — no rename.
-    nameInp.readOnly = !!book.isDefault;
-    nameInp.title = book.isDefault ? 'Sổ mặc định — không đổi tên được' : 'Click để đổi tên';
+    nameInp.readOnly = !!(book.isDefault || book.classBook);
+    nameInp.title = (book.isDefault || book.classBook) ? 'Sổ mặc định — không đổi tên được' : 'Click để đổi tên';
     const renameBtn = document.querySelector('#book-editable-name + .btn-rename');
-    if (renameBtn) renameBtn.style.display = book.isDefault ? 'none' : '';
+    if (renameBtn) renameBtn.style.display = (book.isDefault || book.classBook) ? 'none' : '';
 
     const total = book.words.length;
     const da    = book.words.filter(w => w.status === 'da-thuoc').length;
@@ -1107,7 +1109,7 @@ function _goalsForCurrentBook() {
     if (!book || !currentBookId) return [];
     return (window._hwVocabGoals || []).filter(g => g.requiredSlot
         ? (g.bookId === String(currentBookId) || book.defaultSlot === g.requiredSlot)
-        : !!book.isDefault);
+        : true);
 }
 
 // undefined = not practised for this goal yet, true/false = latest answer
@@ -1704,7 +1706,7 @@ async function bulkDelete() {
 async function renameBook() {
     const name = document.getElementById('book-editable-name').value.trim();
     if (!name) { toast('Tên sổ không được để trống', 'error'); return; }
-    if (!currentBookId || currentBookData?.isDefault) return; // Sổ 1–5: fixed name
+    if (!currentBookId || currentBookData?.isDefault || currentBookData?.classBook) return; // Sổ 1–5: fixed name
     try {
         const res = await fetch(`${API}/vocabbook/${currentBookId}`, {
             method: 'PUT', headers: authH(), body: JSON.stringify({ name })
@@ -1730,7 +1732,7 @@ function openBookMenu(bookId) {
     document.getElementById('book-actions-title').textContent = `${book.emoji} ${book.name}`;
 
     // Default books (Sổ 1–5): cố định — ẩn đổi tên/gộp/xóa
-    const isDefault = !!book.isDefault;
+    const isDefault = !!(book.isDefault || book.classBook);
     document.getElementById('btn-rename-from-menu').style.display = isDefault ? 'none' : 'flex';
     document.getElementById('btn-merge-from-menu').style.display  = isDefault ? 'none' : 'flex';
     document.getElementById('btn-delete-from-menu').style.display = isDefault ? 'none' : 'flex';
@@ -1847,7 +1849,7 @@ function openMergeModal() {
     document.getElementById('merge-dest-name').textContent   = `"${destBook.name}"`;
 
     // Chỉ hiển thị sổ không phải default và không phải sổ đích
-    const candidates = myBooks.filter(b => !b.isDefault && b._id !== _menuBookId);
+    const candidates = myBooks.filter(b => !b.isDefault && !b.classBook && b._id !== _menuBookId);
     const list = document.getElementById('merge-book-list');
 
     if (!candidates.length) {
@@ -1921,10 +1923,23 @@ function setupEmojiPicker() {
     ).join('');
 }
 function selectEmoji(emoji) { selectedEmoji = emoji; setupEmojiPicker(); }
-// Creating books is closed (backend returns 403) — only Sổ 1–5 are used.
-// Kept as a function so any stale caller gets an explanation, not an error.
+// Own books are allowed again (2026-11-25): at most VOCAB_MAX_BOOKS in
+// total, Sổ 1–5 included — the server enforces the same cap (VOCAB_MAX_BOOKS, top).
 function openAddBookModal() {
-    toast('Không thể tạo thêm sổ mới — hãy dùng 5 sổ mặc định (Sổ 1 – Sổ 5).', 'info');
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+        if (window.openUpgradeModal) openUpgradeModal();
+        return;
+    }
+    if (myBooks.filter(b => !b.classBook).length >= VOCAB_MAX_BOOKS) {
+        toast(`Đã đủ ${VOCAB_MAX_BOOKS} sổ — hãy gộp hoặc xoá bớt một sổ tự tạo trước.`, 'info');
+        return;
+    }
+    const input = document.getElementById('new-book-name');
+    if (input) input.value = '';
+    selectedEmoji = '📘';
+    setupEmojiPicker();
+    openModal('modal-add-book');
+    setTimeout(() => input && input.focus(), 50);
 }
 async function createBook() {
     // Same free-plan gate as openBook() — POST /vocabbook is premium-gated

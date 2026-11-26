@@ -52,12 +52,12 @@
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
 </head>
 <body>
-<script src="/js/bundles/app-shell.js?v=53292f87bd"></script>
+<script src="/js/bundles/app-shell.js?v=7e94ba3381"></script>
 <script src="/js/shared/onboarding-tour.js?v=8e47b6357b"></script>
 <script src="/js/learning-popups.js?v=fd5ee1e733"></script>
 <script src="/js/shared/confirm-dialog.js?v=31541eaa53"></script>
 <script src="/js/shared/word-audio.js?v=9fd314228b"></script>
-<script src="/js/shared/dictionary-lookup.js?v=182fa667a3"></script>
+<script src="/js/shared/dictionary-lookup.js?v=31484e24ea"></script>
 <script src="/js/shared/badge-popup.js?v=b1f5e551eb"></script>
 
 <div class="app-layout">
@@ -66,6 +66,7 @@
   <aside class="vocab-sidebar" id="vocabSidebar">
     <div class="sidebar-head">
       <span>My Notebooks <span id="book-count-badge" style="font-size:10px;font-weight:500;opacity:.7;letter-spacing:0;text-transform:none"></span></span>
+      <button class="btn-add-book" id="btn-add-book" onclick="openAddBookModal()" title="Tạo sổ mới" aria-label="Tạo sổ mới"><i class="fas fa-plus-circle"></i></button>
     </div>
     <div id="book-list-sidebar"><!-- Rendered by JS --></div>
 
@@ -1001,9 +1002,10 @@
       <div class="guide-section">
         <div class="guide-section-title"><span class="guide-num">1</span> Tạo & quản lý sổ</div>
         <ul class="guide-list">
-          <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ). Không tạo thêm sổ mới được.</li>
+          <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ) — không đổi tên hay xoá được.</li>
+          <li><strong>Tạo sổ mới:</strong> Nhấn <code>+</code> cạnh “My Notebooks”. Tối đa <strong>10 sổ</strong> (tính cả Sổ 1 – Sổ 5).</li>
           <li><strong>Chuyển từ sang sổ khác:</strong> Nhấn <code>Chuyển sang sổ khác</code> trên thanh công cụ của sổ (hoặc <code>⋯</code> ở topbar → <em>Chuyển toàn bộ từ sang sổ khác</em>).</li>
-          <li><strong>Sổ tự tạo trước đây</strong> vẫn giữ nguyên — có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
+          <li><strong>Sổ tự tạo</strong> có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
           <li>Mỗi sổ chứa tối đa <strong>1000 từ</strong>.</li>
         </ul>
       </div>
@@ -1249,12 +1251,12 @@
 <script src="/js/dashboard-audio.js?v=4d62f2efe9"></script>
 <script src="/js/shared/wbw-drill.js?v=c4543d57c2"></script>
 <script src="/js/dashboard-lesson.js?v=361d66bda0"></script>
-<script src="/js/dashboard-homework.js?v=2b283c7651"></script>
+<script src="/js/dashboard-homework.js?v=1f609baf98"></script>
 <script src="/js/dashboard-classinfo.js?v=72de64221f"></script>
 <script src="/js/dashboard-speaking-exam.js?v=d3d1861ff0"></script>
 <script src="/js/dashboard-review.js?v=50ca73d980"></script>
 <script src="/js/dashboard-paraphrase.js?v=b63fa35f03"></script>
-<script src="/js/dashboard.js?v=5d92c5a7fd"></script>
+<script src="/js/dashboard.js?v=9f88120f11"></script>
 <script src="/js/dashboard-browse.js?v=147a2cfe2f"></script>
 </body>
 </html>

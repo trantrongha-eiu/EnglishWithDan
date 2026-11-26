@@ -454,7 +454,7 @@
     if (/^(mock-test|entrance-test|test-dau-vao)(\.html)?$/.test(page)) return;
     var dlScript = document.createElement('script');
     dlScript.id = 'ews-dict-lookup-js';
-    dlScript.src = '/js/shared/dictionary-lookup.js?v=182fa667a3';
+    dlScript.src = '/js/shared/dictionary-lookup.js?v=31484e24ea';
     document.body.appendChild(dlScript);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', _injectDictLookup);
@@ -469,7 +469,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=2edaba2a8a';
+    i18nScript.src = '/js/shared/i18n.js?v=03cb7c5298';
     document.body.appendChild(i18nScript);
   }
 

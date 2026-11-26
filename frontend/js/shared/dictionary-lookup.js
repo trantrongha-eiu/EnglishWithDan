@@ -711,8 +711,8 @@
     var modal = document.getElementById('dict-vocab-modal');
     var listEl = document.getElementById('dict-vocab-book-list');
     if (!modal || !listEl) return;
-    // Creating books is closed (only Sổ 1–5) — hide every page's
-    // "Hoặc tạo sổ mới" row rather than editing 20 copies of the markup.
+    // "Hoặc tạo sổ mới" row: shown only while the student has fewer than
+    // VOCAB_MAX_BOOKS books (Sổ 1–5 included) — hidden until the list loads.
     var newSection = modal.querySelector('.rd-vocab-new-section');
     if (newSection) newSection.style.display = 'none';
     // Guard against a rapid double-tap on "Lưu từ" firing this twice — only
@@ -724,6 +724,9 @@
       var res = await _vocabFetch('/vocabbook/');
       if (requestId !== _pickerRequestSeq) return;
       var books = res.books || [];
+      // "📚 Từ của lớp" (homework word lists) isn't counted in the cap
+      var ownCount = books.filter(function (b) { return !b.classBook; }).length;
+      if (newSection) newSection.style.display = ownCount < VOCAB_MAX_BOOKS ? '' : 'none';
       if (!books.length) {
         listEl.innerHTML = '<div class="rd-vocab-loading">Chưa có sổ nào</div>';
         return;
@@ -770,10 +773,28 @@
     if (el) el.classList.add('hidden');
   }
 
-  // Book creation is closed server-side (403) — the row that calls this is
-  // hidden in _loadBooksIntoPicker; kept for any stale markup/caller.
+  // Own books allowed again since 2026-11-25, ≤ 10 in total (server cap).
+  var VOCAB_MAX_BOOKS = 10;
+  var _creatingBook = false;
   async function createDictBookAndSave() {
-    showVocabToast('Không thể tạo thêm sổ mới — hãy lưu vào một trong 5 sổ mặc định (Sổ 1 – Sổ 5).', 'error');
+    var nameInput = document.getElementById('dict-new-book-name');
+    var name = nameInput && nameInput.value.trim();
+    if (!name) { if (nameInput) nameInput.focus(); return; }
+    if (_creatingBook) return;
+    _creatingBook = true;
+    try {
+      var res = await _vocabFetch('/vocabbook/', {
+        method: 'POST',
+        body: JSON.stringify({ name: name, emoji: '📘', color: '#3d8bff' })
+      });
+      if (!res.success) { showVocabToast(res.message, 'error'); return; }
+      if (nameInput) nameInput.value = '';
+      await saveDictWordToBook(res.book._id);
+    } catch (e) {
+      _handleVocabSaveError(e, 'Lỗi tạo sổ mới');
+    } finally {
+      _creatingBook = false;
+    }
   }
 
   // Shared by createDictBookAndSave/saveDictWordToBook — a trial-expired

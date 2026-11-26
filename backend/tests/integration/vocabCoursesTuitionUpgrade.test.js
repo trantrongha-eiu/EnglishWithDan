@@ -7,16 +7,23 @@ const { createVocabBook, createCourse, createTuitionFee } = require('../factorie
 const DifficultWord = require('../../models/DifficultWord');
 
 describe('Vocab book — scoped to the owning user', () => {
-  test('a student can fetch their own book, but can no longer create a new one (only Sổ 1–5)', async () => {
+  test('a student can create (up to 10 books in total) and fetch their own book', async () => {
     const user = await createStudent();
     const token = signTokenFor(user);
     const createRes = await request(app)
       .post('/api/vocabbook')
       .set('Authorization', `Bearer ${token}`)
       .send({ name: 'IELTS Vocab' });
-    expect(createRes.status).toBe(403);
+    expect(createRes.status).toBe(201);
+    const own = createRes.body.book;
+    for (let i = 2; i <= 5; i++) {
+      const r = await request(app).post('/api/vocabbook').set('Authorization', `Bearer ${token}`).send({ name: `Own ${i}` });
+      expect(r.status).toBe(201);
+    }
+    const over = await request(app).post('/api/vocabbook').set('Authorization', `Bearer ${token}`).send({ name: 'Own 6' });
+    expect(over.status).toBe(400);
+    expect(over.body.message).toMatch(/10/);
 
-    const own = await createVocabBook({ userId: user._id, name: 'IELTS Vocab' });
     const getRes = await request(app)
       .get(`/api/vocabbook/${own._id}`)
       .set('Authorization', `Bearer ${token}`);

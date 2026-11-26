@@ -31,13 +31,33 @@ describe('vocabBookService', () => {
   });
 
   describe('createBook', () => {
-    it('is closed for everyone — no book is created; existing own books are kept', async () => {
+    it('creates an own book after the 5 defaults, placed last', async () => {
       const student = await createStudent();
-      const own = await createVocabBook({ userId: student._id, name: 'Made before the rule' });
-      const result = await vocabBookService.createBook(student._id, { name: 'My Book' });
-      expect(result.status).toBe('creation_disabled');
-      const books = await VocabBook.find({ userId: student._id }).lean();
-      expect(books.map(b => String(b._id))).toEqual([String(own._id)]);
+      await vocabBookService.listBooks(student);
+      const result = await vocabBookService.createBook(student._id, { name: '  IELTS Topic  ', emoji: '🔥' });
+      expect(result.status).toBe('ok');
+      expect(result.book.name).toBe('IELTS Topic');
+      expect(result.book.isDefault).toBe(false);
+      const books = await vocabBookService.listBooks(student);
+      expect(books).toHaveLength(6);
+      expect(books[5].name).toBe('IELTS Topic');
+    });
+
+    it('caps the total at 10 books, the 5 defaults included (defaults ensured first)', async () => {
+      const student = await createStudent();
+      for (let i = 1; i <= 5; i++) {
+        expect((await vocabBookService.createBook(student._id, { name: `Own ${i}` })).status).toBe('ok');
+      }
+      const over = await vocabBookService.createBook(student._id, { name: 'Own 6' });
+      expect(over).toMatchObject({ status: 'limit_reached', max: 10 });
+      expect(await VocabBook.countDocuments({ userId: student._id })).toBe(10);
+    });
+
+    it('rejects an empty name and the reserved "Sổ 1".."Sổ 5" names', async () => {
+      const student = await createStudent();
+      expect((await vocabBookService.createBook(student._id, { name: '   ' })).status).toBe('empty_name');
+      expect((await vocabBookService.createBook(student._id, { name: 'Sổ 3' })).status).toBe('reserved_name');
+      expect(await VocabBook.countDocuments({ userId: student._id, isDefault: false })).toBe(0);
     });
   });
 

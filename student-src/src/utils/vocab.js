@@ -5,6 +5,8 @@ import SearchMatch from './searchMatch';
 import { isGoalFresh } from './vocabGoal';
 
 export const VOCAB_BOOK_MAX_WORDS = 1000;
+// Books per student in total, Sổ 1–5 included (backend MAX_BOOKS_PER_USER)
+export const VOCAB_MAX_BOOKS = 10;
 
 export const STATUSES = [
   { key: 'chua-thuoc', label: 'Not yet', dot: 'dot-gray' },

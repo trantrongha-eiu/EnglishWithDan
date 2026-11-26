@@ -14,13 +14,29 @@ const mongoose = require('mongoose');
 //    not a specific resource (every student's books differ). Auto-tracked
 //    from graded vocab-book practice (services/vocabGoalService.js); sticky
 //    once reached (persisted as an auto item on AssignmentProgress).
+//  - vocab_list: "Bộ từ của lớp" — the teacher's own word list (words[],
+//    title = list name). The student's "Bắt đầu" copies the words they don't
+//    have yet into their "📚 Từ của lớp" book; done = every word practised
+//    since the assignment was given (in any of their books), >= 70% right.
+//    Same sticky auto item as vocab_goal (services/vocabGoalService.js).
+const vocabListWordSchema = new mongoose.Schema({
+  word:     { type: String, required: true, trim: true },
+  meaning:  { type: String, default: '' },
+  example:  { type: String, default: '' },
+  phonetic: { type: String, default: '' },
+}, { _id: false });
+
 const assignmentResourceSchema = new mongoose.Schema({
-  kind: { type: String, enum: ['internal', 'external', 'image', 'vocab_goal'], required: true },
+  kind: { type: String, enum: ['internal', 'external', 'image', 'vocab_goal', 'vocab_list'], required: true },
 
   // vocab_goal
   wordCount: { type: Number, min: 1, max: 300 },
-  // 1..5 = must be done in that default book ("Sổ N"); null = any of the 5.
+  // 1..5 = must be done in that default book ("Sổ N"); null = any book the
+  // student has (Sổ 1–5, own books, "Từ của lớp") — best book wins.
   bookSlot:  { type: Number, min: 1, max: 5, default: null },
+
+  // vocab_list (name in `title`)
+  words:     { type: [vocabListWordSchema], default: undefined },
 
   // internal
   resourceType: {

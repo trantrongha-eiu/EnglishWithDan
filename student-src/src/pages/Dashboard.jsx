@@ -8,6 +8,8 @@ import { useToast } from '../contexts/ToastContext';
 import BookMenu from './dashboard/BookMenu';
 import DifficultWordsModal from './dashboard/DifficultWordsModal';
 import GuideModal from './dashboard/GuideModal';
+import AddBookModal from './dashboard/AddBookModal';
+import { VOCAB_MAX_BOOKS } from '../utils/vocab';
 import { hasPremiumAccess } from '../utils/plan';
 import { autoShowLearningPopup, isActivePractice, openUpgrade } from '../utils/shell';
 
@@ -52,6 +54,7 @@ export default function Dashboard() {
   const [dwOpen, setDwOpen] = useState(false);   // 🔥 từ hay sai popup
   const [dwCount, setDwCount] = useState(0);     // sidebar badge
   const [guideOpen, setGuideOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
   // Vocab Topics lessons + Paraphrase units (null = loading, [] on error)
   const [lessons, setLessons] = useState(null);
   const [units, setUnits] = useState(null);
@@ -113,7 +116,10 @@ export default function Dashboard() {
       .catch(() => setHomework(h => (h ? { ...h, stale: false } : h)));
   }, []);
   const vocabGoals = useMemo(() => collectVocabGoals(homework?.data), [homework]);
-  const goalsPending = vocabGoals.some(g => !g.completed);
+  // open "học N từ" quotas or "Bộ từ của lớp" lists → refresh while practising
+  const goalsPending = vocabGoals.some(g => !g.completed)
+    || (homework?.data?.assignments || []).some(a => a.status !== 'completed'
+      && (a.resources || []).some(r => r.kind === 'vocab_list' && !r.completed));
 
   // While practising: practice answers reach the server → refresh the
   // homework at most every 10s (right away when asked with now=true).
@@ -178,6 +184,23 @@ export default function Dashboard() {
   function openBook(b) {
     setSidebarOpen(false);
     if (!hasPremiumAccess()) { openUpgrade(); return; }
+    navigate(`/dashboard/book/${b._id}`);
+  }
+
+  // "+" in the sidebar head: own books, at most VOCAB_MAX_BOOKS in total
+  // "📚 Từ của lớp" (homework word lists) is not counted
+  const ownCount = books ? books.filter(b => !b.classBook).length : 0;
+  const canAddBook = !!books && ownCount < VOCAB_MAX_BOOKS;
+  function openAddBook() {
+    setSidebarOpen(false);
+    if (!hasPremiumAccess()) { openUpgrade(); return; } // POST /vocabbook is plan-gated
+    if (!canAddBook) { toast(`Đã đủ ${VOCAB_MAX_BOOKS} sổ — hãy gộp hoặc xoá bớt một sổ tự tạo trước.`, 'info'); return; }
+    setAddOpen(true);
+  }
+  const closeAddBook = useCallback(() => setAddOpen(false), []);
+  function onBookCreated(b) {
+    setAddOpen(false);
+    loadBooks();
     navigate(`/dashboard/book/${b._id}`);
   }
 
@@ -248,8 +271,15 @@ export default function Dashboard() {
         <div className="sidebar-head">
           <span>
             My Notebooks{' '}
-            {books && <span style={{ fontSize: 10, fontWeight: 500, opacity: 0.7, letterSpacing: 0, textTransform: 'none' }}>({books.length})</span>}
+            {books && <span style={{ fontSize: 10, fontWeight: 500, opacity: 0.7, letterSpacing: 0, textTransform: 'none' }}>({ownCount}/{VOCAB_MAX_BOOKS})</span>}
           </span>
+          {books && (
+            <button className="btn-add-book" onClick={openAddBook}
+              style={canAddBook ? undefined : { opacity: 0.35, cursor: 'not-allowed' }}
+              title={canAddBook ? 'Tạo sổ mới' : `Đã đủ ${VOCAB_MAX_BOOKS} sổ`} aria-label="Tạo sổ mới">
+              <i className="fas fa-plus-circle" />
+            </button>
+          )}
         </div>
 
         <div id="book-list-sidebar">
@@ -296,6 +326,7 @@ export default function Dashboard() {
 
         {dwOpen && <DifficultWordsModal onClose={closeDifficultWords} onCount={setDwCount} />}
         {guideOpen && <GuideModal onClose={() => setGuideOpen(false)} />}
+        {addOpen && <AddBookModal count={ownCount} onClose={closeAddBook} onCreated={onBookCreated} />}
 
         {menuBook && (
           <BookMenu

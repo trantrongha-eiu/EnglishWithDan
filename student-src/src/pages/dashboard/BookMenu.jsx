@@ -5,8 +5,8 @@ import { useToast } from '../../contexts/ToastContext';
 import { VOCAB_BOOK_MAX_WORDS } from '../../utils/vocab';
 
 // Notebook "⋯" menu — port of dashboard.js openBookMenu & co.
-// Sổ 1–5 (isDefault) are fixed: no rename / merge / delete. Creating new
-// notebooks is closed server-side, so there is no "add book" either.
+// Sổ 1–5 (isDefault) are fixed: no rename / merge / delete. Own books
+// (created from the sidebar "+", ≤ 10 in total) can be all of those.
 //   view: 'menu' | 'move' | 'merge' | 'delete'
 export default function BookMenu({ book, books, initialView = 'menu', onClose, onRename, onChanged }) {
   const toast = useToast();
@@ -17,6 +17,8 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
   const others = (books || []).filter(b => b._id !== book._id);
   const canMove = (book.totalWords ?? book.words?.length ?? 0) > 0 && others.length > 0;
   const total = book.totalWords ?? book.words?.length ?? 0;
+  // Sổ 1–5 and "📚 Từ của lớp" (homework word lists) are fixed
+  const fixed = !!(book.isDefault || book.classBook);
 
   async function move() {
     if (!dest) return;
@@ -98,7 +100,7 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
   }
 
   if (view === 'merge') {
-    const candidates = others.filter(b => !b.isDefault);
+    const candidates = others.filter(b => !b.isDefault && !b.classBook);
     return (
       <Modal title={`Gộp sổ vào "${book.name}"`} size="modal-md" onClose={onClose} footer={<>
         <button className="btn btn-ghost" onClick={onClose}>Hủy</button>
@@ -113,7 +115,7 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
           {!candidates.length && (
             <div style={{ textAlign: 'center', padding: 20, color: 'var(--text3)', fontSize: 13 }}>
               Không có sổ nào khác để gộp.<br />
-              <span style={{ fontSize: 12 }}>(Chỉ có thể gộp sổ do bạn tự tạo, không phải 5 sổ mặc định.)</span>
+              <span style={{ fontSize: 12 }}>(Chỉ có thể gộp sổ do bạn tự tạo, không phải 5 sổ mặc định hay sổ Từ của lớp.)</span>
             </div>
           )}
           {candidates.map(b => (
@@ -137,7 +139,7 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
   return (
     <Modal title={`${book.emoji || '📘'} ${book.name}`} onClose={onClose}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {!book.isDefault && (
+        {!fixed && (
           <button className="book-action-btn" onClick={() => { onClose(); onRename(); }}>
             <i className="fas fa-pen" style={{ width: 16, color: 'var(--blue)' }} /> Đổi tên sổ
           </button>
@@ -147,7 +149,7 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
             <i className="fas fa-share-square" style={{ width: 16, color: '#0891b2' }} /> Chuyển toàn bộ từ sang sổ khác
           </button>
         )}
-        {!book.isDefault && (
+        {!fixed && (
           <>
             <button className="book-action-btn" onClick={() => setView('merge')}>
               <i className="fas fa-object-group" style={{ width: 16, color: '#7c3aed' }} /> Gộp sổ
@@ -158,8 +160,10 @@ export default function BookMenu({ book, books, initialView = 'menu', onClose, o
             </button>
           </>
         )}
-        {book.isDefault && !canMove && (
-          <p style={{ fontSize: 13, color: 'var(--text3)', margin: 0 }}>Sổ mặc định (Sổ 1–5) không đổi tên, gộp hay xoá được.</p>
+        {fixed && !canMove && (
+          <p style={{ fontSize: 13, color: 'var(--text3)', margin: 0 }}>
+            {book.classBook ? 'Sổ chứa các bộ từ giáo viên giao — không đổi tên, gộp hay xoá được.' : 'Sổ mặc định (Sổ 1–5) không đổi tên, gộp hay xoá được.'}
+          </p>
         )}
       </div>
     </Modal>

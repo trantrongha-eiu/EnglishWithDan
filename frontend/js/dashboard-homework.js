@@ -227,11 +227,17 @@ function hwResourceRow(assignmentId, r, locked) {
   let name = '';
   let action = '';
   if (r.kind === 'vocab_goal') {
-    name = escHtml(r.label || `Học ${r.wordCount} từ trong ${r.bookSlot ? `Sổ ${r.bookSlot}` : '1 sổ mặc định (Sổ 1–5)'}`)
+    name = escHtml(r.label || `Học ${r.wordCount} từ trong ${r.bookSlot ? `Sổ ${r.bookSlot}` : '1 sổ bất kỳ'}`)
       + '<span class="hw-res-tag hw-res-tag--quiz" title="Sổ phải có đủ số từ được giao; luyện đủ số từ đó, đúng từ 70% trở lên.">≥70% đúng</span>'
       + hwVocabGoalProgress(r);
     const bookId = r.vocabGoal && r.vocabGoal.bookId;
     action = `<a class="hw-res-btn" href="${bookId ? `dashboard.html?view=book&bookId=${encodeURIComponent(bookId)}` : 'dashboard.html'}">${r.completed ? 'Xem sổ' : 'Mở sổ'}</a>`;
+  } else if (r.kind === 'vocab_list') {
+    // "Bộ từ của lớp" — practised in the student app (/app/dashboard/practice?src=hw)
+    name = '📚 ' + escHtml(r.label || r.title || 'Bộ từ của lớp')
+      + '<span class="hw-res-tag hw-res-tag--quiz" title="Luyện hết các từ trong bộ, đúng từ 70% trở lên.">≥70% đúng</span>'
+      + hwVocabGoalProgress(r);
+    action = `<a class="hw-res-btn" href="/app/dashboard/practice?src=hw&a=${encodeURIComponent(assignmentId)}&i=${encodeURIComponent(r.itemId)}">${r.completed ? 'Ôn lại' : 'Bắt đầu'}</a>`;
   } else if (r.kind === 'internal' && r.fixedMock) {
     const mp = r.mockParts;
     const mpText = mp ? [mp.listening ? `Listening: Section ${mp.listening.join(', ')}` : '', mp.reading ? `Reading: Passage ${mp.reading.join(', ')}` : ''].filter(Boolean).join(' · ') : '';

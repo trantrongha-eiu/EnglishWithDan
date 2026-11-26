@@ -17,6 +17,8 @@ const listeningService = require('../services/listeningService');
 const speakingPart2Service = require('../services/speakingPart2Service');
 const classAttendanceService = require('../services/classAttendanceService');
 const vgs = require('../services/vocabGoalService');
+const vocabBookService = require('../services/vocabBookService');
+const ClassGroup = require('../models/ClassGroup');
 const { SLOTS: DEFAULT_BOOK_SLOTS, canonicalName: canonicalBookName } = require('../utils/defaultVocabBooks');
 const mediaStore = require('../services/mediaStore');
 const contentViewService = require('../services/contentViewService');
@@ -93,6 +95,9 @@ function resourceIdentityKey(r) {
   // Changing N makes it a different goal (fresh _id) — a sticky "reached"
   // item for 50 words must not carry over to a raised 100-word quota.
   if (r.kind === 'vocab_goal') return `vocab_goal:${r.wordCount}:${r.bookSlot || 'any'}`;
+  // Same words (any order, any meanings) = same list; adding/removing a
+  // word makes it a new item, so an earlier "done" doesn't carry over.
+  if (r.kind === 'vocab_list') return `vocab_list:${(r.words || []).map((w) => vgs.wordKey(w.word)).sort().join('|')}`;
   return null;
 }
 
@@ -262,8 +267,15 @@ async function buildResources(input, existing = [], ctx = {}) {
       }
       built = {
         kind: 'vocab_goal', wordCount: n, bookSlot: slot,
-        label: slot ? `Học ${n} từ trong ${canonicalBookName(slot)}` : `Học ${n} từ trong 1 sổ mặc định (Sổ 1–5)`,
+        label: slot ? `Học ${n} từ trong ${canonicalBookName(slot)}` : `Học ${n} từ trong 1 sổ bất kỳ`,
       };
+    } else if (r.kind === 'vocab_list') {
+      const made = buildVocabList(r);
+      if (made.error) return { error: made.error };
+      if (out.some((x) => x.kind === 'vocab_list' && resourceIdentityKey(x) === resourceIdentityKey(made.built))) {
+        return { error: `Bộ từ "${made.built.title}" bị giao trùng trong bài tập này` };
+      }
+      built = made.built;
     } else {
       return { error: `kind không hợp lệ: ${r.kind}` };
     }
@@ -276,6 +288,36 @@ async function buildResources(input, existing = [], ctx = {}) {
   // (or the teacher removed it there on purpose) — don't add them again.
   if (ctx.gapFillHandled) return { resources: out };
   return { resources: await attachCompanions(out, fresh, existingIdByKey) };
+}
+
+// "Bộ từ của lớp": [{ word, meaning, example?, phonetic? }] — trimmed,
+// de-duplicated (case-insensitive, first wins), every word needs a meaning
+// (the quiz/flashcard modes are built on it).
+function buildVocabList(r) {
+  const seen = new Set();
+  const words = [];
+  const noMeaning = [];
+  for (const w of Array.isArray(r.words) ? r.words : []) {
+    const word = String((w && w.word) || '').trim().replace(/\s+/g, ' ').slice(0, 100);
+    const k = vgs.wordKey(word);
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    const meaning = String(w.meaning || '').trim().slice(0, 300);
+    if (!meaning) noMeaning.push(word);
+    words.push({
+      word, meaning,
+      example: String(w.example || '').trim().slice(0, 500),
+      phonetic: String(w.phonetic || '').trim().slice(0, 80),
+    });
+  }
+  if (words.length < vgs.LIST_MIN_WORDS || words.length > vgs.LIST_MAX_WORDS) {
+    return { error: `Bộ từ cần từ ${vgs.LIST_MIN_WORDS} đến ${vgs.LIST_MAX_WORDS} từ (hiện có ${words.length})` };
+  }
+  if (noMeaning.length) {
+    return { error: `Các từ sau chưa có nghĩa: ${noMeaning.slice(0, 8).join(', ')}${noMeaning.length > 8 ? '…' : ''}` };
+  }
+  const title = String(r.title || '').trim().slice(0, 200) || `Bộ từ ${words.length} từ`;
+  return { built: { kind: 'vocab_list', title, words, label: `${title} (${words.length} từ)` } };
 }
 
 // Some items bring "companion" items along, placed right after them:
@@ -595,6 +637,63 @@ exports.recordView = async (req, res) => {
     const r = await contentViewService.recordViewChecked(req.user._id, String(resourceType || ''), resourceId);
     if (r.error) return res.status(r.error).json({ success: false, message: r.message });
     res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// POST /api/assignments/:assignmentId/items/:itemId/vocab-list/start
+// Student "Bắt đầu" on a "Bộ từ của lớp" item: copies the words they don't
+// have yet into "📚 Từ của lớp", returns the list as practice items.
+exports.startVocabList = async (req, res) => {
+  try {
+    const assignment = await Assignment.findById(req.params.assignmentId).lean();
+    if (!assignment || assignment.status !== 'active') return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
+    const enrollment = await findActiveEnrollment(req.user._id, assignment.classId);
+    if (!enrollment) return res.status(403).json({ success: false, message: 'Bạn không thuộc lớp của bài tập này' });
+    const item = (assignment.resources || []).find((r) => String(r._id) === String(req.params.itemId));
+    if (!item || item.kind !== 'vocab_list') return res.status(404).json({ success: false, message: 'Không tìm thấy bộ từ' });
+    const r = await vocabBookService.startClassList(req.user._id, item.words || []);
+    res.json({ success: true, title: item.title || 'Bộ từ của lớp', words: r.items, added: r.added, skippedLimit: r.skippedLimit });
+  } catch (err) {
+    logger.error('startVocabList failed', { err: err.message });
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
+
+// GET /api/classes/resources/vocab-lists?search=
+// "Dùng lại bộ đã giao": word lists from earlier assignments of the
+// teacher's own classes (an admin: every class), newest first, one row per
+// distinct list (same words = same list).
+exports.listVocabLists = async (req, res) => {
+  try {
+    const filter = { 'resources.kind': 'vocab_list' };
+    if (req.user.role !== 'admin') {
+      const own = await ClassGroup.find({ teacherId: req.user._id }).select('_id').lean();
+      filter.classId = { $in: own.map((c) => c._id) };
+    }
+    const docs = await Assignment.find(filter).sort({ createdAt: -1 }).limit(300)
+      .select('classId title createdAt resources').lean();
+    const classes = await ClassGroup.find({ _id: { $in: [...new Set(docs.map((d) => String(d.classId)))] } }).select('name').lean();
+    const className = new Map(classes.map((c) => [String(c._id), c.name]));
+    const q = vgs.wordKey(req.query.search || '');
+    const seen = new Set();
+    const lists = [];
+    for (const a of docs) {
+      for (const r of a.resources) {
+        if (r.kind !== 'vocab_list' || lists.length >= 50) continue;
+        const key = resourceIdentityKey(r);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const hay = vgs.wordKey([r.title, a.title, className.get(String(a.classId)) || '', ...(r.words || []).map((w) => w.word)].join(' '));
+        if (q && !hay.includes(q)) continue;
+        lists.push({
+          title: r.title, words: r.words || [], assignmentTitle: a.title,
+          className: className.get(String(a.classId)) || '', createdAt: a.createdAt,
+        });
+      }
+    }
+    res.json({ success: true, lists });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Lỗi server' });
   }

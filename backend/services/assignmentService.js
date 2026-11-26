@@ -27,9 +27,15 @@ function itemIsInternal(r) {
   return r.kind === 'internal';
 }
 
+// vocab_goal ("học N từ trong sổ") + vocab_list ("Bộ từ của lớp") — both
+// judged from the student's vocab-book practice (resolveVocabGoals).
+function isVocabItem(r) {
+  return r.kind === 'vocab_goal' || r.kind === 'vocab_list';
+}
+
 // Auto-tracked = completion comes from the system, never a student tick.
 function itemIsAutoTracked(r) {
-  return r.kind === 'internal' || r.kind === 'vocab_goal';
+  return r.kind === 'internal' || isVocabItem(r);
 }
 
 function vocabGoalKey(assignmentId, itemId) {
@@ -88,20 +94,26 @@ async function resolveVocabGoals(studentId, assignments, storedByAssignment, now
   const pending = [];
   for (const a of assignments) {
     for (const r of a.resources) {
-      if (r.kind !== 'vocab_goal') continue;
+      if (!isVocabItem(r)) continue;
       const done = (storedByAssignment.get(String(a._id))?.items || []).find((it) =>
         String(it.resourceItemId) === String(r._id) && it.source === 'auto' && it.status === 'completed');
-      if (done) out.set(vocabGoalKey(a._id, r._id), { completed: true, completedAt: done.completedAt, wordCount: r.wordCount, mode: 'reached', requiredSlot: r.bookSlot || null });
+      const wordCount = r.kind === 'vocab_list' ? (r.words || []).length : r.wordCount;
+      if (done) out.set(vocabGoalKey(a._id, r._id), { completed: true, completedAt: done.completedAt, wordCount, mode: 'reached', requiredSlot: r.bookSlot || null });
       else pending.push({ a, r });
     }
   }
   if (!pending.length) return out;
 
-  const books = await vgs.loadBooksForGoal(studentId); // all 5 slots; narrowed per goal below
+  const books = await vgs.loadBooksForGoal(studentId); // every book; narrowed per goal below
   const newlyDone = [];
   for (const { a, r } of pending) {
-    const candidates = r.bookSlot ? books.filter((b) => b.slot === r.bookSlot) : books;
-    const res = { ...vgs.evaluateBooks(candidates, a.createdAt, r.wordCount), requiredSlot: r.bookSlot || null };
+    let res;
+    if (r.kind === 'vocab_list') {
+      res = { ...vgs.evaluateList(r.words || [], books, a.createdAt), requiredSlot: null };
+    } else {
+      const candidates = r.bookSlot ? books.filter((b) => b.slot === r.bookSlot) : books;
+      res = { ...vgs.evaluateBooks(candidates, a.createdAt, r.wordCount), requiredSlot: r.bookSlot || null };
+    }
     out.set(vocabGoalKey(a._id, r._id), { ...res, completedAt: res.completed ? (res.reachedAt || now) : null });
     if (res.completed) newlyDone.push({ a, r, res });
   }
@@ -119,6 +131,7 @@ function shapeVocabGoal(v) {
     target: v.target ?? v.wordCount, needCorrect: v.needCorrect ?? 0,
     bookId: v.bookId || null, bookName: v.bookName || '', bookEmoji: v.bookEmoji || '', bookSize: v.bookSize ?? null,
     bookSlot: v.bookSlot ?? null, requiredSlot: v.requiredSlot ?? null, minSize: v.minSize ?? null,
+    present: v.present ?? null, // vocab_list: listed words already in a book
   };
 }
 
@@ -414,7 +427,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
     const resourcesShaped = a.resources.map((r) => {
       let completed = false, completedAt = null, vocabGoal = null, mock = null;
       const autoTracked = itemIsAutoTracked(r);
-      if (r.kind === 'vocab_goal') {
+      if (isVocabItem(r)) {
         const v = vocabMap.get(vocabGoalKey(a._id, r._id));
         vocabGoal = shapeVocabGoal(v);
         if (v && v.completed) { completed = true; completedAt = v.completedAt; }
@@ -440,9 +453,11 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         // resource deleted from the admin — shown greyed out, not counted
         removed: !completed && gone.has(String(r._id)),
         resourceType: r.resourceType || null, resourceId: r.resourceId || null, resourceCode: r.resourceCode || '',
-        label: r.label || r.title || '', url: r.url || '', description: r.description || '',
+        // "any book" goals saved before 2026-11-26 say "1 sổ mặc định (Sổ 1–5)" — own books count now
+        label: (r.kind === 'vocab_goal' && !r.bookSlot ? `Học ${r.wordCount} từ trong 1 sổ bất kỳ` : '') || r.label || r.title || '',
+        url: r.url || '', description: r.description || '',
         images: r.images || [], title: r.title || '', instruction: r.instruction || '',
-        wordCount: r.wordCount || null, bookSlot: r.bookSlot || null, vocabGoal,
+        wordCount: r.kind === 'vocab_list' ? (r.words || []).length : (r.wordCount || null), bookSlot: r.bookSlot || null, vocabGoal,
         // fixed class bundle — the test names stay teacher-side only
         fixedMock: rcs.isFixedMock(r), mock,
         // assigned passages/sections of a full test ([1, 3]) — null = whole test
@@ -693,7 +708,7 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
   // Resolve (and, if just reached, persist) vocab goals BEFORE loading the
   // doc below — its save() rewrites items[], so a sticky auto item pushed
   // after the load would be clobbered.
-  const vocabGoals = assignment.resources.some((r) => r.kind === 'vocab_goal')
+  const vocabGoals = assignment.resources.some(isVocabItem)
     ? await resolveVocabGoals(studentId, [assignment],
       new Map([[String(assignment._id), await AssignmentProgress.findOne({ assignmentId, studentId }).lean()]]))
     : new Map();
@@ -725,7 +740,7 @@ async function markManualItem(studentId, assignmentId, itemId, done) {
     }
   }
   for (const r of assignment.resources) {
-    if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
+    if (isVocabItem(r) && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
   }
   doc.completedCount = assignment.resources.filter((r) => completedIds.has(String(r._id))).length;
   doc.totalCount = assignment.resources.length;
@@ -811,7 +826,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
     const vocabGoals = await resolveVocabGoals(e.studentId, [assignment],
       new Map([[String(assignment._id), storedMap.get(String(e.studentId))]]), now);
     for (const r of assignment.resources) {
-      if (r.kind === 'vocab_goal' && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
+      if (isVocabItem(r) && vocabGoals.get(vocabGoalKey(assignment._id, r._id))?.completed) completedIds.add(String(r._id));
     }
     const partial = [...vocabGoals.values()].some((v) => !v.completed && v.practiced > 0);
     const derived = deriveAssignmentStatus(assignment, completedIds, now, { partial, gone });
@@ -829,7 +844,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
         itemId: r._id, kind: r.kind, label: r.label || r.title || '', bookSlot: r.bookSlot || null,
         completed: completedIds.has(String(r._id)),
         removed: !completedIds.has(String(r._id)) && gone.has(String(r._id)),
-        vocabGoal: r.kind === 'vocab_goal' ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
+        vocabGoal: isVocabItem(r) ? shapeVocabGoal(vocabGoals.get(vocabGoalKey(assignment._id, r._id))) : undefined,
         fixedMock: rcs.isFixedMock(r) || undefined,
         mock: mockByItem.get(String(r._id)) || undefined,
       })),

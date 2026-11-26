@@ -69,7 +69,11 @@ const VocabBookSchema = new mongoose.Schema({
   // null for a student's own books. Homework vocab_goal items target a slot.
   // Legacy defaults without one get it from ensureDefaultBooks on next list.
   defaultSlot: { type: Number, min: 1, max: 5, default: null },
-  sortOrder:{ type: Number, default: 0 }
+  sortOrder:{ type: Number, default: 0 },
+  // "📚 Từ của lớp": the one book per student that homework word lists
+  // (Assignment vocab_list) are copied into. Created on demand, never
+  // counted in the 10-book cap, can't be renamed/deleted/merged away.
+  classBook:{ type: Boolean, default: false }
 }, { timestamps: true });
 
 // Every book/word CRUD op filters by userId (see services/vocabBookService.js) —
@@ -81,6 +85,12 @@ VocabBookSchema.index({ userId: 1 });
 VocabBookSchema.index(
   { userId: 1, defaultSlot: 1 },
   { unique: true, partialFilterExpression: { defaultSlot: { $type: 'number' } } }
+);
+
+// At most one class book per student (concurrent "Bắt đầu" clicks).
+VocabBookSchema.index(
+  { userId: 1, classBook: 1 },
+  { unique: true, partialFilterExpression: { classBook: true } }
 );
 
 VocabBookSchema.plugin(guardAgainstMassDelete);

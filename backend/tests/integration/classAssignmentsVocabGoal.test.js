@@ -156,10 +156,12 @@ describe('default books (Sổ 1..5)', () => {
     expect(await VocabBook.countDocuments({ userId: student._id, name: 'Sổ 1' })).toBe(2);
   });
 
-  test('"Sổ 1".."Sổ 5" are reserved for the default books (rename); creating any book is closed', async () => {
+  test('"Sổ 1".."Sổ 5" are reserved for the default books (create + rename)', async () => {
     const student = await createStudent();
+    const reserved = await request(app).post('/api/vocabbook').set(authH(student)).send({ name: 'Sổ 2' });
+    expect(reserved.status).toBe(400);
     const create = await request(app).post('/api/vocabbook').set(authH(student)).send({ name: 'Sổ 6' });
-    expect(create.status).toBe(403);
+    expect(create.status).toBe(201);
     const own = await createVocabBook({ userId: student._id, name: 'Mine' });
     const rename = await request(app).put(`/api/vocabbook/${own._id}`).set(authH(student)).send({ name: 'Sổ 2' });
     expect(rename.status).toBe(400);
@@ -185,7 +187,7 @@ describe('teacher validation', () => {
     expect(multi.body.assignment.resources.map((r) => r.label)).toEqual(['Học 50 từ trong Sổ 1', 'Học 50 từ trong Sổ 2']);
     const any = await post([{ kind: 'vocab_goal', wordCount: '100' }]);
     expect(any.status).toBe(201);
-    expect(any.body.assignment.resources[0]).toMatchObject({ kind: 'vocab_goal', wordCount: 100, bookSlot: null, label: 'Học 100 từ trong 1 sổ mặc định (Sổ 1–5)' });
+    expect(any.body.assignment.resources[0]).toMatchObject({ kind: 'vocab_goal', wordCount: 100, bookSlot: null, label: 'Học 100 từ trong 1 sổ bất kỳ' });
     const slot = await post([{ kind: 'vocab_goal', wordCount: 100, bookSlot: '3' }]);
     expect(slot.status).toBe(201);
     expect(slot.body.assignment.resources[0]).toMatchObject({ bookSlot: 3, label: 'Học 100 từ trong Sổ 3' });
@@ -227,13 +229,21 @@ describe('student progress', () => {
     expect(item.vocabGoal).toMatchObject({ mode: 'too_small', bookSize: 49, minSize: 100 });
   });
 
-  test('words in a custom (non-default) book never count', async () => {
+  test('"any book": a custom (own) book counts too (since 2026-11-26)', async () => {
     const { student } = await setup({ bookWords: 0, wordCount: 5 });
     const own = await createVocabBook({ userId: student._id, name: 'Own', words: Array.from({ length: 10 }, (_, i) => ({ word: `o${i}` })) });
     for (let i = 0; i < 5; i++) await practise(student, own, i, true);
     const { item } = await myVocabItem(student);
+    expect(item.completed).toBe(true);
+  });
+
+  test('a goal pinned to Sổ N ignores custom books', async () => {
+    const { student } = await setup({ bookWords: 0, wordCount: 5, bookSlot: 1 });
+    const own = await createVocabBook({ userId: student._id, name: 'Own', words: Array.from({ length: 10 }, (_, i) => ({ word: `o${i}` })) });
+    for (let i = 0; i < 5; i++) await practise(student, own, i, true);
+    const { item } = await myVocabItem(student);
     expect(item.completed).toBe(false);
-    expect(item.vocabGoal.bookSlot).not.toBeNull();
+    expect(item.vocabGoal.bookSlot).toBe(1);
   });
 
   test('bookSlot: practice in another default book does not count', async () => {

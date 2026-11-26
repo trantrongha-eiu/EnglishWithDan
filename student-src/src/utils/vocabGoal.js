@@ -12,12 +12,12 @@ export function noteGoalAnswer(wordId, right) {
   if (wordId) answers.set(String(wordId), !!right);
 }
 
-// Goals the book counts for: a fixed slot ("Sổ 2") or any of Sổ 1–5.
+// Goals the book counts for: a fixed slot ("Sổ 2") or "any book" (every book).
 export function goalsForBook(goals, book) {
   if (!book || !goals?.length) return [];
   return goals.filter(g => (g.requiredSlot
     ? (g.bookId === String(book._id) || book.defaultSlot === g.requiredSlot)
-    : !!book.isDefault));
+    : true));
 }
 
 // undefined = not practised for this goal yet, true/false = latest answer

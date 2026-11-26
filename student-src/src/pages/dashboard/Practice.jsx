@@ -85,6 +85,15 @@ const CROSS_SOURCES = {
       explanation: it.explanation || '', _paraUnitId: it.unitId,
     }))),
   },
+  // Homework "Bộ từ của lớp" (?src=hw&a=<assignmentId>&i=<itemId>): the
+  // server copies the words the student doesn't have yet into "📚 Từ của
+  // lớp" and returns the whole list as notebook words.
+  hw: {
+    title: '📚 Bộ từ của lớp', source: 'Bộ từ của lớp', empty: 'Bộ từ này chưa có từ nào để luyện.',
+    key: (p) => `${p.get('a') || ''}:${p.get('i') || ''}`,
+    load: (p) => apiFetch(`/assignments/${encodeURIComponent(p.get('a') || '')}/items/${encodeURIComponent(p.get('i') || '')}/vocab-list/start`, { method: 'POST' })
+      .then(d => ({ words: fromBookItems(d), title: d.title ? `📚 ${d.title}` : null, added: d.added || 0, skippedLimit: d.skippedLimit || 0 })),
+  },
   difficult: {
     title: '🔥 Ôn lại từ hay sai', source: 'Từ hay sai', empty: 'Chưa có từ nào trong danh sách từ hay sai.',
     load: () => apiFetch('/difficult-words').then(d => (d.words || []).map(w => ({
@@ -617,15 +626,22 @@ export default function Practice() {
   const src = !bookId && !unitNumber && CROSS_SOURCES[params.get('src')] ? params.get('src') : null;
   const [srcList, setSrcList] = useState(null); // { src, words } | { src, error }
   const [srcReload, setSrcReload] = useState(0);
-  const srcData = srcList?.src === src ? srcList : null;
+  const srcKey = src ? `${src}|${CROSS_SOURCES[src].key ? CROSS_SOURCES[src].key(params) : ''}` : null;
+  const srcData = srcList?.key === srcKey ? srcList : null;
   useEffect(() => {
-    if (!src) return undefined;
+    if (!srcKey) return undefined;
     let alive = true;
-    CROSS_SOURCES[src].load()
-      .then(words => { if (alive) setSrcList({ src, words }); })
-      .catch(error => { if (alive) setSrcList({ src, error }); });
+    CROSS_SOURCES[src].load(params)
+      .then(r => {
+        if (!alive) return;
+        const d = Array.isArray(r) ? { words: r } : r;
+        setSrcList({ src, key: srcKey, ...d });
+        if (d.added) toast(`Đã thêm ${d.added} từ mới vào sổ 📚 Từ của lớp`, 'success');
+        if (d.skippedLimit) toast(`${d.skippedLimit} từ chưa thêm được vì sổ "Từ của lớp" đã đầy`, 'error');
+      })
+      .catch(error => { if (alive) setSrcList({ src, key: srcKey, error }); });
     return () => { alive = false; };
-  }, [src, srcReload]);
+  }, [srcKey, srcReload]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Paraphrase Unit (/dashboard/unit/:n) — premium-gated like the API
   const [unitData, setUnitData] = useState(null); // { n, unit } | { n, error }
@@ -692,7 +708,7 @@ export default function Practice() {
   useEffect(() => { if (bookId && !book) loadBook(bookId); }, [book, bookId, loadBook]);
 
   // (Re)start whenever the word source, mode, set or startKey changes
-  const sourceKey = book ? book._id : unit ? `unit:${unit._id || unitNumber}` : srcData?.words ? `src:${src}` : null;
+  const sourceKey = book ? book._id : unit ? `unit:${unit._id || unitNumber}` : srcData?.words ? `src:${srcKey}` : null;
   useEffect(() => {
     if (!words0) return;
     if (studying) { sRef.current = null; return; }
@@ -920,7 +936,7 @@ export default function Practice() {
   }
 
   const title = unit ? `Unit ${unit.unitNumber}: ${unit.title || ''}`
-    : src ? `${CROSS_SOURCES[src].title} – ${s?.words.length ?? 0} ${CROSS_SOURCES[src].unit || 'từ'}`
+    : src ? `${srcData?.title || CROSS_SOURCES[src].title} – ${s?.words.length ?? 0} ${CROSS_SOURCES[src].unit || 'từ'}`
     : set === 'hard' ? `🔥 Ôn lại từ hay sai – ${s?.words.length ?? 0} từ` : `📘 ${book.name}`;
   const total = s?.queue.length || 0;
   const smart = s?.smart;

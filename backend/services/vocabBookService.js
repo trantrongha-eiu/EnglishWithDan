@@ -145,12 +145,13 @@ async function listBooks(user) {
   if (user.role === 'student') logActivity(user._id, { viewCount: 1 });
 
   const books = await VocabBook.find({ userId: user._id })
-    .select('name color emoji isDefault defaultSlot createdAt sortOrder words')
+    .select('name color emoji isDefault defaultSlot classBook createdAt sortOrder words')
     .sort({ sortOrder: 1, createdAt: 1 })
     .lean();
 
   return books.map(b => ({
     _id: b._id, name: b.name, color: b.color, emoji: b.emoji, isDefault: b.isDefault, defaultSlot: b.defaultSlot ?? null,
+    classBook: !!b.classBook,
     totalWords: b.words.length,
     daThucCount: b.words.filter(w => w.status === 'da-thuoc').length,
     nhoSoSoCount: b.words.filter(w => w.status === 'nho-so-so').length,
@@ -445,22 +446,109 @@ async function getBook(id, userId) {
   return VocabBook.findOne({ _id: id, userId });
 }
 
-// Creating books is closed for everyone since 2026-09-30 (owner's rule):
-// students use only the 5 default books "Sổ 1".."Sổ 5" (class homework
-// targets them by slot). Books a student created before that stay as they
-// are — still usable, mergeable, deletable; words can be moved out of them
-// with moveAllWords.
-async function createBook() {
-  return { status: 'creation_disabled' };
+// ("📚 Từ của lớp" — classBook — is not counted.)
+// Students may add their own books again since 2026-11-25 (closed
+// 2026-09-30 → reopened): at most MAX_BOOKS_PER_USER books in total,
+// the 5 default "Sổ 1".."Sổ 5" included. Older accounts that already hold
+// more (made under the old 15 cap) keep them, they just can't add another.
+// The defaults are ensured first so a brand-new account can't fill all 10
+// with its own books and then get 5 more restored on top.
+const MAX_BOOKS_PER_USER = 10;
+const MAX_BOOK_NAME_LEN = 40;
+async function createBook(userId, { name, emoji = '📘', color = '#3d8bff' }) {
+  const clean = String(name || '').trim().slice(0, MAX_BOOK_NAME_LEN);
+  if (!clean) return { status: 'empty_name' };
+  // "Sổ 1".."Sổ 5" are the fixed default books — an ordinary book with that
+  // name would be promoted into the slot by ensureDefaultBooks.
+  if (slotFromName(clean)) return { status: 'reserved_name' };
+  await ensureDefaultBooks(userId);
+  const books = await VocabBook.find({ userId }).select('sortOrder classBook').lean();
+  if (books.filter((b) => !b.classBook).length >= MAX_BOOKS_PER_USER) return { status: 'limit_reached', max: MAX_BOOKS_PER_USER };
+
+  const sortOrder = books.reduce((m, b) => Math.max(m, Number(b.sortOrder) || 0), 0) + 1;
+  const book = new VocabBook({
+    userId, name: clean,
+    emoji: String(emoji || '📘').slice(0, 8),
+    color: /^#[0-9a-f]{3,8}$/i.test(String(color)) ? color : '#3d8bff',
+    sortOrder,
+  });
+  await book.save();
+  return { status: 'ok', book };
+}
+
+// ── "📚 Từ của lớp" + homework word lists (Assignment vocab_list) ──────
+const CLASS_BOOK_NAME = 'Từ của lớp';
+async function ensureClassBook(userId) {
+  const found = await VocabBook.findOne({ userId, classBook: true });
+  if (found) return found;
+  try {
+    return await VocabBook.create({ userId, name: CLASS_BOOK_NAME, emoji: '📚', color: '#7c3aed', classBook: true, words: [] });
+  } catch (err) {
+    if (err.code !== 11000) throw err; // a concurrent call created it
+    return VocabBook.findOne({ userId, classBook: true });
+  }
+}
+
+// "Bắt đầu" on a vocab_list homework item: every listed word the student
+// doesn't have in ANY book yet goes into "Từ của lớp" (a word already in
+// Sổ 2 is practised there — one word, one SRS history). Returns the list's
+// words as practice items [{ bookId, bookName, word }] in list order (the
+// due/weak shape), plus how many were added / didn't fit the book cap.
+async function startClassList(userId, listWords) {
+  const wordKey = (w) => String(w || '').toLowerCase().trim().replace(/\s+/g, ' ');
+  const list = [];
+  const seen = new Set();
+  for (const w of listWords || []) {
+    const k = wordKey(w.word);
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    list.push(w);
+  }
+  const findCopies = async () => {
+    const books = await VocabBook.find({ userId }).select('name classBook isDefault defaultSlot words').lean();
+    // class book last: a word the student saved themselves is preferred
+    books.sort((a, b) => Number(!!a.classBook) - Number(!!b.classBook));
+    const byKey = new Map();
+    for (const b of books) {
+      for (const w of b.words || []) {
+        const k = wordKey(w.word);
+        if (k && !byKey.has(k)) byKey.set(k, { bookId: b._id, bookName: b.name, word: w });
+      }
+    }
+    return byKey;
+  };
+
+  let byKey = await findCopies();
+  const missing = list.filter((w) => !byKey.has(wordKey(w.word)));
+  let added = 0, skippedLimit = 0;
+  if (missing.length) {
+    const book = await ensureClassBook(userId);
+    const inBook = new Set(book.words.map((w) => wordKey(w.word)));
+    const room = Math.max(0, MAX_WORDS_PER_BOOK - book.words.length);
+    const toAdd = missing.filter((w) => !inBook.has(wordKey(w.word)));
+    const fit = toAdd.slice(0, room);
+    skippedLimit = toAdd.length - fit.length;
+    if (fit.length) {
+      await VocabBook.updateOne({ _id: book._id, userId }, { $push: { words: { $each: fit.map((w) => ({
+        word: String(w.word).trim(), meaning: w.meaning || '', example: w.example || '', phonetic: w.phonetic || '',
+        source: 'class',
+      })) } } });
+      added = fit.length;
+      logActivity(userId, { wordsAdded: added });
+    }
+    byKey = await findCopies();
+  }
+  const items = list.map((w) => byKey.get(wordKey(w.word))).filter(Boolean);
+  return { items, added, skippedLimit };
 }
 
 async function updateBook(id, userId, { name, emoji, color }) {
   if (name) {
     // Default books keep their fixed "Sổ N" name — teachers assign homework
     // by it. Emoji/colour stay editable.
-    const current = await VocabBook.findOne({ _id: id, userId }).select('isDefault name').lean();
+    const current = await VocabBook.findOne({ _id: id, userId }).select('isDefault classBook name').lean();
     if (!current) return null;
-    if (current.isDefault && name.trim() !== current.name) return { status: 'default_rename' };
+    if ((current.isDefault || current.classBook) && name.trim() !== current.name) return { status: 'default_rename' };
     if (!current.isDefault && slotFromName(name)) return { status: 'reserved_name' };
   }
   const update = {};
@@ -483,7 +571,7 @@ async function mergeBooks(destId, userId, sourceIds) {
   // end, deleting the very book it was just merged into.
   const destIdStr = destId.toString();
   const filteredSourceIds = sourceIds.filter(id => id.toString() !== destIdStr);
-  const sources = await VocabBook.find({ _id: { $in: filteredSourceIds }, userId, isDefault: false }).lean();
+  const sources = await VocabBook.find({ _id: { $in: filteredSourceIds }, userId, isDefault: false, classBook: { $ne: true } }).lean();
   if (!sources.length) return { status: 'no_valid_sources' };
 
   const existingWords = new Set(dest.words.map(w => w.word.toLowerCase().trim()));
@@ -509,7 +597,7 @@ async function mergeBooks(destId, userId, sourceIds) {
 
   await dest.save();
 
-  await VocabBook.deleteMany({ _id: { $in: sources.map(s => s._id) }, userId, isDefault: false });
+  await VocabBook.deleteMany({ _id: { $in: sources.map(s => s._id) }, userId, isDefault: false, classBook: { $ne: true } });
 
   return { status: 'ok', addedCount, mergedCount: sources.length, book: dest };
 }
@@ -569,7 +657,7 @@ async function moveAllWords(sourceId, destId, userId) {
 async function deleteBook(id, userId) {
   const book = await VocabBook.findOne({ _id: id, userId });
   if (!book) return { status: 'not_found' };
-  if (book.isDefault) return { status: 'is_default' };
+  if (book.isDefault || book.classBook) return { status: 'is_default' };
   await book.deleteOne();
   return { status: 'ok' };
 }
@@ -888,10 +976,10 @@ async function getWeakWords(userId, limit = 20) {
 }
 
 module.exports = {
-  listBooks, reorderBooks, completePractice, getBook, createBook, updateBook,
+  listBooks, reorderBooks, completePractice, getBook, createBook, updateBook, ensureClassBook, startClassList,
   mergeBooks, moveAllWords, deleteBook, addWord, updateWord, bulkUpdateStatus, deleteWord, bulkAddWords, deleteWords,
   getDueWords, countDueWords, getVocabStats, getWeakWords, recordPracticeResult, recordPracticeResults, applyPracticeAnswer, statusFromBox,
   // Exported so the paraphrase-SRS layer (services/paraphraseSrsService.js)
   // reuses the exact same Leitner box maths instead of a second copy.
-  computeSrs, SRS_INTERVAL_DAYS, MAX_WORDS_PER_BOOK,
+  computeSrs, SRS_INTERVAL_DAYS, MAX_WORDS_PER_BOOK, MAX_BOOKS_PER_USER,
 };

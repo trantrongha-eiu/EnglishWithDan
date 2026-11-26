@@ -135,8 +135,14 @@ exports.createBook = guard(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Tên sổ không được để trống' });
   }
   const result = await vocabBookService.createBook(req.user._id, { name, emoji, color });
-  if (result.status === 'creation_disabled') {
-    return res.status(403).json({ success: false, message: 'Không thể tạo thêm sổ mới — hãy dùng 5 sổ mặc định (Sổ 1 – Sổ 5).' });
+  if (result.status === 'empty_name') {
+    return res.status(400).json({ success: false, message: 'Tên sổ không được để trống' });
+  }
+  if (result.status === 'reserved_name') {
+    return res.status(400).json({ success: false, message: 'Tên "Sổ 1" – "Sổ 5" dành cho 5 sổ mặc định, hãy đặt tên khác' });
+  }
+  if (result.status === 'limit_reached') {
+    return res.status(400).json({ success: false, message: `Bạn đã có đủ ${result.max} sổ (tối đa ${result.max}). Hãy gộp hoặc xoá bớt một sổ tự tạo trước.` });
   }
   res.status(201).json({ success: true, book: result.book });
 });

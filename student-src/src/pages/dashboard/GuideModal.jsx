@@ -37,9 +37,11 @@ export default function GuideModal({ onClose }) {
           <div className="guide-section">
             <div className="guide-section-title"><span className="guide-num">1</span> Tạo &amp; quản lý sổ</div>
             <ul className="guide-list">
-              <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ). Không tạo thêm sổ mới được.</li>
+              <li><strong>5 sổ mặc định:</strong> Mỗi bạn dùng 5 sổ cố định <strong>Sổ 1 – Sổ 5</strong> (giáo viên giao bài theo số sổ) — không đổi tên hay xoá được.</li>
+              <li><strong>📚 Từ của lớp:</strong> Sổ tự có khi bạn bấm <code>Bắt đầu</code> một bộ từ giáo viên giao — chứa các từ của bộ đó (không tính vào giới hạn sổ, không xoá được).</li>
+              <li><strong>Tạo sổ mới:</strong> Nhấn <code>+</code> cạnh “My Notebooks”. Tối đa <strong>10 sổ</strong> (tính cả Sổ 1 – Sổ 5).</li>
               <li><strong>Chuyển từ sang sổ khác:</strong> Nhấn <code>Chuyển sang sổ khác</code> trên thanh công cụ của sổ (hoặc <code>⋯</code> ở topbar → <em>Chuyển toàn bộ từ sang sổ khác</em>).</li>
-              <li><strong>Sổ tự tạo trước đây</strong> vẫn giữ nguyên — có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
+              <li><strong>Sổ tự tạo</strong> có thể đổi tên, gộp hoặc xóa qua nút <code>⋯</code>.</li>
               <li>Mỗi sổ chứa tối đa <strong>1000 từ</strong>.</li>
             </ul>
           </div>

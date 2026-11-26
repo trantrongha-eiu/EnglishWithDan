@@ -358,7 +358,7 @@ function BookView({ bookId }) {
     if (nameDraft === null) return;
     const n = nameDraft.trim();
     setNameDraft(null);
-    if (book.isDefault || n === book.name) return;
+    if (book.isDefault || book.classBook || n === book.name) return;
     if (!n) { toast('Tên sổ không được để trống', 'error'); return; }
     try {
       await apiFetch(`/vocabbook/${bookId}`, { method: 'PUT', body: JSON.stringify({ name: n }) });
@@ -439,14 +439,14 @@ function BookView({ bookId }) {
             ref={nameRef}
             className="book-editable-name"
             value={nameDraft ?? book.name}
-            readOnly={!!book.isDefault}
-            title={book.isDefault ? 'Sổ mặc định — không đổi tên được' : 'Click để đổi tên'}
+            readOnly={!!(book.isDefault || book.classBook)}
+            title={book.classBook ? 'Sổ bộ từ giáo viên giao — không đổi tên được' : book.isDefault ? 'Sổ mặc định — không đổi tên được' : 'Click để đổi tên'}
             onChange={(e) => setNameDraft(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur(); }}
             onBlur={rename}
             aria-label="Tên sổ"
           />
-          {!book.isDefault && (
+          {!book.isDefault && !book.classBook && (
             <button className="btn-rename" onClick={() => nameRef.current?.focus()} title="Đổi tên" aria-label="Đổi tên sổ"><i className="fas fa-pen" /></button>
           )}
           <button className="btn-book-options" onClick={() => openBookMenu(bookId)} title="Tùy chọn sổ" aria-label="Tùy chọn sổ">⋯</button>

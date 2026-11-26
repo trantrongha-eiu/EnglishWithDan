@@ -56,6 +56,27 @@ function VocabGoalProgress({ r }) {
   if (!v) return null;
   if (r.completed) return <span className="hw-res-desc">✔ Đã đạt chỉ tiêu</span>;
   const book = v.bookName ? `${v.bookEmoji || '📘'} ${v.bookName}: ` : '';
+  if (v.mode === 'list') {
+    // "Bộ từ của lớp": every listed word practised, >= 70% right
+    const t = v.target || 1;
+    const practiced = Math.min(v.practiced || 0, t);
+    const pct = (n) => Math.round((Math.min(n, t) / t) * 1000) / 10;
+    const left = t - practiced;
+    const needMore = Math.max(0, (v.needCorrect || 0) - (v.correct || 0));
+    return (
+      <span className="hw-vg" title={`Cam = đã luyện, xanh = trả lời đúng, vạch = mức cần đạt (${v.needCorrect} từ đúng)`}>
+        <span className="hw-vg-bar" role="progressbar" aria-valuemin={0} aria-valuemax={t} aria-valuenow={practiced} aria-label="Số từ đã luyện">
+          <span className="hw-vg-fill hw-vg-fill--all" style={{ width: `${pct(practiced)}%` }} />
+          <span className="hw-vg-fill hw-vg-fill--ok" style={{ width: `${pct(v.correct || 0)}%` }} />
+          <span className="hw-vg-mark" style={{ left: `${pct(v.needCorrect || 0)}%` }} />
+        </span>
+        <span className="hw-res-desc">
+          đã luyện <b>{practiced}/{t}</b> từ · đúng <b>{v.correct}</b>/{v.needCorrect} ·{' '}
+          {left > 0 ? <>còn <b>{left}</b> từ chưa luyện</> : <>cần thêm <b>{needMore}</b> từ trả lời đúng — luyện lại từ sai</>}
+        </span>
+      </span>
+    );
+  }
   if (v.mode === 'no_book') {
     return <span className="hw-res-desc">Mở trang Sổ từ vựng để hệ thống tạo lại Sổ 1–5, rồi lưu từ và luyện tập trong sổ.</span>;
   }
@@ -184,12 +205,21 @@ function ResourceRow({ a, r, onChanged }) {
     const bookId = r.vocabGoal?.bookId;
     name = (
       <>
-        {r.label || `Học ${r.wordCount} từ trong ${r.bookSlot ? `Sổ ${r.bookSlot}` : '1 sổ mặc định (Sổ 1–5)'}`}
+        {r.label || `Học ${r.wordCount} từ trong ${r.bookSlot ? `Sổ ${r.bookSlot}` : '1 sổ bất kỳ'}`}
         <span className="hw-res-tag hw-res-tag--quiz" title="Sổ phải có đủ số từ được giao; luyện đủ số từ đó, đúng từ 70% trở lên.">≥70% đúng</span>
         <VocabGoalProgress r={r} />
       </>
     );
     action = <Link className="hw-res-btn" to={bookId ? `/dashboard/book/${bookId}` : '/dashboard'}>{r.completed ? 'Xem sổ' : 'Mở sổ'}</Link>;
+  } else if (r.kind === 'vocab_list') {
+    name = (
+      <>
+        📚 {r.label || r.title || 'Bộ từ của lớp'}
+        <span className="hw-res-tag hw-res-tag--quiz" title="Luyện hết các từ trong bộ (Quiz / Flashcard / Điền từ…), đúng từ 70% trở lên. Từ chưa có sẽ được thêm vào sổ 📚 Từ của lớp.">≥70% đúng</span>
+        <VocabGoalProgress r={r} />
+      </>
+    );
+    action = <Link className="hw-res-btn" to={`/dashboard/practice?src=hw&a=${a._id}&i=${r.itemId}`}>{r.completed ? 'Ôn lại' : 'Bắt đầu'}</Link>;
   } else if (r.kind === 'internal' && r.fixedMock) {
     const mp = r.mockParts;
     const mpText = mp ? [mp.listening ? `Listening: Section ${mp.listening.join(', ')}` : '', mp.reading ? `Reading: Passage ${mp.reading.join(', ')}` : ''].filter(Boolean).join(' · ') : '';
