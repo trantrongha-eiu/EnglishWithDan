@@ -256,6 +256,7 @@ describe('/api/vocab-battle', () => {
     expect(last.by).toBe(botId);
     expect(res.body.battle.chain.turnId).toBe(String(a._id));
     if (last.w) expect(last.w[0]).toBe(w1.slice(-1));
+    if (last.w) expect(bank._internal.chainWords().all.has(last.w)).toBe(true);
 
     // a runs out of time with 1 life → Lulu wins, nobody gets 🔥
     await VocabBattle.updateOne({ _id: id }, { $set: { 'chain.deadline': new Date(Date.now() - 1000) } });
@@ -263,6 +264,22 @@ describe('/api/vocab-battle', () => {
     expect(res.body.battle.status).toBe('done');
     expect(res.body.battle.winnerIds).toEqual([botId]);
     expect(await wallet(a)).toBe(0);
+  });
+
+  test('Lulu 🤖 + the opening word only use dictionary-checked common words', async () => {
+    const verified = bank._internal.chainWords().all;
+    expect(verified.size).toBeGreaterThan(3000);
+    for (const rare of ['konking', 'yobbo', 'qoph', 'zyzzyva']) expect(verified.has(rare)).toBe(false);
+    for (const w of ['table', 'orange', 'think', 'water']) expect(verified.has(w)).toBe(true);
+    for (let k = 0; k < 15; k++) expect(verified.has(await bank.chainStartWord())).toBe(true);
+    for (const letter of 'abcdefghijklmnoprstuwy') {
+      for (let k = 0; k < 20; k++) {
+        const got = bank.botWord(letter, new Set());
+        expect(got && verified.has(got.w) && got.w[0] === letter).toBe(true);
+      }
+    }
+    // players may still use any ENABLE word
+    expect((await bank.chainWordInfo('yobbo')).known).toBe(true);
   });
 
   test('a Nối chữ game left mid-way is closed by the sweep', async () => {

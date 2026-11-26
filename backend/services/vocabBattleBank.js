@@ -9,9 +9,11 @@
 //                      (targetClass) are left out
 //   • Từ điển        — DictionaryPhrase (phrase ↔ alternatives)
 //   • Trái nghĩa     — data/vocabBattle/antonyms.js (hand-written)
-// Nối chữ checks words against the ENABLE word list
-// (data/vocabBattle/enable1.txt.gz, public domain) plus every single word
-// the site teaches.
+// Nối chữ accepts a player's word when it is in the ENABLE word list
+// (data/vocabBattle/enable1.txt.gz, public domain), in ChainWord (common words
+// checked against an online dictionary — scripts/seedChainWords.js) or taught
+// on the site. Lulu 🤖 and the opening word only ever use ChainWord words, so
+// the bot never plays rare Scrabble-only words (konking, yobbo…).
 //
 // buildQuestions() returns full questions (answers included) to store on the
 // room; publicQuestion() is the only shape that reaches a client and
@@ -22,6 +24,7 @@ const zlib = require('zlib');
 const VocabUnit = require('../models/VocabUnit');
 const VocabularyLesson = require('../models/VocabularyLesson');
 const DictionaryPhrase = require('../models/DictionaryPhrase');
+const ChainWord = require('../models/ChainWord');
 const { ANTONYMS } = require('../data/vocabBattle/antonyms');
 const { QUESTION_TYPES, SOURCES } = require('../constants/vocabBattle');
 
@@ -75,12 +78,14 @@ function mcq(correct, wrong) {
 // ── pools ──────────────────────────────────────────────────────────
 async function loadPools() {
   if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.pools;
-  const [units, lessons, dict] = await Promise.all([
+  const [units, lessons, dict, chainDocs] = await Promise.all([
     VocabUnit.find({ isActive: { $ne: false } }).select('title words').lean(),
     VocabularyLesson.find({ published: true, $or: [{ targetClass: '' }, { targetClass: { $exists: false } }] })
       .select('title words').lean(),
     DictionaryPhrase.find({}).select('phrase meaning alternatives').lean(),
+    ChainWord.find({}).select('w -_id').lean().catch(() => []),
   ]);
+  if (chainDocs.length) setChainWords(chainDocs.map((d) => d.w));
 
   const para = [];
   for (const u of units) {
@@ -128,6 +133,30 @@ function englishWords() {
     enable = new Set(buf.toString('utf8').split(/\r?\n/).filter(Boolean));
   }
   return enable;
+}
+
+// ── verified Nối chữ words (ChainWord, else the JSON it was seeded from) ──
+let chain = null; // { all: Set, byLetter: { a: [4–8 letter words] } }
+function setChainWords(list) {
+  const all = new Set();
+  const byLetter = {};
+  for (const raw of list) {
+    const w = String(raw || '').toLowerCase();
+    if (!/^[a-z]{3,}$/.test(w)) continue;
+    all.add(w);
+    if (w.length >= 4 && w.length <= 8) (byLetter[w[0]] = byLetter[w[0]] || []).push(w);
+  }
+  chain = { all, byLetter };
+}
+function chainWords() {
+  if (!chain) {
+    let list = [];
+    try {
+      list = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'vocabBattle', 'chainWords.json'), 'utf8')).map((x) => x.w);
+    } catch { /* not built yet */ }
+    setChainWords(list);
+  }
+  return chain;
 }
 
 // ── generators: (ctx) → question | null ───────────────────────────
@@ -361,34 +390,31 @@ function grade(q, given) {
 // ── Nối chữ ────────────────────────────────────────────────────────
 async function chainWordInfo(w) {
   const pools = await loadPools();
-  return { known: englishWords().has(w) || pools.bank.has(w), bank: pools.bank.has(w) };
+  return { known: englishWords().has(w) || chainWords().all.has(w) || pools.bank.has(w), bank: pools.bank.has(w) };
 }
 
-// The word the game opens with: a word the site teaches, ending in an easy letter
+// The word the game opens with: a verified word the site teaches, ending in an easy letter
 async function chainStartWord() {
   const pools = await loadPools();
-  const words = englishWords();
-  const ok = [...pools.bank].filter((w) => w.length >= 4 && w.length <= 8 && words.has(w) && !/[xqzjvy]$/.test(w));
-  return ok.length ? pick(ok) : pick(['table', 'water', 'school', 'garden', 'travel', 'health']);
+  const verified = chainWords();
+  const easy = (w) => w.length >= 4 && w.length <= 8 && !/[xqzjvy]$/.test(w);
+  const taught = [...pools.bank].filter((w) => easy(w) && verified.all.has(w));
+  if (taught.length) return pick(taught);
+  const any = [...verified.all].filter(easy);
+  return any.length ? pick(any) : pick(['table', 'water', 'school', 'garden', 'travel', 'health']);
 }
 
-// The bot's word for Nối chữ (sync: runs inside a room update). Words the
-// site teaches first, then common-length ENABLE words; null = it's stuck.
-let byLetter = null;
+// The bot's word for Nối chữ (sync: runs inside a room update): only words
+// checked against an online dictionary (ChainWord) — ones the site teaches
+// first, then any common verified word; null = it's stuck.
 function botWord(letter, used) {
-  if (!byLetter) {
-    byLetter = {};
-    for (const w of englishWords()) {
-      if (w.length < 4 || w.length > 7) continue;
-      (byLetter[w[0]] = byLetter[w[0]] || []).push(w);
-    }
-  }
-  const taught = poolCache ? [...poolCache.pools.bank].filter((w) => w[0] === letter && w.length >= 4 && !used.has(w)) : [];
+  const list = (chainWords().byLetter[letter] || []).filter((w) => !used.has(w));
+  const bankSet = poolCache ? poolCache.pools.bank : new Set();
+  const taught = list.filter((w) => bankSet.has(w));
   if (taught.length && Math.random() < 0.7) return { w: pick(taught), bank: true };
-  const list = (byLetter[letter] || []).filter((w) => !used.has(w));
-  if (!list.length) return taught.length ? { w: pick(taught), bank: true } : null;
+  if (!list.length) return null;
   const w = pick(list);
-  return { w, bank: !!poolCache && poolCache.pools.bank.has(w) };
+  return { w, bank: bankSet.has(w) };
 }
 
 async function lessonOptions() {
@@ -399,5 +425,5 @@ async function lessonOptions() {
 module.exports = {
   buildQuestions, publicQuestion, grade, answerText, usableTypes,
   chainWordInfo, chainStartWord, botWord, lessonOptions, loadPools, resetCache,
-  _internal: { norm, normTyped, englishWords },
+  _internal: { norm, normTyped, englishWords, chainWords, setChainWords },
 };
