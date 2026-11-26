@@ -11,6 +11,7 @@ import ClassSpeakingExamTab from './classes/ClassSpeakingExamTab';
 import ClassMessageModal from './classes/ClassMessageModal';
 import { studentUrlFor, mockBundleUrls } from './classes/assignmentLinks';
 import VocabListsField from './classes/VocabListsField';
+import CustomWritingExamBuilder from './classes/CustomWritingExamBuilder';
 import { LIST_MIN_WORDS, LIST_MAX_WORDS } from './classes/vocabListUtils';
 
 const MARK_OPTS = [
@@ -141,9 +142,9 @@ function PartChips({ type, parts, onToggle, disabled, color = '#c2410c' }) {
   );
 }
 
-// Reading / Listening items can be pinned to one mode (backend Assignment
-// resources[].examMode): '' = student picks, else only that mode counts.
-const EXAM_MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
+// Reading / Listening / full Writing items can be pinned to one mode (backend
+// Assignment resources[].examMode): '' = student picks, else only that mode counts.
+const EXAM_MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'writing_exam']);
 // Picking one of these also picks its companions — a Listening item's
 // published gap-fill drill(s), a Part 2 story's vocab lesson — see addGapFillsFor.
 const GAPFILL_SOURCE_TYPES = new Set(['listening_practice', 'listening_test', 'speaking_part2']);
@@ -213,6 +214,7 @@ function EssayTypeBadge({ type }) {
 // How each type auto-ticks as done — mirrors backend
 // services/resourceCompletionService.js (scoreGate / passPercent / pass).
 const RES_RULE = {
+  writing_exam: 'Đề Full Writing 60 phút (Task 1 + Task 2). Bấm "🧩 Tự ghép đề" để tự chọn 1 đề Task 1 + 1 đề Task 2. Chọn Luyện tập / Thi thật ở mục "Phần & chế độ làm bài" bên dưới. Tự tick khi học viên nộp đủ Task 1 ≥150 từ và Task 2 ≥250 từ (đúng chế độ đã giao).',
   reading_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
   listening_practice: 'Tự tick khi học viên đạt ≥50% số câu đúng.',
   listening_gapfill: 'Tự tick khi học viên điền đúng ≥18 chỗ trống (bài ít hơn 18 chỗ thì phải đúng hết).',
@@ -1120,15 +1122,22 @@ function AssignmentsTab({ cls }) {
     });
   }
 
-  function closeEditor() { setShowEditor(false); setEditing(null); }
+  // 'mock' = "🧪 Bài thi Full Mock Test của lớp" (editor opens on the mock picker)
+  const [preset, setPreset] = useState(null);
+  function closeEditor() { setShowEditor(false); setEditing(null); setPreset(null); }
 
   return (
     <>
-      {showEditor && <AssignmentEditor cls={cls} assignment={editing} allAssignments={list} onClose={closeEditor} onSaved={load} />}
+      {showEditor && <AssignmentEditor cls={cls} assignment={editing} allAssignments={list} preset={editing ? null : preset} onClose={closeEditor} onSaved={load} />}
 
       <div className="section-header" style={{ marginBottom: 12 }}>
         <div style={{ fontSize: 13, color: 'var(--text3)' }}>{list.length} bài tập · {enrolledCount} học viên</div>
-        <button className="btn btn-primary" onClick={() => { setEditing(null); setShowEditor(true); }}>+ Tạo bài tập</button>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button className="btn btn-ghost" style={{ fontWeight: 700, color: '#b91c1c', borderColor: '#b91c1c' }}
+            title="Cả lớp làm chung 1 đề: Reading (cả đề / passage lẻ) + Listening (cả đề / section lẻ) + Writing tự ghép Task 1 + Task 2"
+            onClick={() => { setEditing(null); setPreset('mock'); setShowEditor(true); }}>🧪 Tạo bài thi Full Mock Test của lớp</button>
+          <button className="btn btn-primary" onClick={() => { setEditing(null); setPreset(null); setShowEditor(true); }}>+ Tạo bài tập</button>
+        </div>
       </div>
 
       <div className="table-wrap">
@@ -1261,7 +1270,7 @@ function AssignmentProgressPanel({ cls, assignmentId }) {
               )}
               {mockItem && (
                 <td style={{ fontSize: 13 }}>
-                  <MockRunCell item={r.items.find((it) => String(it.itemId) === String(mockItem._id))} />
+                  <MockRunCell item={r.items.find((it) => String(it.itemId) === String(mockItem._id))} required={mockItem.requiredBand} />
                 </td>
               )}
               <td style={{ fontSize: 13 }}><MissingItemsCell row={r} resources={data.assignment?.resources || []} /></td>
@@ -1324,6 +1333,7 @@ function AssignmentResourceLine({ r }) {
             {s.partsKey && b[s.partsKey]?.length ? <PartsTag text={partsText(s.type, b[s.partsKey])} /> : null}
           </span>
         ))}
+        {r.requiredBand ? <span style={{ marginLeft: 10, fontWeight: 700, color: '#b91c1c' }}>🎯 Điểm yêu cầu {Number(r.requiredBand).toFixed(1)}</span> : null}
       </>
     );
   }
@@ -1407,13 +1417,17 @@ function mockBundleSummary(p) {
   return MOCK_SKILLS.map((s) => {
     const parts = s.partsKey && b[s.partsKey]?.length ? ` (${partsText(s.type, b[s.partsKey])})` : '';
     return `${s.short}: ${b[s.key] ? (b[s.nameKey] || 'đã chọn') : '🎲 ngẫu nhiên'}${parts}`;
-  }).join(' · ');
+  }).join(' · ') + (p.requiredBand ? ` · 🎯 yêu cầu ${Number(p.requiredBand).toFixed(1)}` : '');
 }
 
+// "Điểm yêu cầu" options of a class mock (overall band; below = chép phạt)
+const REQUIRED_BANDS = [4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8];
 function MockBundlePicker({ current, onPick, assignedIndex }) {
   const toast = useToast();
   const [lists, setLists] = useState({});
   const [sel, setSel] = useState(() => Object.fromEntries(MOCK_SKILLS.map((s) => [s.key, current?.mockBundle?.[s.key] ? String(current.mockBundle[s.key]) : ''])));
+  const [wxBuilder, setWxBuilder] = useState(false);
+  const [requiredBand, setRequiredBand] = useState(() => (current?.requiredBand ? String(current.requiredBand) : ''));
   // Listening sections / Reading passages to give (undefined = whole test)
   const [partSel, setPartSel] = useState(() => ({
     listeningParts: current?.mockBundle?.listeningParts?.length ? [...current.mockBundle.listeningParts] : undefined,
@@ -1446,7 +1460,8 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
         mockBundle[s.partsKey] = partSel[s.partsKey];
       }
     }
-    onPick({ kind: 'internal', resourceType: 'mock_test', resourceId: null, label: 'Thi thử full 4 kỹ năng', mockBundle });
+    onPick({ kind: 'internal', resourceType: 'mock_test', resourceId: null, label: 'Thi thử full 4 kỹ năng', mockBundle,
+      ...(requiredBand ? { requiredBand: Number(requiredBand) } : {}) });
   }
 
   return (
@@ -1476,6 +1491,18 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
             })}
           </select>
         </label>
+        {s.type === 'writing_exam' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'start', gap: 8, fontSize: 12 }}>
+            <span />
+            {wxBuilder
+              ? <CustomWritingExamBuilder onCancel={() => setWxBuilder(false)} onCreated={(row) => {
+                setWxBuilder(false);
+                setLists((l) => ({ ...l, [s.key]: [row, ...(l[s.key] || []).filter((x) => String(x._id) !== String(row._id))] }));
+                setSel((x) => ({ ...x, [s.key]: String(row._id) }));
+              }} />
+              : <span><button type="button" className="btn btn-ghost btn-sm" style={{ color: '#c2410c' }} onClick={() => setWxBuilder(true)}>🧩 Tự ghép đề Writing (1 Task 1 + 1 Task 2)</button></span>}
+          </div>
+        )}
         {s.partsKey && (
           <div style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 12 }}>
             <span style={{ color: 'var(--text3)' }}>Phần cần làm</span>
@@ -1494,6 +1521,16 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
         </div>
         );
       })}
+      <label style={{ display: 'grid', gridTemplateColumns: '130px 1fr', alignItems: 'center', gap: 8, fontSize: 13 }}>
+        <span style={{ fontWeight: 600 }}>🎯 Điểm yêu cầu</span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <select className="form-input" style={{ width: 170 }} value={requiredBand} onChange={(e) => setRequiredBand(e.target.value)}>
+            <option value="">Không đặt</option>
+            {REQUIRED_BANDS.map((b) => <option key={b} value={String(b)}>Overall {b.toFixed(1)}</option>)}
+          </select>
+          <span style={{ fontSize: 12, color: 'var(--text3)' }}>Học sinh thấy trước khi thi: dưới điểm này phải chép phạt · bảng tiến độ đánh dấu ai dưới điểm</span>
+        </span>
+      </label>
       <div>
         <button type="button" className="btn btn-ghost btn-sm" onClick={use}>
           {current ? '✓ Cập nhật bộ đề thi thử' : '+ Thêm bài thi thử full vào bài tập'}
@@ -1503,9 +1540,22 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
   );
 }
 
+// "Điểm yêu cầu" check: Overall once there is one, else the average of the
+// skills graded so far (tạm tính). null = nothing graded yet.
+function mockScoreVsRequired(m, required) {
+  if (!m || !required) return null;
+  const b = m.bands || {};
+  if (m.overallBand != null) return { below: Number(m.overallBand) < required, provisional: false };
+  const got = ['listening', 'reading', 'writing', 'speaking'].map((k) => b[k])
+    .filter((x) => x != null && x !== '' && !Number.isNaN(Number(x))).map(Number);
+  if (!got.length) return null;
+  const avg = Math.round((got.reduce((a, x) => a + x, 0) / got.length) * 2) / 2;
+  return { below: avg < required, provisional: true };
+}
+
 // One student's mock cell in the progress table (resourceCompletionService.checkFixedMocks).
 const MOCK_PROGRESS_LABEL = { listening: 'Listening', reading: 'Reading', writing: 'Writing', speaking: 'Speaking' };
-function MockRunCell({ item }) {
+function MockRunCell({ item, required = null }) {
   const m = item?.mock;
   if (!m) return <span style={{ color: 'var(--text3)' }}>Chưa bắt đầu</span>;
   const b = m.bands || {};
@@ -1513,8 +1563,16 @@ function MockRunCell({ item }) {
   const bands = `L ${v(b.listening)} · R ${v(b.reading)} · W ${v(b.writing, 'chờ chấm')} · S ${v(b.speaking, '–')}`;
   if (m.status === 'disqualified') return <span className="badge badge-red"><span className="dot" />Bị huỷ (vi phạm)</span>;
   if (!item.completed) return <span>Đang làm — {MOCK_PROGRESS_LABEL[m.progress] || m.progress}</span>;
-  if (m.status === 'abandoned' && !b.speaking) return <>{`L ${v(b.listening)} · R ${v(b.reading)} · W ${v(b.writing, 'chờ chấm')} · S bỏ qua`}</>;
-  return <>{bands}{m.overallBand ? <div style={{ fontSize: 12 }}>Overall <b>{m.overallBand}</b></div> : null}</>;
+  const vs = mockScoreVsRequired(m, required);
+  const flag = vs && vs.below ? (
+    <div>
+      <span className="badge badge-red" title={`Điểm yêu cầu ${Number(required).toFixed(1)}${vs.provisional ? ' — tạm tính theo các kỹ năng đã có điểm' : ''}`}>
+        ⚠ Dưới điểm yêu cầu{vs.provisional ? ' (tạm tính)' : ''} → chép phạt
+      </span>
+    </div>
+  ) : null;
+  if (m.status === 'abandoned' && !b.speaking) return <>{`L ${v(b.listening)} · R ${v(b.reading)} · W ${v(b.writing, 'chờ chấm')} · S bỏ qua`}{flag}</>;
+  return <>{bands}{m.overallBand ? <div style={{ fontSize: 12 }}>Overall <b>{m.overallBand}</b></div> : null}{flag}</>;
 }
 
 // Local datetime-local value (YYYY-MM-DDTHH:mm) from a stored ISO deadline —
@@ -1547,20 +1605,36 @@ function PreviewLink({ href }) {
   );
 }
 
-function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved }) {
+// "🧪 Bài thi Full Mock Test của lớp" preset: default title (lớp + ngày) and
+// the notice students read before starting (editable "Hướng dẫn").
+const CLASS_MOCK_NOTICE = [
+  'Bài thi Full Mock Test của lớp — cả lớp làm chung 1 đề.',
+  '• Làm bài nghiêm túc, tự lực, KHÔNG gian lận (không tài liệu, từ điển, AI hay người khác hỗ trợ).',
+  '• Ôn bài đầy đủ trước khi thi (template Writing trong sách / trên website, từ vựng, cách làm từng dạng bài).',
+  '• Làm đúng thời gian quy định của từng kỹ năng.',
+  '• Bài thi dưới điểm yêu cầu sẽ phải chép phạt.',
+].join('\n');
+function classMockTitle(cls, d = new Date()) {
+  const day = d.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit', year: 'numeric' });
+  return `Full Mock Test – ${cls.name} – ${day}`;
+}
+
+function AssignmentEditor({ cls, assignment, allAssignments, preset = null, onClose, onSaved }) {
   const toast = useToast();
   const isEdit = !!assignment;
+  const isMockPreset = !isEdit && preset === 'mock';
   const assignedIndex = useMemo(() => buildAssignedIndex(allAssignments, assignment?._id), [allAssignments, assignment?._id]);
   // '' = all, 'new' = never given to this class, 'done' = already given
   const [assignedFilter, setAssignedFilter] = useState('');
   // New assignment defaults: "Assignment dd/mm" (the day it's given) and a
   // deadline 3 days from now — both still editable before saving.
-  const [title, setTitle] = useState(() => (isEdit ? assignment.title || '' : defaultAssignmentTitle()));
-  const [instruction, setInstruction] = useState(assignment?.instruction || '');
+  const [title, setTitle] = useState(() => (isEdit ? assignment.title || '' : isMockPreset ? classMockTitle(cls) : defaultAssignmentTitle()));
+  const [instruction, setInstruction] = useState(() => (isMockPreset ? CLASS_MOCK_NOTICE : assignment?.instruction || ''));
   const [deadline, setDeadline] = useState(() => toDatetimeLocalValue(isEdit ? assignment.deadline : new Date(Date.now() + DEFAULT_DEADLINE_DAYS * 864e5)));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
     .map((r) => ({ kind: 'internal', resourceType: r.resourceType, resourceId: r.resourceId, resourceCode: r.resourceCode, label: r.label, mockBundle: r.mockBundle,
+      ...(r.requiredBand ? { requiredBand: r.requiredBand } : {}),
       ...(r.parts?.length ? { parts: [...r.parts] } : {}),
       ...(r.examMode ? { examMode: r.examMode } : {}) })));
   const [externals, setExternals] = useState(() => (assignment?.resources || [])
@@ -1573,19 +1647,21 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   // slot '' = any of Sổ 1–5 (only allowed as the single goal), else '1'..'5'.
   // A NEW assignment starts with the class's next vocab round already in
   // (nextVocabRotation) — 50 từ Sổ 1 + Sổ 2, then Sổ 3 + 4 + 5, alternating.
-  const rotation = useMemo(() => (isEdit ? null : nextVocabRotation(allAssignments)), []); // eslint-disable-line react-hooks/exhaustive-deps
+  // A class mock is its own assignment — no vocab round added to it.
+  const rotation = useMemo(() => (isEdit || isMockPreset ? null : nextVocabRotation(allAssignments)), []); // eslint-disable-line react-hooks/exhaustive-deps
   const [vocabGoals, setVocabGoals] = useState(() => (isEdit
     ? (assignment?.resources || [])
       .filter((r) => r.kind === 'vocab_goal')
       .map((r) => ({ count: String(r.wordCount), slot: r.bookSlot ? String(r.bookSlot) : '' }))
-    : VOCAB_ROTATION[rotation.round].map((n) => ({ count: String(VOCAB_ROTATION_WORDS), slot: String(n) }))));
+    : !rotation ? []
+      : VOCAB_ROTATION[rotation.round].map((n) => ({ count: String(VOCAB_ROTATION_WORDS), slot: String(n) }))));
   // "📚 Bộ từ của lớp" — the teacher's own word lists (VocabListsField)
   const [vocabLists, setVocabLists] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'vocab_list')
     .map((r) => ({ title: r.title || '', words: (r.words || []).map((w) => ({ word: w.word, meaning: w.meaning || '', example: w.example || '', phonetic: w.phonetic || '' })) })));
   const [saving, setSaving] = useState(false);
 
-  const [cat, setCat] = useState('reading_test');
+  const [cat, setCat] = useState(isMockPreset ? 'mock_test' : 'reading_test');
   const [search, setSearch] = useState('');
   const [catalog, setCatalog] = useState([]);
   const [loadingCat, setLoadingCat] = useState(false);
@@ -1602,6 +1678,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
   // Essential Grammar: lesson group (Tenses, Writing Foundation, …) — the
   // catalog row's meta. '' = every lesson, so "Chọn tất cả" assigns them all.
   const [grammarGroup, setGrammarGroup] = useState('');
+  // "🧩 Tự ghép đề Writing" panel (Full đề Writing only)
+  const [wxBuilder, setWxBuilder] = useState(false);
 
   useEffect(() => {
     // No synchronous setState here for the cat !== 'speaking' case — that's
@@ -1739,6 +1817,16 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
       return mode ? { ...rest, examMode: mode } : rest;
     }));
   }
+  // A freshly paired "đề tự ghép" — listed + picked at once (mode still '' →
+  // the teacher sets Luyện tập / Thi thật below).
+  function addCustomWritingExam(row) {
+    setWxBuilder(false);
+    if (cat === 'writing_exam') setCatalog((c) => (c.some((x) => String(x._id) === String(row._id)) ? c : [row, ...c]));
+    const k = keyOf('writing_exam', row._id);
+    setPicked((p) => (p.some((x) => keyOf(x.resourceType, x.resourceId) === k) ? p
+      : [...p, { kind: 'internal', resourceType: 'writing_exam', resourceId: row._id, resourceCode: '', label: row.label }]));
+    toast(`Đã ghép đề "${row.label}" — chọn chế độ Luyện tập / Thi thật bên dưới`);
+  }
   const pickedTests = picked.filter((p) => EXAM_MODE_TYPES.has(p.resourceType));
   const sameMode = pickedTests.every((p) => (p.examMode || '') === (pickedTests[0]?.examMode || ''));
   const isPicked = (item) => picked.some((x) => keyOf(x.resourceType, x.resourceId) === keyOf(cat, item._id));
@@ -1790,7 +1878,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth: 760, maxHeight: '94vh', display: 'flex', flexDirection: 'column' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3 className="modal-title">{isEdit ? 'Sửa bài tập' : 'Tạo bài tập'} — {cls.name}</h3>
+          <h3 className="modal-title">{isEdit ? 'Sửa bài tập' : isMockPreset ? '🧪 Bài thi Full Mock Test của lớp' : 'Tạo bài tập'} — {cls.name}</h3>
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '18px 22px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -1800,7 +1888,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
           </div>
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Hướng dẫn</label>
-            <textarea className="form-input" rows={2} value={instruction} onChange={(e) => setInstruction(e.target.value)} />
+            <textarea className="form-input" rows={isMockPreset ? 6 : 2} value={instruction} onChange={(e) => setInstruction(e.target.value)} />
           </div>
           <div className="form-group" style={{ marginBottom: 0, maxWidth: 280 }}>
             <label className="form-label">Deadline</label>
@@ -1818,7 +1906,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   // the list never shows the previous type's items (wrong
                   // labels/meta) until the new fetch resolves.
                   setCatalog([]); setLoadingCat(true);
-                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter(''); setGrammarGroup('');
+                  setCat(e.target.value); setSpeakPart(''); setSpeakTopic(''); setSpeakTopics([]); setTplLevel(''); setEssayFilter(''); setGrammarGroup(''); setWxBuilder(false);
                 }}>
                 {RES_GROUPS.map((g) => (
                   <optgroup key={g.key} label={g.label} style={{ color: g.color, backgroundColor: '#fff', fontWeight: 800, fontStyle: 'normal' }}>
@@ -1884,6 +1972,17 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
             </div>
             {RES_RULE[cat] && (
               <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 8 }}>ℹ️ {RES_RULE[cat]}</div>
+            )}
+            {cat === 'writing_exam' && (
+              <div style={{ marginBottom: 8 }}>
+                {wxBuilder
+                  ? <CustomWritingExamBuilder onCreated={addCustomWritingExam} onCancel={() => setWxBuilder(false)} />
+                  : (
+                    <button type="button" className="btn btn-ghost btn-sm" style={{ fontWeight: 700, color: '#c2410c', borderColor: '#c2410c' }} onClick={() => setWxBuilder(true)}>
+                      🧩 Tự ghép đề (chọn 1 Task 1 + 1 Task 2)
+                    </button>
+                  )}
+              </div>
             )}
             {cat !== 'mock_test' && !loadingCat && catalog.length > 0 && (
               <div style={{ fontSize: 12, color: 'var(--text3)', marginBottom: 6 }}>
@@ -1982,7 +2081,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, onClose, onSaved })
                   const g = RES_GROUP_OF[p.resourceType];
                   const isFull = !!TEST_PARTS[p.resourceType];
                   const k = keyOf(p.resourceType, p.resourceId);
-                  const partsNote = !isFull ? (p.resourceType === 'reading_practice' ? 'Bài đọc lẻ' : 'Bài nghe lẻ')
+                  const partsNote = p.resourceType === 'writing_exam' ? 'Task 1 + Task 2 · 60 phút'
+                    : !isFull ? (p.resourceType === 'reading_practice' ? 'Bài đọc lẻ' : 'Bài nghe lẻ')
                     : cantSplit ? 'Đề này chưa có audio riêng từng Section — chỉ giao được cả đề'
                       : p.parts?.length ? `Giao ${partsText(p.resourceType, p.parts)} · học sinh mở đúng các phần này` : 'Cả đề';
                   const modeNote = p.examMode === 'simulation' ? 'bắt buộc Thi thật (có giám sát)'

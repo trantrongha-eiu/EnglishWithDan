@@ -214,7 +214,9 @@ function bundleFrom(lt, rt, we, sq) {
 const BUNDLE_SKILLS = [
   { key: 'listeningTestId', label: 'Listening', model: ListeningTest, filter: {} },
   { key: 'readingTestId', label: 'Reading', model: ReadingTest, filter: {} },
-  { key: 'writingExamId', label: 'Writing', model: WritingExam, filter: {} },
+  // A teacher's "đề tự ghép" (WritingExam.isCustom) can be picked by hand but
+  // is never drawn at random — randomFilter applies to random draws only.
+  { key: 'writingExamId', label: 'Writing', model: WritingExam, filter: {}, randomFilter: { isCustom: { $ne: true } } },
   { key: 'speakingQuestionId', label: 'Speaking', model: SpeakingQuestion, filter: { part: 2 } },
 ];
 // `exclude` (optional): { listeningTestId: [ids], readingTestId: [...], ... }
@@ -232,7 +234,7 @@ async function resolveMockBundle(picks = {}, { exclude = {} } = {}) {
   // lazy: listeningService pulls in a lot, and nothing else here needs it
   const listeningService = listeningParts ? require('./listeningService') : null;
   const audioKeys = listeningParts ? await listeningService.sectionAudioKeys() : null;
-  const docs = await Promise.all(BUNDLE_SKILLS.map(async ({ key, label, model, filter }) => {
+  const docs = await Promise.all(BUNDLE_SKILLS.map(async ({ key, label, model, filter, randomFilter = {} }) => {
     const id = picks && picks[key];
     const splitListening = key === 'listeningTestId' && listeningParts;
     if (id) {
@@ -257,7 +259,8 @@ async function resolveMockBundle(picks = {}, { exclude = {} } = {}) {
       }
       return doc;
     }
-    doc = await randomActive(model, used.length ? { ...filter, _id: { $nin: used } } : filter);
+    const pool = { ...filter, ...randomFilter };
+    doc = await randomActive(model, used.length ? { ...pool, _id: { $nin: used } } : pool);
     if (!doc) {
       throw new ValidationError(used.length
         ? `Lớp đã được giao hết các đề ${label} hiện có — không còn đề mới để bốc ngẫu nhiên. Hãy chọn tay 1 đề ${label}.`
@@ -341,7 +344,7 @@ async function startMockTest(userId, { assigned = null } = {}) {
   const [lt, rt, we, sq] = await Promise.all([
     randomActive(ListeningTest),
     randomActive(ReadingTest),
-    randomActive(WritingExam),
+    randomActive(WritingExam, { isCustom: { $ne: true } }),
     randomActive(SpeakingQuestion, { part: 2 })
   ]);
 

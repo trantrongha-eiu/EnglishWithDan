@@ -24,6 +24,13 @@ const DictationDrill = require('../models/DictationDrill');
 const WritingExam = require('../models/WritingExam');
 const WritingTask1 = require('../models/WritingTask1');
 const WritingTask2 = require('../models/WritingTask2');
+// Dạng đề labels for the Writing pickers (WritingTask1.chartType /
+// WritingTask2.essayType — same names as admin WritingTests.jsx).
+const T1_CHART_LABEL = { static: 'Static', dynamic: 'Dynamic', mixed: 'Mixed charts', process: 'Process', map: 'Map' };
+const T2_TYPE_LABEL = {
+  type01: 'Adv & Disadv', type02: 'Discuss Both Views', type03: 'Cause & Solution', type04: 'Effect & Solution',
+  type05: 'Cause & Effect', type06: 'Agree / Disagree', type07: 'Positive / Negative',
+};
 const Task2Topic = require('../models/Task2Topic');
 const SpeakingQuestion = require('../models/SpeakingQuestion');
 const EssentialGrammarLesson = require('../models/EssentialGrammarLesson');
@@ -456,7 +463,28 @@ const REGISTRY = {
   writing_exam: {
     label: 'Full đề Writing (Task 1+2)',
     catalog: { model: WritingExam, filter: { isActive: true }, sort: { createdAt: -1 },
-      shape: (d) => ({ _id: d._id, label: d.name, meta: '' }) },
+      shape: (d) => ({ _id: d._id, label: d.name, meta: '', isCustom: !!d.isCustom }),
+      // "Đề tự ghép": say which Task 1 + Task 2 it pairs (dạng đề of each).
+      decorate: async (rows, docs) => {
+        const custom = docs.filter((d) => d.task1Id || d.task2Id);
+        if (!custom.length) return;
+        const [t1s, t2s] = await Promise.all([
+          WritingTask1.find({ _id: { $in: custom.map((d) => d.task1Id).filter(Boolean) } }).select('chartType prompt').lean(),
+          WritingTask2.find({ _id: { $in: custom.map((d) => d.task2Id).filter(Boolean) } }).select('essayType prompt').lean(),
+        ]);
+        const t1 = new Map(t1s.map((t) => [String(t._id), t]));
+        const t2 = new Map(t2s.map((t) => [String(t._id), t]));
+        docs.forEach((d, i) => {
+          if (!d.task1Id && !d.task2Id) return;
+          const a = t1.get(String(d.task1Id));
+          const b = t2.get(String(d.task2Id));
+          rows[i].meta = ['🧩 Tự ghép',
+            `T1: ${(a && T1_CHART_LABEL[a.chartType]) || (a ? 'Task 1' : 'đã xoá')}`,
+            `T2: ${(b && T2_TYPE_LABEL[b.essayType]) || (b ? 'Task 2' : 'đã xoá')}`].join(' · ');
+          rows[i].task1Prompt = a ? String(a.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 160) : '';
+          rows[i].task2Prompt = b ? String(b.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 160) : '';
+        });
+      } },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'examId', filter: COUNTABLE_ATTEMPT },
     // No score gate (AI-graded band, not a %) — but a submission only counts
     // once BOTH tasks meet their real minimum word count, not just "clicked
@@ -474,7 +502,9 @@ const REGISTRY = {
   task1_practice: {
     label: 'Đề Task 1 (Đề lẻ)',
     catalog: { model: WritingTask1, filter: { isActive: true }, sort: { createdAt: -1 },
-      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
+      // chartType / imageUrl: the "Tự ghép đề Writing" picker filters + previews by them.
+      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90),
+        meta: T1_CHART_LABEL[d.chartType] || '', chartType: d.chartType || '', imageUrl: d.imageUrl || '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task1Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
     wordCountGate: { fields: 'wordCount1', ok: (d) => (d.wordCount1 || 0) >= MIN_WORDS.task1 },
     equivalence: { model: WritingTask1 },
@@ -482,7 +512,9 @@ const REGISTRY = {
   task2_practice: {
     label: 'Đề Task 2 (Đề lẻ)',
     catalog: { model: WritingTask2, filter: { isActive: true }, sort: { createdAt: -1 },
-      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90), meta: '' }) },
+      // t2Type (type01–07, not Task2Topic's essayType keys): "Tự ghép đề" filter.
+      shape: (d) => ({ _id: d._id, label: String(d.prompt || '').replace(/\s+/g, ' ').trim().slice(0, 90),
+        meta: T2_TYPE_LABEL[d.essayType] || '', t2Type: d.essayType || '' }) },
     attempt: { model: WritingAttempt, userField: 'userId', idField: 'task2Id', filter: { submissionType: 'practice', ...COUNTABLE_ATTEMPT } },
     wordCountGate: { fields: 'wordCount2', ok: (d) => (d.wordCount2 || 0) >= MIN_WORDS.task2 },
     equivalence: { model: WritingTask2 },
@@ -996,7 +1028,8 @@ function partsSuffix(parts) {
 
 // Reading / Listening items the teacher can pin to one mode (Assignment
 // resources[].examMode): only an attempt made in that mode counts.
-const MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice']);
+// writing_exam too: a full Task 1+2 exam (incl. a teacher's "đề tự ghép").
+const MODE_TYPES = new Set(['reading_test', 'listening_test', 'reading_practice', 'listening_practice', 'writing_exam']);
 const EXAM_MODES = ['practice', 'simulation'];
 
 // The required mode of an item — null = any mode counts (student picks).
@@ -1371,13 +1404,20 @@ async function checkCompleted(studentId, internalItems, since = null) {
       // real bar — not just any submission. rows is newest-first, so absent
       // a passing one, the most recent still-failing attempt is kept
       // (completed: false) purely for completedAt/attemptId display.
+      // Mode-assignable types (writing_exam) key each row by the assigned
+      // scopes it satisfies — a practice run never ticks a Thi thật item.
+      const scopedKeys = (target, r) => (!scopes ? [resourceKey(type, target)]
+        : [...(scopes.get(String(target)) || new Map())]
+          .filter(([, s]) => attemptCoversParts(r.parts, s.parts) && attemptMatchesMode(r.mode, s.mode))
+          .map(([suffix]) => resourceKey(type, target) + suffix));
       const bestByKey = new Map();
       for (const r of rows) {
         const passes = boolGate.ok(r);
         for (const target of idMap.get(String(r[A.idField])) || []) {
-          const k = resourceKey(type, target);
-          const prev = bestByKey.get(k);
-          if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
+          for (const k of scopedKeys(target, r)) {
+            const prev = bestByKey.get(k);
+            if (!prev || (passes && !prev.passes)) bestByKey.set(k, { passes, r });
+          }
         }
       }
       for (const [k, { passes, r }] of bestByKey) {

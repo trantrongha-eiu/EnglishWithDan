@@ -35,6 +35,32 @@ exports.start = catchAsync(async (req, res) => {
   }
 });
 
+// GET /api/mock-test/class
+// The class mock tests (Assignment mock_test items with a fixed bundle) this
+// student still has to sit — shown on the Full Mock Test page as "Bài thi
+// Full Mock Test của lớp" above the self-practice random mock. Done ones drop
+// off unless their run is still open (Speaking left). Read-only.
+exports.classMocks = catchAsync(async (req, res) => {
+  const { assignments } = await assignmentService.getStudentAssignments(req.user._id, new Date(), { readOnly: true });
+  const mocks = [];
+  for (const a of assignments || []) {
+    if (a.archived) continue;
+    for (const r of a.resources || []) {
+      if (!r.fixedMock || r.removed) continue;
+      const m = r.mock || null;
+      const open = !!(m && m.progress && m.progress !== 'done' && ['in-progress', 'awaiting-grading'].includes(m.status));
+      if (r.completed && !open) continue;
+      mocks.push({
+        assignmentId: a._id, itemId: r.itemId, title: a.title, instruction: a.instruction || '',
+        className: a.className, teacherName: a.teacherName || '', deadline: a.deadline || null,
+        status: a.status, locked: !!a.locked, requiredBand: r.requiredBand || null,
+        parts: r.mockParts || null, mock: m, open,
+      });
+    }
+  }
+  res.json({ success: true, mocks });
+});
+
 // GET /api/mock-test/current
 exports.current = catchAsync(async (req, res) => {
   const attempt = await mockTestService.getCurrent(req.user._id);

@@ -79,6 +79,7 @@ function hwExamLabel(r) {
   const min = t ? Math.max(1, Math.round(t / 60)) : 0;
   const time = min ? ` · ⏱ ${r.simTime.approx ? '≈ ' : ''}${min} phút` : '';
   const why = !min ? '' : r.resourceType.startsWith('reading') ? ' — 20 phút cho mỗi passage, hết giờ tự nộp'
+    : r.resourceType === 'writing_exam' ? ' — 60 phút cho cả Task 1 + Task 2, hết giờ tự nộp'
     : ' — nghe audio 1 lần (không dừng, không tua) + 30 giây kiểm tra, hết giờ tự nộp';
   return `<span class="hw-res-parts hw-res-mode hw-res-mode--${r.examMode}" title="Giáo viên giao ở chế độ ${name} — chỉ bài làm ở chế độ này được tính${why}">${label}${time}</span>`;
 }
@@ -106,7 +107,7 @@ function hwResourceHref(r) {
     // fallback (most-recently-created active exam) decides instead, which is
     // not necessarily the one the teacher picked. Same class of bug as the
     // grammar case above.
-    case 'writing_exam':       return `writing.html?examId=${id}`;
+    case 'writing_exam':       return `writing.html?examId=${id}${hwExamQs(r)}`;
     // WT1-stack lessons are looked up by `code` (re-seeding-safe), not the
     // Mongo _id in `id` above — resourceCode is the snapshot taken at assign
     // time (see backend/services/resourceCompletionService.js's deepLinkKeyFor).
@@ -243,7 +244,9 @@ function hwResourceRow(assignmentId, r, locked) {
     const mpText = mp ? [mp.listening ? `Listening: Section ${mp.listening.join(', ')}` : '', mp.reading ? `Reading: Passage ${mp.reading.join(', ')}` : ''].filter(Boolean).join(' · ') : '';
     name = escHtml(r.label || 'Thi thử full 4 kỹ năng')
       + (mpText ? `<span class="hw-res-parts" title="Giáo viên chỉ giao các phần này">${escHtml(mpText)}</span>` : '')
-      + hwMockProgress(r);
+      + hwMockProgress(r)
+      // class mock "Điểm yêu cầu" (admin) — below it = chép phạt
+      + (r.requiredBand ? `<span class="hw-res-desc hw-res-desc--warn">🎯 Điểm yêu cầu: Overall ${Number(r.requiredBand).toFixed(1)} — dưới điểm này phải chép phạt. Làm bài nghiêm túc, không gian lận.</span>` : '');
     action = hwMockAction(assignmentId, r);
   } else if (r.kind === 'internal') {
     name = escHtml(r.label || r.resourceType) + hwPartsLabel(r) + hwExamLabel(r);

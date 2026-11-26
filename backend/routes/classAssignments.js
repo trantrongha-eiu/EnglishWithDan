@@ -34,6 +34,7 @@ const gate = [auth, staffOnly];
 // Resource picker catalog — not class-scoped
 router.get('/resources/catalog', ...gate, c.getResourceCatalog);
 router.post('/resources/gapfill-companions', ...gate, c.getGapFillCompanions);
+router.post('/resources/writing-exams/custom', ...gate, c.createCustomWritingExam);
 router.get('/resources/vocab-lists', ...gate, c.listVocabLists);
 
 // Class-scoped assignment CRUD

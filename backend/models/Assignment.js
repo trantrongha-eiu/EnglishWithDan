@@ -105,6 +105,12 @@ const assignmentResourceSchema = new mongoose.Schema({
     default: undefined,
   },
 
+  // mock_test only — "Điểm yêu cầu" (overall band, 0–9 in .5 steps) the
+  // teacher sets for the class mock: a run below it means "chép phạt". Shown
+  // to students before they start + flagged in the teacher's progress table.
+  // Display/flag only — it never changes whether the item counts as done.
+  requiredBand: { type: Number, min: 0, max: 9, default: undefined },
+
   // external
   url:         { type: String, default: '' },
   title:       { type: String, default: '' },

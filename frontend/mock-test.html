@@ -25,6 +25,27 @@
   <link rel="stylesheet" href="/css/entrance-test.css?v=cc30835470">
   <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
   <link rel="stylesheet" href="/css/pf-pages.css?v=a3514349ff"/>
+  <style>
+    /* Class mock card ("Bài thi Full Mock Test của lớp") */
+    .cm-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
+    .cm-card { background: var(--surface, #fff); border: 2px solid #7c3aed; border-radius: 16px; padding: 18px 20px; box-shadow: 0 6px 20px rgba(124, 58, 237, .12); }
+    .cm-kicker { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; letter-spacing: .02em; color: #7c3aed; background: rgba(124, 58, 237, .1); padding: 4px 10px; border-radius: 999px; }
+    .cm-title { font-size: 19px; font-weight: 800; margin: 10px 0 4px; color: var(--text, #111827); line-height: 1.3; }
+    .cm-meta { font-size: 13px; color: var(--text2, #4b5563); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+    .cm-meta b { color: var(--text, #111827); }
+    .cm-teacher-note { margin-top: 10px; font-size: 13.5px; color: var(--text, #111827); white-space: pre-line; background: var(--bg, #f9fafb); border-radius: 10px; padding: 10px 12px; }
+    .cm-rules { margin-top: 12px; border: 1.5px solid #f59e0b; background: rgba(245, 158, 11, .08); border-radius: 12px; padding: 12px 14px; }
+    .cm-rules-title { font-weight: 800; font-size: 14px; color: #b45309; margin-bottom: 6px; }
+    .cm-rules ul { margin: 0; padding-left: 20px; font-size: 13.5px; line-height: 1.75; color: var(--text, #111827); }
+    .cm-rules .cm-penalty { color: #dc2626; font-weight: 700; }
+    .cm-commit { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; color: var(--text, #111827); }
+    .cm-commit input { margin-top: 3px; width: 17px; height: 17px; flex-shrink: 0; }
+    .cm-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+    .cm-status { font-size: 13px; color: var(--text2, #4b5563); }
+    .cm-lock { margin-top: 12px; font-size: 13.5px; color: #b91c1c; font-weight: 600; }
+    .cm-practice-label { font-size: 13px; font-weight: 800; color: var(--text2, #4b5563); margin: 4px 2px 8px; }
+    @media (max-width: 560px) { .cm-card { padding: 14px; } .cm-title { font-size: 17px; } }
+  </style>
 </head>
 <body>
 <script src="/js/shared/auth-service.js?v=2d37935963"></script>
@@ -44,6 +65,10 @@
       làm trong 2 lượt (Listening+Reading+Writing liền mạch, sau đó Speaking) và có giám sát trong suốt quá trình làm bài.</p>
     </div>
   </div>
+  <!-- "Bài thi Full Mock Test của lớp" — the class mock(s) the teacher set up
+       in admin Lớp học (GET /api/mock-test/class), filled by
+       dashboard-mocktest.js's renderClassMocks(). Hidden when there is none. -->
+  <div id="class-mock-list" class="cm-list" style="display:none"></div>
   <div class="et-card">
     <!-- Same markup dashboard.html used to embed — js/dashboard-mocktest.js's
          renderMockTestCard() drives it purely by these #mocktest-* ids, so
@@ -77,7 +102,7 @@
 <script src="/js/shared/proctor-capture.js?v=c6d9bf6e8c"></script>
 <script src="/js/shared/proctor-engine.js?v=96b0aab83d"></script>
 <script src="/js/shared/mock-test.js?v=8370621c08"></script>
-<script src="/js/dashboard-mocktest.js?v=38e5e2cf23"></script>
+<script src="/js/dashboard-mocktest.js?v=cf63a84ca3"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     if (!window.AuthService || !window.AuthService.isLoggedIn()) {
@@ -85,6 +110,7 @@
       location.href = (window.AuthService && window.AuthService.buildLoginUrl) ? window.AuthService.buildLoginUrl(next) : 'login.html?next=' + encodeURIComponent(next);
       return;
     }
+    if (typeof window.renderClassMocks === 'function') window.renderClassMocks();
     if (typeof window.renderMockTestCard === 'function') window.renderMockTestCard();
   });
 </script>

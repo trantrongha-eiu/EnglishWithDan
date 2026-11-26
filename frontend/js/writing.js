@@ -110,6 +110,11 @@ const state = {
 // off to Speaking instead of ending here.
 let _mockMode = false;
 let _mockWritingExamId = null;
+// Homework link ?examId=…&exam=<mode>[&lock=1]: the mode popup opens on that
+// mode, and with lock=1 (teacher required it) offers no other — only an
+// attempt in that mode counts for the homework (resourceCompletionService).
+let _urlExamPreferred = null;
+let _urlExamLocked = false;
 
 // ──────────────────────────────────────────────────────
 // Screen management
@@ -217,6 +222,10 @@ function _blockPasteInto(ta) {
   if (urlExamId) _mockWritingExamId = urlExamId;
   // ?exam=practice|simulation — mode-specific start link (RouteParams).
   const urlExamMode = window.RouteParams ? window.RouteParams.examMode() : null;
+  if (urlExamId) {
+    _urlExamPreferred = urlExamMode;
+    _urlExamLocked = !!(window.RouteParams && window.RouteParams.examLocked && window.RouteParams.examLocked());
+  }
 
   // ?rewrite=<attemptId> — deep link from the cross-page rewrite reminder.
   // Checked FIRST and independently of the other routes (it used to sit
@@ -279,6 +288,16 @@ function _blockPasteInto(ta) {
         location.href = 'dashboard.html';
       }
     })();
+    return;
+  }
+
+  // Homework link straight onto one exam (e.g. a teacher's "đề tự ghép"):
+  // open the mode popup now, like ?view=exam — unless this same exam has an
+  // unfinished run on this device, which the restore banner offers back.
+  if (urlExamId) {
+    checkRestoreBanner();
+    const saved = loadFromStorage();
+    if (!saved || !saved.exam || String(saved.exam._id) !== String(urlExamId)) startExam(null, urlExamMode);
     return;
   }
 
@@ -394,7 +413,8 @@ function _setWritingExamUrl(mode) {
   if (_mockMode) return;
   const u = new URL(location.href);
   const examId = u.searchParams.get('examId');
-  const qs = `?view=exam&exam=${mode}${examId ? '&examId=' + encodeURIComponent(examId) : ''}`;
+  // lock=1 survives a reload so the required mode stays required.
+  const qs = `?view=exam&exam=${mode}${examId ? '&examId=' + encodeURIComponent(examId) : ''}${examId && _urlExamLocked ? '&lock=1' : ''}`;
   history.replaceState({ screen: 'exam' }, '', `writing.html${qs}`);
 }
 function _clearWritingExamUrl() {
@@ -416,7 +436,7 @@ async function startExam(mode, preferred = null) {
   // standalone "Bắt đầu làm bài" click always asks first.
   if (!_mockMode && !mode && window.ExamModeSelect) {
     window.ExamModeSelect.open({
-      skill: 'writing', preferred,
+      skill: 'writing', preferred: preferred || _urlExamPreferred, locked: _urlExamLocked,
       onPractice: () => startExam('practice'),
       onSimulation: () => startExam('simulation'),
     });

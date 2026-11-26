@@ -228,6 +228,11 @@ function ResourceRow({ a, r, onChanged }) {
         {r.label || 'Thi thử full 4 kỹ năng'}
         {mpText && <span className="hw-res-parts" title="Giáo viên chỉ giao các phần này">{mpText}</span>}
         <MockProgress r={r} />
+        {r.requiredBand ? (
+          <span className="hw-res-desc hw-res-desc--warn">
+            🎯 Điểm yêu cầu: Overall {Number(r.requiredBand).toFixed(1)} — dưới điểm này phải chép phạt. Làm bài nghiêm túc, không gian lận.
+          </span>
+        ) : null}
       </>
     );
     action = <MockAction assignmentId={a._id} r={r} />;

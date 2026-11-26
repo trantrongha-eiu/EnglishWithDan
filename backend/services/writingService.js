@@ -65,14 +65,21 @@ function buildTask2Snapshot(t2) {
 async function startExam(examId, userId, mode = 'practice') {
   if (mode === 'simulation') await examSimulationService.assertNotOnCooldown(userId);
 
-  const [task1, task2] = await Promise.all([randomDoc(WritingTask1), randomDoc(WritingTask2)]);
+  let exam = examId ? await WritingExam.findOne({ _id: examId, isActive: true }).lean() : null;
+  // The no-examId default never lands on a teacher's custom pair ("đề tự ghép").
+  const NOT_CUSTOM = { isCustom: { $ne: true } };
+  if (!exam) exam = await WritingExam.findOne({ isActive: true, ...NOT_CUSTOM }).sort({ createdAt: -1 }).lean();
+  if (!exam) exam = await WritingExam.findOne(NOT_CUSTOM).sort({ createdAt: -1 }).lean();
+  if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
+
+  // A custom pair opens exactly its own Task 1 + Task 2 (even if one was
+  // later hidden from the practice list); a prompt deleted since → random.
+  const [task1, task2] = await Promise.all([
+    (exam.task1Id && await WritingTask1.findById(exam.task1Id).lean()) || randomDoc(WritingTask1),
+    (exam.task2Id && await WritingTask2.findById(exam.task2Id).lean()) || randomDoc(WritingTask2),
+  ]);
   if (!task1) return { status: 'no_task1' };
   if (!task2) return { status: 'no_task2' };
-
-  let exam = examId ? await WritingExam.findOne({ _id: examId, isActive: true }).lean() : null;
-  if (!exam) exam = await WritingExam.findOne({ isActive: true }).sort({ createdAt: -1 }).lean();
-  if (!exam) exam = await WritingExam.findOne().sort({ createdAt: -1 }).lean();
-  if (!exam) exam = await WritingExam.create({ name: 'Writing Practice', duration: 60, isActive: true });
 
   let attemptId = null;
   if (mode === 'simulation') {

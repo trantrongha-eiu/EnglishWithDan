@@ -60,6 +60,7 @@ export function examChip(r) {
   const min = t ? Math.max(1, Math.round(t / 60)) : 0;
   const time = min ? ` · ⏱ ${r.simTime.approx ? '≈ ' : ''}${min} phút` : '';
   const why = !min ? '' : String(r.resourceType).startsWith('reading') ? ' — 20 phút cho mỗi passage, hết giờ tự nộp'
+    : r.resourceType === 'writing_exam' ? ' — 60 phút cho cả Task 1 + Task 2, hết giờ tự nộp'
     : ' — nghe audio 1 lần (không dừng, không tua) + 30 giây kiểm tra, hết giờ tự nộp';
   return {
     label: label + time,
@@ -98,7 +99,7 @@ function resourcePath(r) {
     case 'listening_gapfill': return `listening.html?gapfillId=${id}`;
     case 'dictation': return `app/dictation?sectionId=${id}`;
     case 'dictation_drill': return r.resourceCode ? `app/dictation?drill=${enc(r.resourceCode)}` : 'app/dictation';
-    case 'writing_exam': return `writing.html?examId=${id}`;
+    case 'writing_exam': return `writing.html?examId=${id}${examQs(r)}`;
     case 'task1_lesson': return code ? `writing-task1.html?lesson=${enc(code)}` : null;
     case 'task2_course_lesson': return code ? `writing-task2-course.html?lesson=${enc(code)}` : null;
     case 'speaking_course_lesson': return code ? `speaking-course.html?lesson=${enc(code)}` : null;

@@ -301,6 +301,7 @@ function archivedAndSettled(a, prog) {
 // title + partNumber rule), so those lengths are summed; a part without one
 // falls back to an even share of the whole test (approx: true).
 const READING_SIM_SEC_PER_PASSAGE = 20 * 60;
+const WRITING_EXAM_SEC = 60 * 60; // full Task 1 + Task 2 exam (WritingExam.duration)
 const LISTENING_SIM_REVIEW_SEC = 30;
 const READING_TEST_PASSAGES = 3;
 const LISTENING_TEST_SECTIONS = 4;
@@ -350,7 +351,7 @@ async function simulationTimes(resources) {
     } else if (r.resourceType === 'listening_practice') {
       const x = secMap.get(String(r.resourceId));
       if (x && x.audioDuration) seconds = x.audioDuration + LISTENING_SIM_REVIEW_SEC;
-    }
+    } else if (r.resourceType === 'writing_exam') seconds = WRITING_EXAM_SEC;
     if (seconds) out.set(String(r._id), { seconds, approx });
   }
   return out;
@@ -460,6 +461,8 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
         wordCount: r.kind === 'vocab_list' ? (r.words || []).length : (r.wordCount || null), bookSlot: r.bookSlot || null, vocabGoal,
         // fixed class bundle — the test names stay teacher-side only
         fixedMock: rcs.isFixedMock(r), mock,
+        // class mock "Điểm yêu cầu" (overall band) — below it = chép phạt
+        requiredBand: rcs.isFixedMock(r) && r.requiredBand ? r.requiredBand : null,
         // assigned passages/sections of a full test ([1, 3]) — null = whole test
         parts: rcs.assignedParts(r),
         // 'practice' | 'simulation' the teacher requires — null = student picks

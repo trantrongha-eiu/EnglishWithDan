@@ -139,7 +139,21 @@ async function usedMockTestsForClass(classId, skipAssignmentId, input = []) {
   return out;
 }
 
+// "Điểm yêu cầu" of a class mock: a band 0–9 in .5 steps, else none.
+function cleanRequiredBand(v) {
+  if (v === '' || v == null) return null;
+  const n = Number(v);
+  return Number.isFinite(n) && n > 0 && n <= 9 && Number.isInteger(n * 2) ? n : null;
+}
+
 async function buildMockResource(r, existing, builtSoFar, ctx = {}, input = []) {
+  const res = await buildMockResourceCore(r, existing, builtSoFar, ctx, input);
+  const band = cleanRequiredBand(r.requiredBand);
+  if (res.built && band != null && rcs.isFixedMock(res.built)) res.built.requiredBand = band;
+  return res;
+}
+
+async function buildMockResourceCore(r, existing, builtSoFar, ctx = {}, input = []) {
   if (builtSoFar.some((x) => x.resourceType === 'mock_test')) {
     return { error: 'Mỗi bài tập chỉ giao 1 bài thi thử full' };
   }
@@ -366,6 +380,42 @@ async function attachCompanions(out, fresh, existingIdByKey) {
 }
 
 // ════════════════════ TEACHER ════════════════════
+
+// POST /api/classes/resources/writing-exams/custom  { task1Id, task2Id, name? }
+// "Tự ghép đề Writing": the teacher pairs ONE Task 1 + ONE Task 2 from the
+// practice banks into a WritingExam (isCustom) every student then gets
+// verbatim (writingService.startExam). Returns a catalog-shaped row the editor
+// adds as a writing_exam item (or a mock bundle's Writing). The same pair
+// under the same name is reused, not duplicated — not class-scoped, so any
+// class can be given it.
+exports.createCustomWritingExam = async (req, res) => {
+  try {
+    const WritingExam = require('../models/WritingExam');
+    const WritingTask1 = require('../models/WritingTask1');
+    const WritingTask2 = require('../models/WritingTask2');
+    const { task1Id, task2Id } = req.body || {};
+    if (!mongoose.isValidObjectId(task1Id) || !mongoose.isValidObjectId(task2Id)) {
+      return res.status(400).json({ success: false, message: 'Chọn 1 đề Task 1 và 1 đề Task 2' });
+    }
+    const [t1, t2] = await Promise.all([
+      WritingTask1.findOne({ _id: task1Id, isActive: true }).select('_id').lean(),
+      WritingTask2.findOne({ _id: task2Id, isActive: true }).select('_id').lean(),
+    ]);
+    if (!t1) return res.status(400).json({ success: false, message: 'Đề Task 1 không tồn tại hoặc đã bị ẩn' });
+    if (!t2) return res.status(400).json({ success: false, message: 'Đề Task 2 không tồn tại hoặc đã bị ẩn' });
+    const name = String((req.body && req.body.name) || '').replace(/\s+/g, ' ').trim().slice(0, 120)
+      || `Đề Writing tự ghép ${new Date().toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit' })}`;
+    let exam = await WritingExam.findOne({ isCustom: true, isActive: true, task1Id, task2Id, name }).lean();
+    if (!exam) {
+      exam = (await WritingExam.create({ name, task1Id, task2Id, isCustom: true, createdBy: req.user._id, duration: 60, isActive: true })).toObject();
+    }
+    const [row] = await rcs.listCatalog('writing_exam', '', 1, { _id: exam._id });
+    res.status(201).json({ success: true, exam: row || { _id: exam._id, label: exam.name, meta: '🧩 Tự ghép', isCustom: true } });
+  } catch (err) {
+    logger.error('[assignment] createCustomWritingExam failed', { error: err.message });
+    res.status(500).json({ success: false, message: 'Lỗi server' });
+  }
+};
 
 // POST /api/classes/resources/gapfill-companions
 // body: { items: [{ resourceType, resourceId, parts? }] }

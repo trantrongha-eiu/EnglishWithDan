@@ -17,7 +17,7 @@ export function studentPathFor(r) {
     case 'listening_gapfill':      return `/listening.html?gapfillId=${id}`;
     case 'dictation':              return `/dictation.html?sectionId=${id}`;
     case 'dictation_drill':        return code ? `/dictation.html?drill=${code}` : '/dictation.html';
-    case 'writing_exam':           return `/writing.html?examId=${id}`;
+    case 'writing_exam':           return `/writing.html?examId=${id}${examQs(r.examMode)}`;
     case 'task1_practice':         return `/writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice':         return `/writing.html?taskType=2&taskId=${id}`;
     case 'task1_lesson':           return code ? `/writing-task1.html?lesson=${code}` : '/writing-task1.html';

@@ -152,7 +152,7 @@
             ? 'Bắt đầu ' + nextLabel
             : 'Tiếp tục — ' + nextLabel;
           setCard({
-            title: 'Đang thi thử — Bước ' + idx + '/4',
+            title: (a.assignmentId ? 'Đang làm bài thi của lớp — Bước ' : 'Đang thi thử — Bước ') + idx + '/4',
             meta: sittingNote + ' · tiếp theo: ' + nextLabel,
             btnLabel: btnLabel,
             onClick: function () { window.location.href = pageForSkill(a.progress, a._id); },
@@ -182,5 +182,122 @@
       });
   }
 
+  // ── "Bài thi Full Mock Test của lớp" ────────────────────────────────
+  // The class mock(s) the teacher set up in admin Lớp học (an Assignment
+  // mock_test item: one fixed bundle for the whole class, picked Listening
+  // sections / Reading passages, a "tự ghép" Writing). GET /mock-test/class
+  // lists the ones still to sit; starting = POST /mock-test/start with
+  // { assignmentId, itemId } (same as the homework card's hwStartAssignedMock).
+  function esc(s) {
+    return window.escHtml ? window.escHtml(String(s == null ? '' : s))
+      : String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; });
+  }
+  function fmtDeadline(d) {
+    try {
+      return new Date(d).toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour: '2-digit', minute: '2-digit', weekday: 'long', day: '2-digit', month: '2-digit' });
+    } catch (_) { return ''; }
+  }
+  function partsText(p) {
+    var out = [];
+    out.push('Listening: ' + (p && p.listening && p.listening.length ? 'Section ' + p.listening.join(', ') : 'cả đề'));
+    out.push('Reading: ' + (p && p.reading && p.reading.length ? 'Passage ' + p.reading.join(', ') : 'cả đề'));
+    out.push('Writing: Task 1 + Task 2');
+    return out.join(' · ');
+  }
+
+  function classMockCard(m, i) {
+    var open = !!m.open;
+    var next = open && m.mock ? (SKILL_LABEL[m.mock.progress] || m.mock.progress) : '';
+    var btnLabel = open ? (m.mock.progress === 'speaking' ? 'Bắt đầu Speaking' : 'Tiếp tục — ' + next) : 'Bắt đầu làm bài thi';
+    var band = m.requiredBand ? (Number(m.requiredBand) % 1 ? String(m.requiredBand) : Number(m.requiredBand).toFixed(1)) : '';
+    var disq = m.mock && m.mock.status === 'disqualified';
+    return '<div class="cm-card" data-i="' + i + '">'
+      + '<span class="cm-kicker"><i class="fas fa-school"></i> Bài thi Full Mock Test của lớp ' + esc(m.className) + '</span>'
+      + '<div class="cm-title">' + esc(m.title) + '</div>'
+      + '<div class="cm-meta">'
+      + (m.teacherName ? '<span><i class="fas fa-chalkboard-user"></i> GV <b>' + esc(m.teacherName) + '</b></span>' : '')
+      + (m.deadline ? '<span><i class="far fa-clock"></i> Hạn: <b>' + esc(fmtDeadline(m.deadline)) + '</b></span>' : '')
+      + (band ? '<span><i class="fas fa-bullseye"></i> Điểm yêu cầu: <b>Overall ' + esc(band) + '</b></span>' : '')
+      + '</div>'
+      + '<div class="cm-meta" style="margin-top:6px">' + esc(partsText(m.parts)) + ' · Speaking làm sau</div>'
+      + (m.instruction ? '<div class="cm-teacher-note">' + esc(m.instruction) + '</div>' : '')
+      + '<div class="cm-rules"><div class="cm-rules-title"><i class="fas fa-triangle-exclamation"></i> Lưu ý trước khi thi</div><ul>'
+      + '<li>Làm bài <b>nghiêm túc, tự lực</b> — <b>không gian lận</b>, không dùng tài liệu, từ điển, AI hay người khác hỗ trợ. Hệ thống giám sát và gửi ảnh màn hình mỗi lần vi phạm cho giáo viên.</li>'
+      + '<li><b>Ôn bài đầy đủ</b> trước khi thi (template Writing trong sách / trên web, từ vựng, cách làm từng dạng bài).</li>'
+      + '<li>Làm đúng thời gian của từng kỹ năng; Listening → Reading → Writing làm liền mạch.</li>'
+      + '<li class="cm-penalty">Bài thi dưới điểm yêu cầu' + (band ? ' (Overall ' + esc(band) + ')' : '') + ' sẽ phải <u>chép phạt</u>.</li>'
+      + '</ul></div>'
+      + (disq ? '<div class="cm-lock" style="color:#b45309">Lượt trước bị huỷ do rời màn hình thi — hãy làm lại nghiêm túc.</div>' : '')
+      + (m.locked
+        ? '<div class="cm-lock"><i class="fas fa-lock"></i> Bài thi đang bị khoá vì bạn còn bài tập cũ chưa xong — vào <a href="/app/classroom">Lớp học</a> để làm bài cũ trước.</div>'
+        : (open ? '' : '<label class="cm-commit"><input type="checkbox" class="cm-commit-box"> Tôi đã ôn bài đầy đủ và cam kết làm bài nghiêm túc, không gian lận.</label>')
+          + '<div class="cm-actions"><button type="button" class="btn btn-primary cm-start"' + (open ? '' : ' disabled') + '>' + esc(btnLabel) + '</button>'
+          + (open ? '<span class="cm-status">Đang làm — bước tiếp theo: <b>' + esc(next) + '</b></span>' : '')
+          + '</div>')
+      + '</div>';
+  }
+
+  function startClassMock(m, btn) {
+    if (window.AuthService && !window.AuthService.hasPremiumAccess()) {
+      if (window.openUpgradeModal) window.openUpgradeModal();
+      return;
+    }
+    var old = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Đang mở đề…';
+    var post = function () {
+      return fetch(MT_API + '/mock-test/start', {
+        method: 'POST', headers: mtHeaders(),
+        body: JSON.stringify({ assignmentId: m.assignmentId, itemId: m.itemId })
+      });
+    };
+    post()
+      .then(function (res) {
+        if (res.status !== 409) return res;
+        return res.json().catch(function () { return {}; }).then(function (body) {
+          if (body.code !== 'MOCK_OPEN_OTHER') throw new Error(body.message || 'Không mở được bài thi');
+          if (!window.confirm('Bạn đang có một bài thi thử khác làm dở. Bỏ bài đó để làm bài thi của lớp?')) throw null;
+          return fetch(MT_API + '/mock-test/current', { method: 'DELETE', headers: mtHeaders() })
+            .then(function (r) { return window.ApiClient.handleResponse(r); })
+            .then(post);
+        });
+      })
+      .then(function (r) { return window.ApiClient.handleResponse(r); })
+      .then(function (data) {
+        var a = data.attempt;
+        if (!a) throw new Error('Không mở được bài thi');
+        var skill = (a.progress && a.progress !== 'done') ? a.progress : 'listening';
+        window.location.href = pageForSkill(skill, a._id);
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.textContent = old;
+        if (!e) return; // cancelled
+        var msg = (e.body && e.body.message) || e.message || 'Không mở được bài thi';
+        if (window.toast) window.toast(msg, 'error'); else alert(msg);
+      });
+  }
+
+  function renderClassMocks() {
+    var box = document.getElementById('class-mock-list');
+    if (!box) return;
+    fetch(MT_API + '/mock-test/class', { headers: mtHeaders() })
+      .then(function (r) { return window.ApiClient.handleResponse(r); })
+      .then(function (data) {
+        var list = (data && data.mocks) || [];
+        if (!list.length) { box.style.display = 'none'; box.innerHTML = ''; return; }
+        box.innerHTML = list.map(classMockCard).join('')
+          + '<div class="cm-practice-label">Hoặc tự luyện thêm với đề ngẫu nhiên:</div>';
+        box.style.display = '';
+        Array.prototype.forEach.call(box.querySelectorAll('.cm-card'), function (card) {
+          var m = list[Number(card.getAttribute('data-i'))];
+          var btn = card.querySelector('.cm-start');
+          var box2 = card.querySelector('.cm-commit-box');
+          if (box2 && btn) box2.onchange = function () { btn.disabled = !box2.checked; };
+          if (btn) btn.onclick = function () { startClassMock(m, btn); };
+        });
+      })
+      .catch(function () { box.style.display = 'none'; });
+  }
+
   window.renderMockTestCard = renderMockTestCard;
+  window.renderClassMocks = renderClassMocks;
 })();
