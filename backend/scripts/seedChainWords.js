@@ -3,14 +3,23 @@
 // ⚔️ Nối chữ — build the list of words Lulu 🤖 may play, every one checked
 // against an online dictionary, and save it to the database.
 //
-//   node scripts/seedChainWords.js            build/verify (resumable) + write JSON
-//   node scripts/seedChainWords.js --seed     … then upsert into ChainWord (MONGO_URI)
+//   node scripts/seedChainWords.js                 build/verify (resumable) + write JSON
+//   node scripts/seedChainWords.js --site --seed   + words from the site's own content (MONGO_URI), then upsert
+//   node scripts/seedChainWords.js --seed          … upsert into ChainWord (MONGO_URI)
 //   node scripts/seedChainWords.js --seed-only
 //
-// 1. Candidates = common words: in BOTH the Google 10k web list
-//    (first20hours/google-10000-english, no swears) AND the top 20k of the
-//    OpenSubtitles list (hermitdave/FrequencyWords), AND in ENABLE, 3–10
-//    letters — rare Scrabble words (konking, yobbo…) never make it in.
+// 1. Candidates
+//    • common words: in BOTH the Google 10k web list
+//      (first20hours/google-10000-english, no swears) AND the top 20k of the
+//      OpenSubtitles list (hermitdave/FrequencyWords), AND in ENABLE, 3–10
+//      letters — rare Scrabble words (konking, yobbo…) never make it in.
+//    • --site: words of the site's IELTS content — Reading passages and
+//      Listening transcripts (a word must be in ENABLE, 4–12 letters, seen
+//      in lower case and in ≥ 3 different passages/transcripts, so names and
+//      one-off rarities stay out) plus every single word taught in Vocab
+//      Topics, Task 2 vocab, Học Paraphrase and the Listening glossaries.
+//      Saved to scripts/data/chainWords/siteCandidates.txt (re-used by later
+//      runs without --site).
 // 2. Each candidate → Wiktionary (action API, 50 words per request: the page
 //    must be in "English lemmas"/"English non-lemma forms"); words it doesn't
 //    answer → Wiktionary REST / api.dictionaryapi.dev one by one.
@@ -20,26 +29,28 @@
 //    only asks about new words.
 // 3. data/vocabBattle/chainWords.json = the verified words (runtime fallback
 //    when the collection is empty) and, with --seed, the ChainWord collection.
+//    Words players got accepted online during a game (source 'player') are
+//    left as they are.
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
+const { BLOCK, lookup, lookupWiktionary, lookupFreeDict, wiktionaryBatch } = require('../services/wordCheck');
 
 const DIR = path.join(__dirname, 'data', 'chainWords');
 const CAND = path.join(DIR, 'candidates.txt');
+const SITE_CAND = path.join(DIR, 'siteCandidates.txt');
 const CACHE = path.join(DIR, 'verified.json');
 const OUT = path.join(__dirname, '..', 'data', 'vocabBattle', 'chainWords.json');
 const ENABLE = path.join(__dirname, '..', 'data', 'vocabBattle', 'enable1.txt.gz');
 const G10K = 'https://raw.githubusercontent.com/first20hours/google-10000-english/master/google-10000-english-usa-no-swears.txt';
 const SUBS = 'https://raw.githubusercontent.com/hermitdave/FrequencyWords/master/content/2018/en/en_50k.txt';
-const API = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
-const WIKT = 'https://en.wiktionary.org/api/rest_v1/page/definition/';
-
-// Never in a kids-friendly game, even when a dictionary has them
-const BLOCK = new Set(('sex sexy sexual nude naked porn gay rape drug drugs kill killer suicide nazi '
-  + 'whore slut bitch bastard damn hell crap piss dick cock pussy fuck shit ass arse boob boobs '
-  + 'penis vagina nigger nigga fag faggot retard tit tits').split(' '));
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let enableSet = null;
+function enable() {
+  if (!enableSet) enableSet = new Set(zlib.gunzipSync(fs.readFileSync(ENABLE)).toString('utf8').split(/\r?\n/));
+  return enableSet;
+}
 
 async function getText(url) {
   const res = await fetch(url);
@@ -47,10 +58,9 @@ async function getText(url) {
   return res.text();
 }
 
-async function candidates() {
+async function commonCandidates() {
   if (fs.existsSync(CAND)) return fs.readFileSync(CAND, 'utf8').split(/\r?\n/).filter(Boolean);
-  const enable = new Set(zlib.gunzipSync(fs.readFileSync(ENABLE)).toString('utf8').split(/\r?\n/));
-  const ok = (w) => /^[a-z]{3,10}$/.test(w) && enable.has(w) && !BLOCK.has(w);
+  const ok = (w) => /^[a-z]{3,10}$/.test(w) && enable().has(w) && !BLOCK.has(w);
   const web = new Set((await getText(G10K)).split(/\r?\n/).map((s) => s.trim()).filter(ok));
   const subs = (await getText(SUBS)).split(/\r?\n/).slice(0, 20000).map((l) => l.split(' ')[0]).filter(ok);
   const list = [...new Set(subs.filter((w) => web.has(w)))].sort();
@@ -59,67 +69,43 @@ async function candidates() {
   return list;
 }
 
-const UA = { 'User-Agent': 'vocab-word-game-check/1.0 (educational English word game)' };
-const stripHtml = (s) => String(s || '').replace(/<[^>]+>/g, '').replace(/&[a-z#0-9]+;/gi, ' ').replace(/\s+/g, ' ').trim();
-// Senses that don't make a word fair game on their own
-const WEAK = /^(misspelling|obsolete|archaic|nonstandard|eye dialect|pronunciation spelling|abbreviation|initialism|acronym)\b/i;
-
-// Wiktionary REST: the word needs an English section with a real sense
-async function lookupWiktionary(w) {
-  let res;
-  try { res = await fetch(WIKT + encodeURIComponent(w), { headers: UA, signal: AbortSignal.timeout(15000) }); } catch { return null; }
-  if (res.status === 404) return { ok: false };
-  if (!res.ok) return null;
-  const data = await res.json().catch(() => null);
-  const en = Array.isArray(data?.en) ? data.en : [];
-  for (const sec of en) {
-    for (const d of sec.definitions || []) {
-      const def = stripHtml(d.definition);
-      if (def && !WEAK.test(def)) return { ok: true, pos: String(sec.partOfSpeech || '').toLowerCase(), def: def.slice(0, 200), src: 'wiktionary' };
+// Words of the site's own content (needs the DB connection)
+async function siteCandidates() {
+  const db = require('mongoose').connection.db;
+  const strip = (s) => String(s || '').replace(/<[^>]+>/g, ' ').replace(/&[a-z#0-9]+;/gi, ' ');
+  const docs = [];
+  for (const p of await db.collection('passages').find({ isActive: { $ne: false } }, { projection: { content: 1 } }).toArray()) docs.push(strip(p.content));
+  for (const s of await db.collection('listeningsections').find({ isActive: { $ne: false } }, { projection: { transcript: 1 } }).toArray()) docs.push(strip(s.transcript));
+  const seen = new Map(); // word → { docs, lower }
+  for (const text of docs) {
+    const inDoc = new Set();
+    for (const m of text.matchAll(/[A-Za-z]+/g)) {
+      const raw = m[0];
+      const w = raw.toLowerCase();
+      if (w.length < 4 || w.length > 12) continue;
+      const e = seen.get(w) || { docs: 0, lower: false };
+      if (raw === w) e.lower = true;
+      if (!inDoc.has(w)) { inDoc.add(w); e.docs += 1; }
+      seen.set(w, e);
     }
   }
-  return { ok: false };
-}
-
-// Up to 50 words → { word: [English category titles] } (missing page → []),
-// null = rate-limited / failed
-async function wiktionaryBatch(words) {
-  const url = 'https://en.wiktionary.org/w/api.php?action=query&format=json&formatversion=2&prop=categories&cllimit=max'
-    + '&clcategories=' + encodeURIComponent('Category:English lemmas|Category:English non-lemma forms')
-    + '&titles=' + encodeURIComponent(words.join('|'));
-  let res;
-  try { res = await fetch(url, { headers: UA, signal: AbortSignal.timeout(30000) }); } catch { return null; }
-  if (!res.ok) return null;
-  const data = await res.json().catch(() => null);
-  if (!data?.query?.pages || data.continue) return null;
-  const out = {};
-  for (const p of data.query.pages) out[p.title] = p.missing ? [] : (p.categories || []).map((c) => c.title);
-  return out;
-}
-
-// → { ok: true, pos, def, src } | { ok: false } | null (try again later)
-async function lookup(w) {
-  const r = await lookupWiktionary(w);
-  if (r) return r;
-  return lookupFreeDict(w); // Wiktionary down → Free Dictionary API
-}
-
-// dictionaryapi.dev (also Wiktionary data; ~450 requests / 5 min)
-async function lookupFreeDict(w) {
-  let res;
-  try { res = await fetch(API + encodeURIComponent(w), { signal: AbortSignal.timeout(15000) }); } catch { return null; }
-  if (res.status === 404) return { ok: false };
-  if (res.status === 429 || res.status >= 500) return null;
-  if (!res.ok) return null;
-  const data = await res.json().catch(() => null);
-  if (!Array.isArray(data) || !data.length) return { ok: false };
-  // The entry must be for this exact word
-  const entry = data.find((e) => String(e.word || '').toLowerCase() === w);
-  if (!entry) return { ok: false };
-  const m = (entry.meanings || []).find((x) => (x.definitions || []).length) || {};
-  const def = String(m.definitions?.[0]?.definition || '').replace(/\s+/g, ' ').trim().slice(0, 200);
-  if (!def) return { ok: false };
-  return { ok: true, pos: m.partOfSpeech || '', def, src: 'dictionaryapi.dev' };
+  const ok = (w) => /^[a-z]{4,12}$/.test(w) && enable().has(w) && !BLOCK.has(w);
+  const out = new Set([...seen].filter(([w, e]) => e.lower && e.docs >= 3 && ok(w)).map(([w]) => w));
+  const fromContent = out.size;
+  // Every single word the site teaches
+  const add = (s) => {
+    const w = String(s || '').toLowerCase().trim();
+    if (ok(w)) out.add(w);
+  };
+  for (const l of await db.collection('vocabularylessons').find({ published: true }, { projection: { 'words.word': 1 } }).toArray()) for (const w of l.words || []) add(w.word);
+  for (const t of await db.collection('task2topics').find({}, { projection: { 'vocabularyList.term': 1 } }).toArray()) for (const v of t.vocabularyList || []) add(v.term);
+  for (const u of await db.collection('vocabunits').find({}, { projection: { 'words.word': 1, 'words.paraphrase': 1 } }).toArray()) for (const w of u.words || []) { add(w.word); add(w.paraphrase); }
+  for (const s of await db.collection('listeningsections').find({}, { projection: { gapFillGlossary: 1 } }).toArray()) for (const g of s.gapFillGlossary || []) if (!g.skip) add(g.word);
+  const list = [...out].sort();
+  fs.mkdirSync(DIR, { recursive: true });
+  fs.writeFileSync(SITE_CAND, list.join('\n') + '\n');
+  console.log(`site candidates: ${list.length} (${fromContent} from ${docs.length} passages/transcripts, the rest taught on the site)`);
+  return list;
 }
 
 async function verify(list) {
@@ -198,26 +184,37 @@ async function seed(words) {
     },
   }));
   for (let k = 0; k < ops.length; k += 1000) await ChainWord.bulkWrite(ops.slice(k, k + 1000), { ordered: false });
-  // Words that no longer pass (list rebuilt) leave the game too
-  const gone = await ChainWord.deleteMany({ w: { $nin: words.map((x) => x.w) } });
+  // Words that no longer pass (list rebuilt) leave the game too — not the
+  // ones players got accepted online during a game
+  const gone = await ChainWord.deleteMany({ w: { $nin: words.map((x) => x.w) }, source: { $ne: 'player' } });
   console.log(`✓ ChainWord: ${words.length} upserted, ${gone.deletedCount} removed`);
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  let words;
-  if (args.includes('--seed-only')) {
-    words = JSON.parse(fs.readFileSync(OUT, 'utf8'));
-  } else {
-    const list = await candidates();
-    const cache = await verify(list);
-    words = writeOut(list, cache);
-  }
-  if (args.includes('--seed') || args.includes('--seed-only')) {
+  const needDb = ['--seed', '--seed-only', '--site'].some((a) => args.includes(a));
+  let mongoose = null;
+  if (needDb) {
     require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
-    const mongoose = require('mongoose');
+    mongoose = require('mongoose');
     await mongoose.connect(process.env.MONGO_URI);
-    try { await seed(words); } finally { await mongoose.disconnect(); }
+  }
+  try {
+    let words;
+    if (args.includes('--seed-only')) {
+      words = JSON.parse(fs.readFileSync(OUT, 'utf8'));
+    } else {
+      const common = await commonCandidates();
+      let site = [];
+      if (args.includes('--site')) site = await siteCandidates();
+      else if (fs.existsSync(SITE_CAND)) site = fs.readFileSync(SITE_CAND, 'utf8').split(/\r?\n/).filter(Boolean);
+      const list = [...new Set([...common, ...site])].sort();
+      const cache = await verify(list);
+      words = writeOut(list, cache);
+    }
+    if (args.includes('--seed') || args.includes('--seed-only')) await seed(words);
+  } finally {
+    if (mongoose) await mongoose.disconnect();
   }
 }
 

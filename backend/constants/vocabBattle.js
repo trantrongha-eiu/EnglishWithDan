@@ -16,13 +16,25 @@ const QUESTION_TYPES = {
 };
 const TYPE_KEYS = Object.keys(QUESTION_TYPES);
 
-// Where the words come from. `types` = the question kinds that source can feed
-// (antonyms come from the built-in list, so every source can have them).
+// Where the words come from (services/vocabBattleBank.js loadPools). `types`
+// = the question kinds that source can feed — antonyms come from the
+// built-in list, so every source can have them; pictures only exist in
+// Vocab Topics; Đồng nghĩa needs paraphrase pairs.
+//   paraphrase  Học Paraphrase (Cambridge Reading text ↔ question wording)
+//   topics      Vocab Topics lessons
+//   writing     Task 2 topic vocab (Luyện đề tuần)
+//   readlisten  Học Paraphrase + Listening glossaries + words students
+//               saved from Reading / Listening tests
+//   dictionary  the site dictionary: collocations + phrase alternatives
+// `sets` = the kinds of word set it reads (null = every set): topics,
+// writing, para, listening, saved, dictionary (vocabBattleBank loadPools).
 const SOURCES = {
-  all:        { label: 'Tất cả',          types: TYPE_KEYS },
-  paraphrase: { label: 'Học Paraphrase',  types: ['synonym', 'antonym'] },
-  topics:     { label: 'Vocab Topics',    types: TYPE_KEYS },
-  dictionary: { label: 'Từ điển',         types: ['synonym', 'antonym'] },
+  all:        { label: 'Tất cả',               sets: null, types: TYPE_KEYS },
+  topics:     { label: 'Vocab Topics',         sets: ['topics'], types: ['antonym', 'meaning', 'image', 'match', 'order', 'listen', 'spell'] },
+  readlisten: { label: 'Reading & Listening',  sets: ['para', 'listening', 'saved'], types: ['synonym', 'antonym', 'meaning', 'match', 'order', 'listen', 'spell'] },
+  writing:    { label: 'Writing Task 2',       sets: ['writing'], types: ['antonym', 'meaning', 'match', 'order', 'listen', 'spell'] },
+  paraphrase: { label: 'Học Paraphrase',       sets: ['para'], types: ['synonym', 'antonym', 'meaning', 'match'] },
+  dictionary: { label: 'Từ điển',              sets: ['dictionary'], types: ['synonym', 'antonym', 'meaning', 'match', 'order', 'listen', 'spell'] },
 };
 
 const COUNTS = [5, 10, 15, 20, 30];          // quiz: questions; chain: words in the whole game

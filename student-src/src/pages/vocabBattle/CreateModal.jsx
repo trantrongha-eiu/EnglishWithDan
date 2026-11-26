@@ -14,6 +14,7 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
   const [picked, setPicked] = useState(() => (solo ? [] : initialPicked.slice(0, rules.maxPlayers - 1))); // [{ id, name, avatar }]
   const [types, setTypes] = useState(game.types || rules.types.map((t) => t.key));
   const [lessons, setLessons] = useState(null);
+  const [bankStats, setBankStats] = useState(null); // { sources: { key: words }, antonyms, chain }
   const [lessonId, setLessonId] = useState('');
   const [count, setCount] = useState(10);
   const [turnSeconds, setTurnSeconds] = useState(15);
@@ -46,11 +47,21 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
   }, [q, solo]);
 
   useEffect(() => {
-    if (kind !== 'quiz' || lessons) return;
-    battleApi('GET', '/lessons').then((d) => setLessons(d.success ? d.lessons : []));
-  }, [kind, lessons]);
+    if (lessons) return;
+    battleApi('GET', '/lessons').then((d) => {
+      setLessons(d.success ? d.lessons : []);
+      if (d.success) setBankStats(d.stats || null);
+    });
+  }, [lessons]);
 
-  const allowed = useMemo(() => rules.sources.find((s) => s.key === source)?.types || [], [rules, source]);
+  const src = useMemo(() => rules.sources.find((s) => s.key === source), [rules, source]);
+  const allowed = src?.types || [];
+  // The sets (lesson / topic / test) this source can be narrowed to
+  const sets = useMemo(
+    () => (lessons || []).filter((l) => !src?.sets || src.sets.includes(l.src)),
+    [lessons, src],
+  );
+  const fmt = (n) => Number(n || 0).toLocaleString('vi-VN');
   const usable = types.filter((t) => allowed.includes(t));
   const maxPick = rules.maxPlayers - 1;
   const maxStake = Math.min(rules.maxStake, wallet);
@@ -137,13 +148,15 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
             <div className="vb-label">Nguồn từ vựng</div>
             <div className="vb-seg vb-seg--wrap">
               {sources.map((s) => (
-                <button key={s.key} className={source === s.key ? 'on' : ''} onClick={() => setSource(s.key)}>{s.label}</button>
+                <button key={s.key} className={source === s.key ? 'on' : ''} onClick={() => { setSource(s.key); setLessonId(''); }}>
+                  {s.label}{bankStats?.sources?.[s.key] ? <small className="vb-seg-n"> · {fmt(bankStats.sources[s.key])} từ</small> : null}
+                </button>
               ))}
             </div>
-            {(source === 'topics' || source === 'all') && allowed.some((t) => !['synonym', 'antonym'].includes(t)) && lessons?.length > 0 && (
+            {usable.some((t) => !['synonym', 'antonym'].includes(t)) && sets.length > 0 && (
               <select className="vb-input" value={lessonId} onChange={(e) => setLessonId(e.target.value)}>
-                <option value="">Mọi chủ đề Vocab Topics</option>
-                {lessons.map((l) => <option key={l.id} value={l.id}>{l.title} ({l.count} từ)</option>)}
+                <option value="">Mọi bộ từ ({sets.length} bộ)</option>
+                {sets.map((l) => <option key={l.id} value={l.id}>{l.title} ({l.count} từ)</option>)}
               </select>
             )}
           </div>
@@ -178,6 +191,13 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
             {rules.counts.map((n) => <button key={n} className={count === n ? 'on' : ''} onClick={() => setCount(n)}>{n}</button>)}
           </div>
         </div>
+
+        {kind === 'chain' && bankStats?.chain && (
+          <div className="vb-muted">
+            📚 Gõ được mọi từ tiếng Anh có trong từ điển (hơn {fmt(bankStats.chain.accepted)} từ).
+            {' '}{solo ? 'Lulu 🤖' : 'Từ mở đầu'} dùng {fmt(bankStats.chain.lulu)} từ thông dụng và từ trong bài học, Reading, Listening trên web.
+          </div>
+        )}
 
         {kind === 'chain' && (
           <div className="vb-field vb-field--row">

@@ -24,9 +24,9 @@ export const STAKES = [0, 5, 10, 20, 50, 100];
 // all of them); `key` is also the personal-best key (services soloKey).
 export const GAMES = [
   { key: 'mix', kind: 'quiz', emoji: '🧠', name: 'Tổng hợp', desc: 'Trộn cả 8 dạng câu. Thử tài từ vựng toàn diện!', types: null },
-  { key: 'synonym', kind: 'quiz', emoji: '🟰', name: 'Đồng nghĩa', desc: 'Chọn cụm paraphrase cùng nghĩa (từ Học Paraphrase).', types: ['synonym'] },
-  { key: 'antonym', kind: 'quiz', emoji: '↔️', name: 'Trái nghĩa', desc: 'Chọn từ mang nghĩa ngược lại.', types: ['antonym'] },
-  { key: 'meaning', kind: 'quiz', emoji: '📖', name: 'Nghĩa của từ', desc: 'Anh → Việt và Việt → Anh, chọn đáp án đúng.', types: ['meaning'] },
+  { key: 'synonym', kind: 'quiz', emoji: '🟰', name: 'Đồng nghĩa', desc: 'Chọn cụm paraphrase cùng nghĩa (từ bài Reading Cambridge và Từ điển).', types: ['synonym'] },
+  { key: 'antonym', kind: 'quiz', emoji: '↔️', name: 'Trái nghĩa', desc: 'Chọn từ mang nghĩa ngược lại: hơn 300 cặp, hỏi cả hai chiều.', types: ['antonym'] },
+  { key: 'meaning', kind: 'quiz', emoji: '📖', name: 'Nghĩa của từ', desc: 'Anh → Việt và Việt → Anh, hơn 10.000 từ từ Vocab Topics, Reading, Listening, Writing, Từ điển.', types: ['meaning'] },
   { key: 'match', kind: 'quiz', emoji: '🧩', name: 'Nối từ – nghĩa', desc: 'Nối 5 từ với nghĩa đúng của chúng.', types: ['match'] },
   { key: 'order', kind: 'quiz', emoji: '🧱', name: 'Ghép câu', desc: 'Sắp xếp các từ thành câu hoàn chỉnh.', types: ['order'] },
   { key: 'listen', kind: 'quiz', emoji: '🎧', name: 'Nghe & điền', desc: 'Nghe câu ví dụ, điền từ còn thiếu.', types: ['listen'] },

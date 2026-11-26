@@ -256,7 +256,7 @@ describe('/api/vocab-battle', () => {
     expect(last.by).toBe(botId);
     expect(res.body.battle.chain.turnId).toBe(String(a._id));
     if (last.w) expect(last.w[0]).toBe(w1.slice(-1));
-    if (last.w) expect(bank._internal.chainWords().all.has(last.w)).toBe(true);
+    if (last.w) expect(bank._internal.luluWords().has(last.w)).toBe(true);
 
     // a runs out of time with 1 life → Lulu wins, nobody gets 🔥
     await VocabBattle.updateOne({ _id: id }, { $set: { 'chain.deadline': new Date(Date.now() - 1000) } });
@@ -272,14 +272,134 @@ describe('/api/vocab-battle', () => {
     for (const rare of ['konking', 'yobbo', 'qoph', 'zyzzyva']) expect(verified.has(rare)).toBe(false);
     for (const w of ['table', 'orange', 'think', 'water']) expect(verified.has(w)).toBe(true);
     for (let k = 0; k < 15; k++) expect(verified.has(await bank.chainStartWord())).toBe(true);
+    // Lulu: checked common words + real (ENABLE) words the site teaches
+    const lulu = bank._internal.luluWords();
+    for (const rare of ['konking', 'yobbo']) expect(lulu.has(rare)).toBe(false);
+    expect(lulu.has('pollution')).toBe(true); // taught in Vocab Topics
+    const enable = bank._internal.englishWords();
     for (const letter of 'abcdefghijklmnoprstuwy') {
       for (let k = 0; k < 20; k++) {
         const got = bank.botWord(letter, new Set());
-        expect(got && verified.has(got.w) && got.w[0] === letter).toBe(true);
+        expect(got && lulu.has(got.w) && got.w[0] === letter).toBe(true);
+        expect(verified.has(got.w) || enable.has(got.w)).toBe(true);
       }
     }
-    // players may still use any ENABLE word
+    // players may still use any ENABLE word, a hyphenated one, never a swear word
     expect((await bank.chainWordInfo('yobbo')).known).toBe(true);
+    expect((await bank.chainWordInfo('well-known')).known).toBe(true);
+    expect((await bank.chainWordInfo('shit')).blocked).toBe(true);
+    // a word the site teaches carries its meaning
+    expect((await bank.chainWordInfo('pollution')).vi).toBe('sự ô nhiễm');
+  });
+
+  test('Nối chữ refuses swear words', async () => {
+    const a = await createStudent();
+    const res = await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', solo: true, count: 10, lives: 2, turnSeconds: 15 });
+    const id = res.body.battle.id;
+    await VocabBattle.updateOne({ _id: id }, { $set: { 'chain.letter': 's' } });
+    const r = await request(app).post(`/api/vocab-battle/${id}/word`).set(auth(a)).send({ word: 'shit' });
+    expect(r.body.code).toBe('chain_blocked');
+    const ok = await request(app).post(`/api/vocab-battle/${id}/word`).set(auth(a)).send({ word: 'school' });
+    expect(ok.status).toBe(200);
+  });
+
+  test('Trái nghĩa: both ways round, never a second right answer', async () => {
+    for (let k = 0; k < 25; k++) {
+      const qs = await bank.buildQuestions({ types: ['antonym'], count: 30, source: 'all' });
+      expect(qs.length).toBe(30);
+      for (const q of qs) {
+        expect(new Set(q.options).size).toBe(4);
+        q.options.forEach((o, i) => { if (i !== q.answer) expect(bank._internal.isOpposite(q.prompt, o)).toBe(false); });
+      }
+    }
+    // the known traps: build → destroy (demolish is right too), advantage → disadvantage (drawback too)
+    expect(bank._internal.isOpposite('build', 'demolish')).toBe(true);
+    expect(bank._internal.isOpposite('advantage', 'drawback')).toBe(true);
+    expect(bank._internal.isOpposite('scarce', 'abundant')).toBe(true);
+  });
+
+  test('every word source of the web feeds its question kinds, options never overlap the answer', async () => {
+    const t = await createTeacher();
+    const Task2Topic = require('../../models/Task2Topic');
+    const ListeningSection = require('../../models/ListeningSection');
+    const VocabBook = require('../../models/VocabBook');
+    const DictionaryCollocation = require('../../models/DictionaryCollocation');
+    const vocab = [
+      ['consumer goods', 'hàng hóa tiêu dùng', 'The demand for consumer goods has surged in recent decades.'],
+      ['consumerism', 'chủ nghĩa tiêu dùng', 'Consumerism drives economic growth in many countries.'],
+      ['disposable income', 'thu nhập khả dụng', 'Rising disposable income has fuelled consumer spending.'],
+      ['hobby', 'sở thích', 'Reading is my favourite hobby at the weekend.'],
+      ['cooking as a hobby', 'nấu ăn như một thú vui', 'Many people take up cooking as a hobby these days.'],
+      ['while', 'trong khi', 'She listened to music while she was cooking dinner.'],
+      ['meanwhile', 'cùng lúc đó', 'Prices rose sharply; meanwhile, wages stayed the same.'],
+    ];
+    await Task2Topic.create({
+      week: 1, block: 'A', topicName: 'Consumerism', essayType: 'agree_disagree', prompt: 'p',
+      vocabularyList: vocab.map(([term, definitionVi, example]) => ({ term, definitionVi, example })),
+    });
+    await ListeningSection.create({
+      partNumber: 1, title: 'BEECHEN FESTIVAL', audioUrl: 'https://a.test/x.mp3', transcript: 't', isActive: true,
+      dictationSentences: [{ text: 'I know tickets are running out fast at the festival.', start: 1, end: 2 }],
+      gapFillGlossary: [
+        { word: 'tickets', meaning: 'vé' }, { word: 'festival', meaning: 'lễ hội' }, { word: 'concert', meaning: 'buổi hòa nhạc' },
+        { word: 'musicians', meaning: 'nhạc sĩ' }, { word: 'Beechen', meaning: '', skip: true },
+      ],
+    });
+    const s = await createStudent();
+    await VocabBook.create({
+      userId: s._id, name: 'Sổ', words: [
+        { word: 'heirloom', meaning: 'vật gia truyền', source: 'reading' },
+        { word: 'STATION', meaning: 'GA TÀU', source: 'listening' },
+        { word: 'propor', meaning: 'tỷ lệ', source: 'reading' }, // a typo: not a word
+        { word: 'epidemic', meaning: 'bệnh dịch', source: 'reading' },
+        { word: 'helmet', meaning: 'mũ bảo hiểm', source: 'listening' },
+      ],
+    });
+    await DictionaryCollocation.create({
+      word: 'sodium', collocations: [
+        { phrase: 'sodium intake', meaning: 'lượng natri nạp vào', example: 'Reducing your sodium intake can help your heart.' },
+        { phrase: 'high in sodium', meaning: 'chứa nhiều natri', example: 'Processed foods are often high in sodium these days.' },
+        { phrase: 'low in sodium', meaning: 'ít natri', example: 'Choose snacks that are low in sodium for your health.' },
+        { phrase: 'sodium chloride', meaning: 'muối ăn', example: 'Table salt is mostly sodium chloride in its pure form.' },
+      ],
+    });
+    bank.resetCache();
+    const pools = await bank.loadPools();
+    const bySrc = (src) => pools.sets.filter((x) => x.src === src).flatMap((x) => x.words.map((w) => w.word));
+    expect(bySrc('writing')).toContain('consumerism');
+    expect(bySrc('listening')).toEqual(expect.arrayContaining(['tickets', 'festival']));
+    expect(bySrc('listening')).not.toContain('Beechen');
+    expect(pools.sets.find((x) => x.src === 'listening').words.find((w) => w.word === 'tickets').example).toMatch(/tickets are running/);
+    expect(bySrc('saved')).toEqual(expect.arrayContaining(['heirloom', 'station', 'epidemic']));
+    expect(bySrc('saved')).not.toContain('propor');
+    expect(pools.sets.flatMap((x) => x.words).find((w) => w.word === 'station').meaning).toBe('ga tàu');
+    expect(bySrc('dictionary')).toContain('sodium intake');
+    expect(pools.bank.has('heirloom')).toBe(true);
+
+    for (const [source, types] of [['writing', ['meaning', 'match', 'order', 'listen', 'spell']], ['readlisten', ['meaning', 'match', 'synonym']], ['dictionary', ['meaning', 'match', 'order']]]) {
+      for (const type of types) {
+        const qs = await bank.buildQuestions({ types: [type], count: 5, source });
+        expect(qs.length).toBeGreaterThan(0);
+      }
+    }
+    // "hobby" never offered beside "cooking as a hobby", "while" never beside "meanwhile"
+    for (let k = 0; k < 40; k++) {
+      for (const q of await bank.buildQuestions({ types: ['meaning'], count: 7, source: 'writing' })) {
+        const answer = q.options[q.answer];
+        q.options.forEach((o, i) => { if (i !== q.answer) expect(bank._internal.close(o, answer)).toBe(false); });
+      }
+    }
+    // the create form lists each source's sets + how many words it has
+    const res = await request(app).get('/api/vocab-battle/lessons').set(auth(s));
+    expect(res.body.lessons.map((l) => l.src)).toEqual(expect.arrayContaining(['topics', 'writing', 'listening', 'saved', 'dictionary']));
+    expect(res.body.stats.sources.all).toBeGreaterThan(res.body.stats.sources.writing);
+    // a room limited to one Task 2 topic
+    const set = res.body.lessons.find((l) => l.src === 'writing');
+    const room = await request(app).post('/api/vocab-battle').set(auth(s))
+      .send({ kind: 'quiz', solo: true, count: 5, source: 'writing', lessonId: set.id, types: ['meaning'] });
+    expect(room.status).toBe(200);
+    expect(room.body.battle.config.lessonTitle).toBe('Task 2 – Consumerism');
   });
 
   test('a Nối chữ game left mid-way is closed by the sweep', async () => {

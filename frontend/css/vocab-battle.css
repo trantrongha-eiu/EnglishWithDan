@@ -142,6 +142,7 @@
 }
 .vb-seg button.on, .vb-type.on, .vb-chip--on { border-color: var(--vb-ink); background: var(--pf-sun, #ffd23f); color: #1d1a16; box-shadow: 2px 2px 0 var(--vb-ink); }
 .vb-seg button:disabled, .vb-type:disabled { opacity: .4; cursor: not-allowed; }
+.vb-seg-n { font-weight: 600; opacity: .75; }
 .vb-types { display: flex; flex-wrap: wrap; gap: 8px; }
 .vb-picked { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
 .vb-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 3px; }
@@ -285,6 +286,7 @@
 }
 .vb-chain-stage.mine { background: var(--vb-soft); }
 .vb-chain-letter small { display: block; color: var(--text2); font-weight: 700; }
+.vb-chain-vi { text-align: center; color: var(--text2); font-size: 14px; margin: -4px 0 8px; overflow-wrap: anywhere; }
 .vb-chain-letter b {
   display: inline-flex; align-items: center; justify-content: center; width: 84px; height: 84px; margin: 6px 0; border-radius: 24px;
   background: var(--pf-sun, #ffd23f); color: #1d1a16; border: 3px solid var(--vb-ink); box-shadow: 4px 4px 0 var(--vb-ink);

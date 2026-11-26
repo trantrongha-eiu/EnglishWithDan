@@ -112,7 +112,8 @@ function ChainGame({ b, id, offset, players, onBattle }) {
           const by = b.players.find((p) => p.id === w.by);
           if (w.timeout) return <span key={i} className="vb-cw timeout" title={`${by?.name} hết giờ`}>⏰ {by?.name}</span>;
           return (
-            <span key={i} className={`vb-cw${w.by ? '' : ' start'}${w.bank ? ' bank' : ''}`} title={by ? `${by.name} +${w.pts}` : 'Từ mở đầu'}>
+            <span key={i} className={`vb-cw${w.by ? '' : ' start'}${w.bank ? ' bank' : ''}`}
+              title={`${by ? `${by.name} +${w.pts}` : 'Từ mở đầu'}${w.vi ? ` · ${w.vi}` : ''}`}>
               {w.w}{w.bank && ' ⭐'}
               {by && <small>{shortName(by)}</small>}
             </span>
@@ -126,6 +127,7 @@ function ChainGame({ b, id, offset, players, onBattle }) {
             <small>{lastWord?.w ? `${lastWord.w} →` : 'Bắt đầu bằng'}</small>
             <b>{c.letter.toUpperCase()}</b>
           </div>
+          {lastWord?.vi && <div className="vb-chain-vi">📖 {lastWord.w}: {lastWord.vi}</div>}
           <div className={`vb-timer${left < 4000 ? ' low' : ''}`}><i style={{ width: `${Math.min(100, (left / total) * 100)}%` }} /></div>
           <div className="vb-chain-turn">
             {myTurn ? `Lượt của bạn! Còn ${Math.ceil(left / 1000)}s` : `Lượt của ${turnP?.name || '…'} · ${Math.ceil(left / 1000)}s`}

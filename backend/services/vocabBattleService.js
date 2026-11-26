@@ -325,7 +325,9 @@ function view(b, viewerId, now = new Date()) {
     })),
     me: mine ? { state: mine.state, idx: mine.idx, finished: !!mine.finishedAt, score: mine.score } : null,
     chain: b.kind === 'chain' ? {
-      words: b.chain.words.slice(-80).map((w) => ({ w: w.w, by: w.by ? sid(w.by) : null, pts: w.pts, bank: !!w.bank, timeout: !!w.timeout })),
+      words: b.chain.words.slice(-80).map((w) => ({
+        w: w.w, by: w.by ? sid(w.by) : null, pts: w.pts, bank: !!w.bank, timeout: !!w.timeout, vi: w.w ? bank.meaningOf(w.w) : '',
+      })),
       turnId: b.status === 'playing' ? sid(b.players[b.chain.turn].userId) : null,
       letter: b.chain.letter,
       deadline: b.chain.deadline,
@@ -373,8 +375,8 @@ async function create(userId, body = {}) {
   if (kind === 'quiz') {
     const types = bank.usableTypes((Array.isArray(body.types) ? body.types : []).filter((t) => R.TYPE_KEYS.includes(t)), source);
     if (!types.length) return { status: 'bad_types' };
-    if (body.lessonId && (source === 'topics' || source === 'all')) {
-      const lesson = (await bank.lessonOptions()).find((l) => l.id === String(body.lessonId));
+    if (body.lessonId) {
+      const lesson = bank.findSet(await bank.loadPools(), body.lessonId, source);
       if (lesson) { config.lessonId = lesson.id; config.lessonTitle = lesson.title; }
     }
     config.types = types;
@@ -578,7 +580,7 @@ async function answer(userId, id, given, idx) {
     p.qAt = null;
     p.seenAt = now;
     if (p.idx >= b.questions.length) p.finishedAt = now;
-    out = { frac, pts, late, correct: bank.answerText(q), right: q.answer, note: q.note || '', meaning: q.meaning || '', score: p.score, done: !!p.finishedAt };
+    out = { frac, pts, late, correct: bank.answerText(q), right: q.answer, note: q.note || '', word: q.word || '', meaning: q.meaning || '', score: p.score, done: !!p.finishedAt };
     const effects = [];
     tick(b, now, effects, wins);
     return { status: 'ok', effects };
@@ -614,22 +616,33 @@ async function start(userId, id) {
 }
 
 async function playWord(userId, id, raw) {
+  // The turn is judged on when the word arrived, not after an online
+  // dictionary check made it wait
+  const received = new Date();
   const w = String(raw || '').trim().toLowerCase();
   if (!/^[a-z]+(-[a-z]+)?$/.test(w)) return { status: 'chain_letters' };
   if (w.replace(/-/g, '').length < R.CHAIN_MIN_LEN) return { status: 'chain_short', min: R.CHAIN_MIN_LEN };
-  const info = await bank.chainWordInfo(w.replace(/-/g, ''));
-  const pre = mongoose.isValidObjectId(id) ? await VocabBattle.findById(id).select('players.userId').lean() : null;
+  const pre = mongoose.isValidObjectId(id)
+    ? await VocabBattle.findById(id).select('players.userId kind status chain.letter chain.turn chain.words.w').lean() : null;
+  // Cheap refusals first on the player's own turn (no dictionary lookup for
+  // a word that can't count anyway)
+  if (pre && pre.kind === 'chain' && pre.status === 'playing' && sid(pre.players[pre.chain.turn]?.userId) === sid(userId)) {
+    if (w[0] !== pre.chain.letter) return { status: 'chain_letter', letter: pre.chain.letter };
+    if (pre.chain.words.some((x) => x.w === w)) return { status: 'chain_used' };
+  }
+  const info = await bank.chainWordInfo(w);
   const wins = pre ? await friendlyWinsToday(pre.players.map((p) => p.userId)) : {};
   const res = await mutate(id, (b, now) => {
     if (b.kind !== 'chain') return { status: 'bad_kind' };
     const effects = [];
-    const ticked = tick(b, now, effects, wins);
+    const ticked = tick(b, received < now ? received : now, effects, wins);
     const deny = (status, extra) => (ticked ? { status: 'ok', effects, deny: status, ...extra } : { status, ...extra });
     if (b.status !== 'playing') return deny('not_playing');
     const p = b.players[b.chain.turn];
     if (sid(p.userId) !== sid(userId)) return deny('not_your_turn');
     if (w[0] !== b.chain.letter) return deny('chain_letter', { letter: b.chain.letter });
     if (b.chain.words.some((x) => x.w === w)) return deny('chain_used');
+    if (info.blocked) return deny('chain_blocked');
     if (!info.known) return deny('chain_unknown');
     const pts = 10 + Math.max(0, w.length - 4) * 2 + (info.bank ? R.CHAIN_BANK_BONUS : 0);
     b.chain.words.push({ w, by: p.userId, pts, bank: info.bank, at: now });
@@ -758,7 +771,7 @@ async function players(userId, q) {
 function rules() {
   return {
     types: Object.entries(R.QUESTION_TYPES).map(([key, v]) => ({ key, label: v.label, limit: v.limit })),
-    sources: Object.entries(R.SOURCES).map(([key, v]) => ({ key, label: v.label, types: v.types })),
+    sources: Object.entries(R.SOURCES).map(([key, v]) => ({ key, label: v.label, types: v.types, sets: v.sets })),
     counts: R.COUNTS, maxPlayers: R.MAX_PLAYERS, minStake: R.MIN_STAKE, maxStake: R.MAX_STAKE,
     turnSeconds: R.TURN_SECONDS, lives: R.LIVES, inviteHours: R.INVITE_HOURS,
     friendlyWin: R.FRIENDLY_WIN_FLAMES, friendlyDaily: R.FRIENDLY_DAILY_WINS,

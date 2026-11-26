@@ -121,7 +121,9 @@ export default function QuizRun({ b, id, onBattle, onExit }) {
           {feedback.frac > 0 && feedback.frac < 1 && <b>👍 Đúng {Math.round(feedback.frac * 100)}%: +{feedback.pts}</b>}
           {feedback.frac === 0 && <b>{feedback.late || feedback.timeout ? '⏰ Hết giờ!' : '❌ Chưa đúng'}</b>}
           {feedback.frac < 1 && <div className="vb-feedback-ans">Đáp án: <b>{feedback.correct}</b></div>}
-          {feedback.meaning && <div className="vb-feedback-mean">{feedback.meaning}</div>}
+          {feedback.meaning && (
+            <div className="vb-feedback-mean">{feedback.word && feedback.word !== feedback.meaning ? <><b>{feedback.word}</b>: </> : null}{feedback.meaning}</div>
+          )}
         </div>
       )}
       {!b.solo && <div className="vb-run-board"><Board b={b} /></div>}

@@ -35,6 +35,7 @@ const MESSAGES = {
   chain_letter: [400, 'Từ phải bắt đầu bằng chữ cái được yêu cầu.'],
   chain_used: [400, 'Từ này đã có người dùng rồi!'],
   chain_unknown: [400, 'Không tìm thấy từ này trong từ điển.'],
+  chain_blocked: [400, 'Từ này không dùng trong trò chơi nhé 🙂'],
   not_finished: [400, 'Làm xong lượt của bạn rồi mới xem đáp án nhé.'],
   busy: [409, 'Máy chủ đang bận, thử lại nhé.'],
 };
@@ -67,7 +68,8 @@ exports.players = catchAsync(async (req, res) => {
   send(res, { status: 'ok', players: await svc.players(req.user._id, String(req.query.q || '').slice(0, 60)) });
 });
 exports.lessons = catchAsync(async (req, res) => {
-  send(res, { status: 'ok', lessons: await bank.lessonOptions() });
+  const [lessons, stats] = await Promise.all([bank.lessonOptions(), bank.bankStats()]);
+  send(res, { status: 'ok', lessons, stats });
 });
 exports.create = catchAsync(async (req, res) => {
   send(res, await svc.create(req.user._id, req.body || {}));
