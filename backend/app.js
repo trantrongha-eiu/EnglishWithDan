@@ -136,6 +136,7 @@ app.use('/api/study-plan', require('./routes/studyPlan'));
 app.use('/api/learning', require('./routes/learning'));
 app.use('/api/badges', require('./routes/badges'));
 app.use('/api/shop',     require('./routes/shop'));
+app.use('/api/vocab-battle', require('./routes/vocabBattle'));
 app.use('/api/contact',  require('./routes/contact'));
 app.use('/api/track',    require('./routes/track'));
 app.use('/api/activity', require('./routes/activity'));

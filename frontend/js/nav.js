@@ -140,6 +140,8 @@
       children: [
         { href: 'app/leaderboard', icon: 'fa-ranking-star', label: 'Bảng xếp hạng' },
         { href: 'app/shop',             icon: 'fa-store',        label: 'Cửa hàng lửa 🔥' },
+        // ⚔️ Đấu trường từ vựng: vocab quiz / Nối chữ duels for 🔥 (2026-11-26)
+        { href: 'app/vocab-battle',     icon: 'fa-gamepad',      label: 'Đấu trường từ vựng ⚔️' },
         // Affiliate: the referral link + commission wallet (was a Hồ sơ tab)
         { href: 'app/affiliate',        icon: 'fa-bullhorn',     label: 'Giới thiệu bạn bè' },
       ]

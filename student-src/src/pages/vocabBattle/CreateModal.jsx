@@ -1,0 +1,221 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import Modal from '../../components/Modal';
+import { battleApi, STAKES, TYPE_EMOJI } from '../../utils/vocabBattle';
+import Avatar from './Avatar';
+
+// Settings for one game from the Đấu trường list.
+//   solo=false → "Mời bạn": opponents (1–3), how many, word source, stake
+//   solo=true  → "Chơi một mình": just how many + word source (Nối chữ: vs Lulu 🤖)
+// `initialPicked` = opponents already chosen (⚔️ on a BXH row).
+export default function CreateModal({ game, solo, rules, wallet, initialPicked = [], onClose, onCreated }) {
+  const kind = game.kind;
+  const [q, setQ] = useState('');
+  const [players, setPlayers] = useState(null);
+  const [picked, setPicked] = useState(() => (solo ? [] : initialPicked.slice(0, rules.maxPlayers - 1))); // [{ id, name, avatar }]
+  const [types, setTypes] = useState(game.types || rules.types.map((t) => t.key));
+  const [lessons, setLessons] = useState(null);
+  const [lessonId, setLessonId] = useState('');
+  const [count, setCount] = useState(10);
+  const [turnSeconds, setTurnSeconds] = useState(15);
+  const [lives, setLives] = useState(2);
+  const [stake, setStake] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const seq = useRef(0);
+
+  // Only the word sources that can feed this game
+  const sources = useMemo(
+    () => rules.sources.filter((s) => (game.types || rules.types.map((t) => t.key)).some((t) => s.types.includes(t))),
+    [rules, game],
+  );
+  const [source, setSource] = useState(sources[0]?.key || 'all');
+
+  // The site's daily-goal card sits over the modal's buttons on a laptop
+  useEffect(() => { document.getElementById('nav-vocab-goal-nudge')?.remove(); }, []);
+
+  // Opponent search (classmates + who's online when empty)
+  useEffect(() => {
+    if (solo) return undefined;
+    const n = ++seq.current;
+    const t = setTimeout(() => {
+      battleApi('GET', `/players?q=${encodeURIComponent(q.trim())}`).then((d) => {
+        if (n === seq.current) setPlayers(d.success ? d.players : []);
+      });
+    }, q ? 300 : 0);
+    return () => clearTimeout(t);
+  }, [q, solo]);
+
+  useEffect(() => {
+    if (kind !== 'quiz' || lessons) return;
+    battleApi('GET', '/lessons').then((d) => setLessons(d.success ? d.lessons : []));
+  }, [kind, lessons]);
+
+  const allowed = useMemo(() => rules.sources.find((s) => s.key === source)?.types || [], [rules, source]);
+  const usable = types.filter((t) => allowed.includes(t));
+  const maxPick = rules.maxPlayers - 1;
+  const maxStake = Math.min(rules.maxStake, wallet);
+  const mix = kind === 'quiz' && !game.types;
+
+  function toggle(p) {
+    setPicked((cur) => {
+      if (cur.some((x) => x.id === p.id)) return cur.filter((x) => x.id !== p.id);
+      if (cur.length >= maxPick) return cur;
+      return [...cur, p];
+    });
+  }
+  function toggleType(key) {
+    setTypes((cur) => (cur.includes(key) ? cur.filter((x) => x !== key) : [...cur, key]));
+  }
+
+  async function submit() {
+    setError('');
+    if (!solo && !picked.length) { setError('Chọn ít nhất 1 bạn để thách đấu.'); return; }
+    if (kind === 'quiz' && !usable.length) { setError('Chọn ít nhất 1 dạng câu hỏi.'); return; }
+    setBusy(true);
+    const d = await battleApi('POST', '', {
+      kind, solo, opponents: solo ? [] : picked.map((p) => p.id), stake: solo ? 0 : stake, count,
+      types: usable, source, lessonId: lessonId || undefined, turnSeconds, lives,
+    });
+    setBusy(false);
+    if (!d.success) { setError(d.message || 'Không tạo được trận.'); return; }
+    onCreated(d.battle);
+  }
+
+  let cta = busy ? 'Đang tạo…' : `Gửi lời thách đấu${stake ? ` · ${stake} 🔥` : ''}`;
+  if (solo && !busy) cta = kind === 'chain' ? '🤖 Đấu với Lulu' : '🎯 Bắt đầu chơi';
+
+  return (
+    <Modal
+      title={`${solo ? '🎯 Chơi một mình' : '⚔️ Mời bạn thách đấu'}: ${game.emoji} ${game.name}`}
+      onClose={onClose}
+      size={solo ? 'modal-sm' : 'modal-lg'}
+      footer={(
+        <>
+          {error && <span className="vb-form-err">{error}</span>}
+          <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
+          <button className="btn btn-primary" onClick={submit} disabled={busy}>{cta}</button>
+        </>
+      )}
+    >
+      <div className="vb-form">
+        <p className="vb-muted vb-form-desc">{game.desc}</p>
+
+        {!solo && (
+          <div className="vb-field">
+            <div className="vb-label">Đối thủ <small>({picked.length}/{maxPick}: 1 vs 1 hoặc tối đa {rules.maxPlayers} người)</small></div>
+            {picked.length > 0 && (
+              <div className="vb-picked">
+                {picked.map((p) => (
+                  <button key={p.id} className="vb-chip vb-chip--on" onClick={() => toggle(p)} title="Bỏ chọn">
+                    <Avatar p={p} small /> {p.name} ×
+                  </button>
+                ))}
+              </div>
+            )}
+            <input className="vb-input" placeholder="🔍 Tìm theo tên…" value={q} onChange={(e) => setQ(e.target.value)} />
+            <div className="vb-people">
+              {players === null && <div className="vb-muted">Đang tải…</div>}
+              {players?.length === 0 && <div className="vb-muted">{q ? 'Không tìm thấy bạn nào.' : 'Gõ tên để tìm bạn muốn thách đấu.'}</div>}
+              {players?.map((p) => {
+                const on = picked.some((x) => x.id === p.id);
+                return (
+                  <button key={p.id} className={`vb-person${on ? ' on' : ''}`} onClick={() => toggle(p)}
+                    disabled={!on && picked.length >= maxPick}>
+                    <Avatar p={p} small online={p.online} />
+                    <span className="vb-person-name">{p.name}</span>
+                    {p.classmate && <span className="vb-tag">cùng lớp</span>}
+                    <span className="vb-check">{on ? '✓' : '+'}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {kind === 'quiz' && (
+          <div className="vb-field">
+            <div className="vb-label">Nguồn từ vựng</div>
+            <div className="vb-seg vb-seg--wrap">
+              {sources.map((s) => (
+                <button key={s.key} className={source === s.key ? 'on' : ''} onClick={() => setSource(s.key)}>{s.label}</button>
+              ))}
+            </div>
+            {(source === 'topics' || source === 'all') && allowed.some((t) => !['synonym', 'antonym'].includes(t)) && lessons?.length > 0 && (
+              <select className="vb-input" value={lessonId} onChange={(e) => setLessonId(e.target.value)}>
+                <option value="">Mọi chủ đề Vocab Topics</option>
+                {lessons.map((l) => <option key={l.id} value={l.id}>{l.title} ({l.count} từ)</option>)}
+              </select>
+            )}
+          </div>
+        )}
+
+        {mix && (
+          <div className="vb-field">
+            <div className="vb-label">
+              Dạng câu hỏi
+              <button className="vb-link" onClick={() => setTypes(usable.length === allowed.length ? [] : allowed)}>
+                {usable.length === allowed.length ? 'Bỏ chọn hết' : 'Chọn tất cả'}
+              </button>
+            </div>
+            <div className="vb-types">
+              {rules.types.map((t) => {
+                const ok = allowed.includes(t.key);
+                const on = ok && types.includes(t.key);
+                return (
+                  <button key={t.key} className={`vb-type${on ? ' on' : ''}`} disabled={!ok} onClick={() => toggleType(t.key)}
+                    title={ok ? `${t.limit} giây/câu` : 'Nguồn từ này không có dạng câu này'}>
+                    <span>{TYPE_EMOJI[t.key]}</span> {t.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <div className="vb-field">
+          <div className="vb-label">{kind === 'quiz' ? 'Số câu hỏi' : 'Số từ cả trận'}</div>
+          <div className="vb-seg vb-seg--wrap">
+            {rules.counts.map((n) => <button key={n} className={count === n ? 'on' : ''} onClick={() => setCount(n)}>{n}</button>)}
+          </div>
+        </div>
+
+        {kind === 'chain' && (
+          <div className="vb-field vb-field--row">
+            <div>
+              <div className="vb-label">Thời gian mỗi lượt</div>
+              <div className="vb-seg">
+                {rules.turnSeconds.map((n) => <button key={n} className={turnSeconds === n ? 'on' : ''} onClick={() => setTurnSeconds(n)}>{n}s</button>)}
+              </div>
+            </div>
+            <div>
+              <div className="vb-label">Số mạng</div>
+              <div className="vb-seg">
+                {rules.lives.map((n) => <button key={n} className={lives === n ? 'on' : ''} onClick={() => setLives(n)}>{'❤️'.repeat(n)}</button>)}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {solo ? (
+          <div className="vb-muted">🎯 Luyện tập: không cược, không nhận 🔥. Điểm cao nhất sẽ thành kỷ lục của bạn ở trò này.</div>
+        ) : (
+          <div className="vb-field">
+            <div className="vb-label">Cược 🔥 <small>(ví của bạn: {wallet} 🔥)</small></div>
+            <div className="vb-seg vb-seg--wrap">
+              {STAKES.map((n) => (
+                <button key={n} className={stake === n ? 'on' : ''} disabled={n > 0 && n > maxStake} onClick={() => setStake(n)}>
+                  {n ? `${n} 🔥` : 'Giao hữu'}
+                </button>
+              ))}
+            </div>
+            <div className="vb-muted">
+              {stake
+                ? `Mỗi bạn vào trận đặt ${stake} 🔥. Người thắng ẵm cả pot (tối đa ${stake * (picked.length + 1)} 🔥).`
+                : `Không mất gì. Người thắng được +${rules.friendlyWin} 🔥 (tối đa ${rules.friendlyDaily} trận/ngày).`}
+            </div>
+          </div>
+        )}
+      </div>
+    </Modal>
+  );
+}
