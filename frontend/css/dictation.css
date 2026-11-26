@@ -285,12 +285,6 @@ body { background: var(--bg); }
 /* ── Check insights (React /app/dictation): mistakes, linking, credit ── */
 .dx-bad.case { color: #7c3aed; text-decoration-color: #7c3aed; }
 .dx-legend.case u { color: #7c3aed; }
-.dict-num-btn.done.peek { background: color-mix(in srgb, #f59e0b 16%, transparent); border-color: #f59e0b; color: #b45309; }
-.dx-done-pill.peek { color: #b45309; background: color-mix(in srgb, #f59e0b 16%, transparent); }
-.dx-credit { margin-top: 10px; font-size: 12.5px; color: var(--text2); }
-.dx-credit b { color: var(--success); }
-.dx-credit-peek { color: #b45309; }
-.dx-credit-peek i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #f59e0b; vertical-align: 0; }
 .dx-caps-tip { margin: -4px 0 10px; padding: 8px 12px; border-radius: var(--radius-sm); font-size: 13.5px; line-height: 1.5; color: var(--text); background: color-mix(in srgb, #7c3aed 10%, transparent); }
 .dx-foot-caps { color: var(--text2); }
 .dx-insight { margin: 0 0 10px; padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg2, rgba(0,0,0,.03)); font-size: 14px; line-height: 1.55; }
@@ -318,8 +312,6 @@ body { background: var(--bg); }
 .dx-tally-chip b { color: var(--danger); }
 .dx-summary { margin: 4px 0 12px; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--success) 35%, transparent); background: var(--success-light); }
 .dx-summary-score { font-size: 15px; line-height: 1.5; color: var(--text); margin-bottom: 8px; }
-.dx-summary-ok { color: var(--success); font-weight: 700; }
-.dx-summary-low { color: #b45309; font-weight: 600; }
 .dx-summary .dx-tally { margin-top: 10px; }
 .dx-habits { margin: 0 0 16px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--border); background: var(--card, var(--bg2)); }
 .dx-habits-head { font-weight: 800; font-size: 15px; margin-bottom: 10px; color: var(--text); }
@@ -332,3 +324,10 @@ body { background: var(--bg); }
 .dx-habit-ex s { color: var(--danger); }
 .dx-habit-ex b { color: var(--success); }
 .dx-habit-tip { margin-top: 4px; font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+.dx-lulu-hint { margin: 0 0 10px; padding: 10px 14px; border-radius: var(--radius-sm); background: color-mix(in srgb, #f59e0b 12%, transparent); border: 1px solid color-mix(in srgb, #f59e0b 35%, transparent); font-size: 14px; line-height: 1.6; color: var(--text); display: grid; gap: 2px; }
+.dx-lulu-title { font-weight: 700; color: #b45309; }
+.dx-lulu-word { display: inline-block; margin: 0 4px 2px 0; padding: 0 8px; border-radius: var(--radius-pill); background: var(--card, rgba(255,255,255,.6)); border: 1px solid color-mix(in srgb, #f59e0b 40%, transparent); font-weight: 600; }
+.dx-lulu-mask { font-family: 'JetBrains Mono', monospace; font-weight: 700; letter-spacing: .5px; white-space: pre-wrap; }
+.dx-lulu-count { color: var(--text3); font-size: 13px; }
+.dict-t-locked { color: var(--text3); font-style: italic; }
+.dict-t-locked i { margin-right: 4px; font-size: 12px; }

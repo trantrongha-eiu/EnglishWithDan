@@ -2010,17 +2010,14 @@ test.describe('inside the React app', () => {
     // Hello there, my friend. → hello ✓, thera = misspelt there, my + friend missing
     await expect(page.locator('#dict-diff .dx-ok')).toHaveText(['Hello']);
     await expect(page.locator('#dict-diff .dx-bad.typo')).toHaveText('thera');
-    await expect(page.locator('#dict-diff .dx-fix')).toHaveText('→ there,');
-    await expect(page.locator('#dict-diff .dx-miss')).toHaveText(['my', 'friend.']);
+    // the right words of the mistakes stay hidden until it's typed right
+    await expect(page.locator('#dict-diff .dx-fix')).toHaveCount(0);
+    await expect(page.locator('#dict-diff .dx-miss')).toHaveText(['＿＿', '＿＿']);
+    await expect(page.locator('#dict-vi')).toHaveCount(0);
     await expect(page.locator('#dict-score')).toContainText('Đúng 1/4 từ (25%)');
     await expect(page.locator('#dict-score')).toContainText('1 từ sai chữ');
     await expect(page.locator('#dict-score')).toContainText('2 từ thiếu');
     await expect(page.locator('#dict-status')).toContainText('chưa đạt 80%');
-    // without "Hiện từ đúng" the mistakes' right words stay hidden
-    await page.click('#dict-gear-btn');
-    await page.locator('#opt-show-answer').uncheck();
-    await expect(page.locator('#dict-diff .dx-fix')).toHaveCount(0);
-    await expect(page.locator('#dict-diff .dx-miss').first()).toHaveText('＿＿');
     await page.fill('#dict-input', 'hello there my friend');
     await page.keyboard.press('Enter');
     await expect(page.locator('#dict-status')).toContainText('Correct!');
@@ -2097,38 +2094,43 @@ test.describe('inside the React app', () => {
     expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":true,"matchedWords":4,"totalWords":4');
   });
 
-  test('dictation: a sentence whose answer was seen is saved as not correct', async ({ page }) => {
+  test('dictation: no "Hiện đáp án" — the answer shows only once typed right; Hỏi Lulu gives the meaning, then words', async ({ page }) => {
     const { log } = await open(page, '/app/dictation?sectionId=s1');
     await page.locator('.dict-num-btn').nth(2).waitFor();
-    await page.click('#dict-reveal-btn');
-    await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
+    await expect(page.locator('#dict-reveal-btn')).toHaveCount(0);
+    await expect(page.locator('#opt-show-answer')).toHaveCount(0);
+    await expect(page.locator('.dict-correct-en')).toHaveCount(0);
+    // no meaning until asked
+    await expect(page.locator('#dict-vi-hint')).toHaveCount(0);
+    await expect(page.locator('#dict-lulu-btn')).toHaveText(/Hỏi Lulu \(3\)/);
+    await page.click('#dict-lulu-btn');
+    await expect(page.locator('#dict-lulu-hint')).toContainText('Nghĩa: Xin chào bạn tôi.');
+    // then a word not typed right yet — the longest content word
+    await page.fill('#dict-input', 'hello');
+    await page.keyboard.press('Enter');
+    await page.click('#dict-lulu-btn');
+    await expect(page.locator('#dict-lulu-hint .dx-lulu-word')).toHaveText(['friend']);
+    await page.click('#dict-lulu-btn');
+    await expect(page.locator('#dict-lulu-hint .dx-lulu-word')).toHaveText(['friend', 'there']);
+    await expect(page.locator('#dict-lulu-btn')).toBeDisabled();
+    // the transcript doesn't give it away either
+    await page.click('.dx-tab[data-tab="transcript"]');
+    await expect(page.locator('#dict-transcript-list li').first()).toContainText('Chưa chép đúng');
+    await expect(page.locator('#dict-transcript-list')).not.toContainText('Hello there');
+    await expect(page.locator('#dict-full-text')).toContainText('Transcript hiện khi bạn chép đúng hết 3 câu');
+    await page.click('.dx-tab[data-tab="dictation"]');
     await page.fill('#dict-input', 'Hello there, my friend.');
     await page.click('#dict-check-btn');
-    await expect(page.locator('.dict-peek-note')).toBeVisible();
-    // Leaving through the menu saves too
+    await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
+    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Xin chào bạn tôi.');
+    await expect(page.locator('#dict-lulu-btn')).toHaveCount(0);
+    await page.click('.dx-tab[data-tab="transcript"]');
+    await expect(page.locator('#dict-transcript-list li').first()).toContainText('Hello there, my friend.');
+    await expect(page.locator('.dict-t-vi').first()).toHaveText('Xin chào bạn tôi.');
+    // hints don't take the sentence away: it's saved as right
     await page.evaluate(() => window.__go('/classroom'));
     await expect.poll(() => log.length).toBe(1);
-    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":false,"matchedWords":4,"totalWords":4');
-  });
-
-  test('dictation: the Vietnamese meaning shows while listening and can be turned off', async ({ page }) => {
-    await open(page, '/app/dictation?sectionId=s1');
-    await page.locator('.dict-num-btn').nth(2).waitFor();
-    await expect(page.locator('#dict-vi-hint')).toHaveText('Nghĩa: Xin chào bạn tôi.');
-    // revealed → the meaning moves under the answer
-    await page.fill('#dict-input', 'Hello there, my friend.');
-    await page.click('#dict-check-btn');
-    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Xin chào bạn tôi.');
-    await expect(page.locator('#dict-vi-hint')).toHaveCount(0);
-    await page.click('.dx-tab[data-tab="transcript"]');
-    await expect(page.locator('.dict-t-vi').first()).toHaveText('Xin chào bạn tôi.');
-    await page.click('.dx-tab[data-tab="dictation"]');
-    await page.locator('.dict-num-btn').nth(1).click();
-    await expect(page.locator('#dict-vi-hint')).toHaveText('Nghĩa: Hôm nay trời đẹp.');
-    await page.click('#dict-gear-btn');
-    await page.locator('#opt-show-vi').uncheck();
-    await expect(page.locator('#dict-vi-hint')).toHaveCount(0);
-    expect(await page.evaluate(() => JSON.parse(localStorage.getItem('dictation-prefs-v2')).showVi)).toBe(false);
+    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":true');
   });
 
   test('dictation: a drill ignores digit grouping; pasting is refused', async ({ page }) => {
@@ -2144,52 +2146,44 @@ test.describe('inside the React app', () => {
     await expect(page.locator('#dict-next-sentence-btn')).toBeVisible();
   });
 
-  test('dictation: typed first, then "Hiện đáp án" — a right answer still counts', async ({ page }) => {
-    const { log } = await open(page, '/app/dictation?sectionId=s1');
-    await page.locator('.dict-num-btn').nth(2).waitFor();
-    await page.click('#dict-gear-btn');
-    await page.locator('#opt-autonext').uncheck();
-    await page.click('#dict-gear-btn');
-    await page.fill('#dict-input', 'hello there my friend');
-    await page.click('#dict-reveal-btn');
-    await expect(page.locator('.dict-correct-en')).toHaveText('Hello there, my friend.');
-    await expect(page.locator('.dict-peek-note')).toHaveCount(0);
-    await expect(page.locator('#dict-credit')).toContainText('1/3');
-    await expect(page.locator('.dict-num-btn').first()).not.toHaveClass(/peek/);
-    // a wrong one shown that way is the answer seen first: no credit
+  test('dictation: on a drill Lulu shows the first letters, never more than half', async ({ page }) => {
+    await open(page, '/app/dictation?drill=spelling-1');
+    await page.locator('.dict-num-btn').nth(1).waitFor();
     await page.locator('.dict-num-btn').nth(1).click();
-    await page.fill('#dict-input', 'it is lovely');
-    await page.click('#dict-reveal-btn');
-    await page.fill('#dict-input', 'It is a lovely day.');
-    await page.click('#dict-check-btn');
-    await expect(page.locator('.dx-done-pill')).toContainText('không tính điểm');
-    await expect(page.locator('.dict-num-btn').nth(1)).toHaveClass(/peek/);
-    await expect(page.locator('#dict-credit')).toContainText('1/3');
-    await page.evaluate(() => window.__go('/classroom'));
-    await expect.poll(() => log.length).toBe(1);
-    expect(log[0]).toContain('"sentenceIndex":0,"isCorrect":true');
-    expect(log[0]).toContain('"sentenceIndex":1,"isCorrect":false');
-    // the first check's mistakes go along: "a" left out
-    expect(log[0]).toContain('"mistakes":[{"type":"weak_form","typed":"","word":"a"}');
+    await page.click('#dict-lulu-btn');
+    await expect(page.locator('#dict-lulu-hint .dx-lulu-mask')).toHaveText('S _ _ _ _');
+    await expect(page.locator('#dict-lulu-hint')).toContainText('5 chữ cái');
+    await page.click('#dict-lulu-btn');
+    await page.click('#dict-lulu-btn');
+    await expect(page.locator('#dict-lulu-hint .dx-lulu-mask')).toHaveText('S m _ _ _');
+    // a report never shows the answer of a sentence not typed right yet
+    await page.click('#dict-report-btn');
+    await expect(page.locator('.dx-report-hint')).toHaveCount(0);
   });
 
   test('dictation: a check shows the meaning, what kind of mistakes, and how the sentence links', async ({ page }) => {
     await open(page, '/app/dictation?sectionId=s1');
     await page.locator('.dict-num-btn').nth(2).waitFor();
+    await page.click('#dict-gear-btn');
+    await page.locator('#opt-autonext').uncheck();
+    await page.click('#dict-gear-btn');
     await page.fill('#dict-input', 'hello dere my');
     await page.keyboard.press('Enter');
     await expect(page.locator('#dict-status')).toContainText('Incorrect');
-    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Xin chào bạn tôi.');
+    // not typed right yet: no meaning, no right words in the analysis
+    await expect(page.locator('#dict-vi')).toHaveCount(0);
+    await expect(page.locator('#dict-mistakes')).not.toContainText('there');
     await expect(page.locator('#dict-mistakes li[data-type="sound"]')).toContainText('dere');
     await expect(page.locator('#dict-mistakes li[data-type="sound"]')).toContainText('/θ/ /ð/');
     await expect(page.locator('#dict-mistakes li[data-type="missed"]')).toHaveCount(1);
-    // nothing in it links (a comma pause, then a consonant), so no card
     await expect(page.locator('#dict-linking')).toHaveCount(0);
     await expect(page.locator('.dx-tally')).toContainText('Nghe nhầm âm');
     // the second sentence links "It‿is‿a"
     await page.locator('.dict-num-btn').nth(1).click();
     await page.fill('#dict-input', 'it is a lovely day');
     await page.keyboard.press('Enter');
+    // typed right: the meaning + how it links
+    await expect(page.locator('#dict-vi')).toHaveText('Nghĩa: Hôm nay trời đẹp.');
     await expect(page.locator('#dict-linking .dx-link-notes')).toContainText('It‿is');
     await expect(page.locator('#dict-linking .dx-link-notes')).toContainText('i-tis');
   });

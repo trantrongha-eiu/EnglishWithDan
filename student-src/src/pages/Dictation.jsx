@@ -3,20 +3,23 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../utils/api';
 import { hasPremiumAccess } from '../utils/plan';
 import SearchMatch from '../utils/searchMatch';
-import { bindDict, openUpgrade, siteToast } from '../utils/shell';
+import { bindDict, luluSay, openUpgrade, siteToast } from '../utils/shell';
 import { PASS_RATIO, fmtTime, diffSentence } from '../utils/dictation';
-import { MISTAKE_TYPES, analyzeMistakes, linkingGuide, tallyMistakes } from '../utils/dictationInsights';
+import { LULU_MAX, MISTAKE_TYPES, analyzeMistakes, linkingGuide, luluDrillMask, luluHintWord, tallyMistakes } from '../utils/dictationInsights';
 import Modal from '../components/Modal';
 
 // Homework counts a dictation once this share of its sentences were typed
-// right without looking at the answer (resourceCompletionService
-// PRACTICE_PASS_PERCENT).
+// right (resourceCompletionService PRACTICE_PASS_PERCENT).
 const HOMEWORK_PCT = 50;
 const CAPS_TIP = 'Mẹo thi thật: bật Caps Lock suốt bài Listening — viết IN HOA toàn bộ thì tên riêng không bao giờ bị sai vì viết thường.';
 
 // ⌨️ Luyện Dictation — /app/dictation, ?sectionId= (a Listening section, one
 // audio file) or ?drill= (spelling / numbers clips from many files). The
 // Shadowing page's spelling videos are listed here too and open over there.
+// The student works every sentence out alone: the answer — and whatever
+// gives it away (right words beside wrong ones, the transcript) — shows only
+// once the sentence is typed right. "Hỏi Lulu" gives the Vietnamese meaning
+// or a few words (3 asks); "Bỏ qua" moves on.
 
 const PREFS_KEY = 'dictation-prefs-v2';
 const SPEEDS = [0.75, 1, 1.25, 1.5];
@@ -26,7 +29,7 @@ const CHIPS = [
 ];
 const TIPS = [
   'Luyện ít nhất 30 phút mỗi ngày để tiến bộ nhanh hơn!',
-  'Nghe lại một câu nhiều lần trước khi xem đáp án — phím Ctrl để nghe lại nhanh.',
+  'Nghe lại một câu nhiều lần — phím Ctrl để nghe lại nhanh. Bí quá thì bấm "Hỏi Lulu" lấy gợi ý.',
   'Đánh vần: "double L" = LL, "triple 5" = 555, "oh" = số 0.',
   'Tên riêng phải viết hoa chữ cái đầu — bật Caps Lock suốt bài thi Listening (viết IN HOA hết) là không bao giờ sai.',
   'Số điện thoại: viết theo nhóm 3–4 số trong lúc nghe để không bị sót.',
@@ -43,8 +46,6 @@ function loadPrefs() {
   return {
     autoplay: typeof p.autoplay === 'boolean' ? p.autoplay : true,
     autonext: typeof p.autonext === 'boolean' ? p.autonext : true,
-    showAnswer: typeof p.showAnswer === 'boolean' ? p.showAnswer : true,
-    showVi: typeof p.showVi === 'boolean' ? p.showVi : true,
     loop: typeof p.loop === 'boolean' ? p.loop : false,
     speed: SPEEDS.includes(p.speed) ? p.speed : 1,
   };
@@ -60,9 +61,9 @@ function shake(el) {
 
 const PASS_PCT = Math.round(PASS_RATIO * 100);
 
-// The check, word by word: right words green, a wrong word underlined with
-// the right one beside it, a missing word as a gap, an extra one struck out.
-// With "Hiện từ đúng" off the right words of the mistakes stay hidden.
+// The check, word by word: right words green, a wrong word underlined, a
+// missing word as a gap, an extra one struck out. The right words of the
+// mistakes show only once the sentence is passed (showAnswer).
 function DiffLine({ r, showAnswer, stale }) {
   return (
     <div className={`dx-diff${stale ? ' stale' : ''}`} id="dict-diff">
@@ -111,8 +112,9 @@ function MistakeList({ mistakes, showWord }) {
           return (
             <li key={i} data-type={m.type}>
               <span className="dx-mtag">{t.icon} {t.label}</span> <span className="dx-mpair">{pair}</span>
-              {/* a note may name the right word: hidden until it may be seen */}
-              <div className="dx-mnote">{showWord || m.type === 'case' ? m.note || t.tip : t.tip}</div>
+              {/* a note may name the right word: hidden until it may be seen
+                  (a sound note names only the sound, a case note only the capital) */}
+              <div className="dx-mnote">{showWord || m.type === 'case' || m.type === 'sound' ? m.note || t.tip : t.tip}</div>
             </li>
           );
         })}
@@ -171,7 +173,7 @@ function Meaning({ index, translations, done }) {
 // 🚩 "Báo lỗi câu này": the student picks a reason (set on admin
 // /dictation-reports → Cấu hình) and may describe it; the sentence itself
 // is looked up on the server by lesson + index.
-function ReportModal({ lesson, index, sentence, typed, config, onClose, onSent }) {
+function ReportModal({ lesson, index, sentence, solved, typed, config, onClose, onSent }) {
   const [reason, setReason] = useState('');
   const [note, setNote] = useState('');
   const [sending, setSending] = useState(false);
@@ -214,7 +216,8 @@ function ReportModal({ lesson, index, sentence, typed, config, onClose, onSent }
         </div>
         <textarea className="dx-report-note" id="dict-report-note" rows={3} maxLength={500} value={note} onChange={(e) => setNote(e.target.value)}
           placeholder={needNote ? 'Mô tả lỗi (bắt buộc)…' : 'Mô tả thêm (không bắt buộc) — vd: audio nói "eleven" nhưng đáp án ghi "ten"'} />
-        {lesson.kind === 'drill' && sentence?.answer && <div className="dx-report-hint">Đáp án hiện tại: <b>{sentence.answer}</b></div>}
+        {/* never the answer of a sentence not typed right yet */}
+        {lesson.kind === 'drill' && sentence?.answer && solved && <div className="dx-report-hint">Đáp án hiện tại: <b>{sentence.answer}</b></div>}
       </div>
     </Modal>
   );
@@ -233,17 +236,14 @@ function Practice({ lesson, onBack, reportConfig }) {
 
   const [index, setIndex] = useState(0);
   const [done, setDone] = useState(NO_SET);
-  const [peeked, setPeeked] = useState(NO_SET);
-  // sentences typed right without seeing the answer — what the score and
-  // homework count (once earned, kept)
-  const [credit, setCredit] = useState(NO_SET);
-  // each sentence's mistakes at its FIRST check (later checks are after the
-  // red marks showed the answer) — the "hay nghe sai" tally
+  // each sentence's mistakes at its FIRST check (later ones come after the
+  // red marks and Lulu's hints) — the "hay nghe sai" tally
   const [firstMistakes, setFirstMistakes] = useState({});
+  // 🍊 Hỏi Lulu per sentence: { n: asks used, vi: meaning given, words: [], step: drill letters shown }
+  const [hints, setHints] = useState({});
   const [results, setResults] = useState({});
   const [typed, setTyped] = useState('');
   const [tab, setTab] = useState('dictation');
-  const [showFull, setShowFull] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [clock, setClock] = useState({ ratio: 0, now: 0 });
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -262,7 +262,9 @@ function Practice({ lesson, onBack, reportConfig }) {
   const result = results[index];
   const isDrill = !!sentence?.answer;
   const passed = !!result?.passed;
-  const revealed = passed || showFull;
+  // typed right once: from then on the answer, meaning and linking show
+  const revealed = done.has(index);
+  const hint = hints[index] || { n: 0, vi: false, words: [], step: 0 };
   // typed something new since the last check: its marks are out of date
   const stale = !!result && typed.trim() !== result.typedText;
 
@@ -282,7 +284,7 @@ function Practice({ lesson, onBack, reportConfig }) {
         const pct = d.totalSentences ? Math.round((d.correctCount / d.totalSentences) * 100) : 0;
         siteToast(pct >= HOMEWORK_PCT
           ? `Đã lưu kết quả: ${d.correctCount}/${d.totalSentences} câu đúng (${pct}%) ✓`
-          : `Đã lưu: ${d.correctCount}/${d.totalSentences} câu đúng (${pct}%) — bài tập cần ≥${HOMEWORK_PCT}% câu tự làm đúng, làm lại các câu đã xem đáp án nhé.`,
+          : `Đã lưu: ${d.correctCount}/${d.totalSentences} câu đúng (${pct}%) — bài tập cần ≥${HOMEWORK_PCT}% số câu làm đúng.`,
         pct >= HOMEWORK_PCT ? 'success' : 'warn');
       })
       .catch(() => {
@@ -448,7 +450,6 @@ function Practice({ lesson, onBack, reportConfig }) {
       audio.playbackRate = l.prefs.speed;
     }
     setTyped('');
-    setShowFull(false);
     setClock({ ratio: 0, now: 0 });
     if (window.matchMedia('(min-width: 800px)').matches) inputRef.current?.focus();
     if (!noAutoplay && l.prefs.autoplay) restart(true);
@@ -515,10 +516,7 @@ function Practice({ lesson, onBack, reportConfig }) {
     const r = { ...d, typedText: text, mistakes: analyzeMistakes(d, sentence) };
     setResults((all) => ({ ...all, [index]: r }));
     if (!(index in firstMistakes)) setFirstMistakes((m) => ({ ...m, [index]: r.mistakes }));
-    // a sentence whose answer was seen first doesn't count as right
-    const earned = r.passed && !peeked.has(index);
-    record(earned, r.ok, r.total, r.mistakes);
-    if (earned && !credit.has(index)) setCredit((c) => new Set(c).add(index));
+    record(r.passed, r.ok, r.total, r.mistakes);
     if (!r.passed) {
       shake(inputRef.current);
       window.playWrong?.();
@@ -542,20 +540,32 @@ function Practice({ lesson, onBack, reportConfig }) {
     return r;
   }
 
-  // "Làm lại câu chưa tính điểm": the sentences finished after looking at
-  // the answer go back to undone and unseen, to be typed from listening
-  function redoUncounted() {
-    const redo = [...done].filter((i) => !credit.has(i)).sort((a, b) => a - b);
-    if (!redo.length) return;
-    const drop = (s) => new Set([...s].filter((i) => !redo.includes(i)));
-    setDone(drop);
-    setPeeked(drop);
-    setResults((all) => {
-      const next = { ...all };
-      redo.forEach((i) => { delete next[i]; });
-      return next;
-    });
-    goTo(redo[0]);
+  // 🍊 Hỏi Lulu (3 per sentence) — never the whole answer:
+  //   a sentence: its Vietnamese meaning first, then one word at a time
+  //     (a word not typed right yet, the longest — content words first)
+  //   a drill: the first letters / digits, a few more each ask, at most half
+  function askLulu(e) {
+    if (!sentence || revealed || hint.n >= LULU_MAX) return;
+    const btn = e.currentTarget;
+    let next;
+    let say;
+    if (isDrill) {
+      const m = luluDrillMask(sentence.answer, hint.step + 1);
+      next = { ...hint, n: hint.n + 1, step: hint.step + 1 };
+      say = `Gồm ${m.count} ${m.unit}: ${m.masked}`;
+    } else if (!hint.vi && translations?.[index]) {
+      next = { ...hint, n: hint.n + 1, vi: true };
+      say = `Câu này nghĩa là: “${translations[index]}”`;
+    } else {
+      const okRefs = new Set(result && !stale ? result.tokens.filter((t) => t.kind === 'ok').map((t) => t.r) : []);
+      const word = luluHintWord(sentence.text, okRefs, hint.words);
+      if (!word) { luluSay(btn, 'Cậu gõ được gần hết rồi — nghe lại (Ctrl) thêm lần nữa nha! 🍊'); return; }
+      next = { ...hint, n: hint.n + 1, words: [...hint.words, word] };
+      say = `Trong câu có từ “${word}” đó!`;
+    }
+    setHints((all) => ({ ...all, [index]: next }));
+    luluSay(btn, `${say} 🍊`);
+    inputRef.current?.focus();
   }
 
   function goNext() {
@@ -570,22 +580,6 @@ function Practice({ lesson, onBack, reportConfig }) {
     e.preventDefault();
     if (passed && !stale) { goNext(); return; }
     check();
-  }
-
-  function toggleShowFull(on) {
-    if (on && !passed && typed.trim() && (!result || stale)) {
-      // Typed first, then "Hiện đáp án" to compare: what was typed is graded
-      // before the answer shows, so a right answer still counts (students
-      // used this button as "check" and every sentence scored 0)
-      const r = check();
-      clearTimeout(live.current.autoNext); // stay to look at the answer
-      setShowFull(true);
-      if (r && !r.passed) setPeeked((p) => new Set(p).add(index));
-      return;
-    }
-    setShowFull(on);
-    // A sentence whose answer was seen isn't scored as correct
-    if (on && !passed) setPeeked((p) => new Set(p).add(index));
   }
 
   // Typed from what was heard, never pasted in
@@ -630,16 +624,9 @@ function Practice({ lesson, onBack, reportConfig }) {
             <div className="dict-sidebar-head"><span>Danh sách câu</span> <span id="dict-session-score">{total ? `${done.size}/${total} ✓` : ''}</span></div>
             <div className="dict-num-grid" id="dict-num-grid">
               {sentences.map((_, i) => (
-                <button key={i} className={`dict-num-btn${i === index ? ' current' : ''}${done.has(i) ? ' done' : ''}${done.has(i) && !credit.has(i) ? ' peek' : ''}`}
-                  title={done.has(i) && !credit.has(i) ? 'Đã xem đáp án — không tính điểm' : undefined} data-i={i} onClick={() => goTo(i)}>{i + 1}</button>
+                <button key={i} className={`dict-num-btn${i === index ? ' current' : ''}${done.has(i) ? ' done' : ''}`} data-i={i} onClick={() => goTo(i)}>{i + 1}</button>
               ))}
             </div>
-            {total > 0 && (
-              <div className="dx-credit" id="dict-credit">
-                Tính điểm: <b>{credit.size}/{total}</b> câu tự làm đúng
-                {done.size > credit.size && <span className="dx-credit-peek"> · <i /> {done.size - credit.size} câu xem đáp án</span>}
-              </div>
-            )}
             <MistakeTally tally={tallyMistakes(Object.values(firstMistakes))} title="Bạn hay sai:" />
           </div>
 
@@ -648,9 +635,7 @@ function Practice({ lesson, onBack, reportConfig }) {
               <button className="dict-nav-arrow" id="dict-prev-btn" title="Câu trước" disabled={index === 0} onClick={() => goTo(index - 1)}><i className="fas fa-arrow-left" /></button>
               <span className="dict-counter">Câu <span id="dict-cur-num">{index + 1}</span>/<span id="dict-total-num">{total || 1}</span></span>
               <button className="dict-nav-arrow" id="dict-next-btn" title="Câu sau" disabled={index >= total - 1} onClick={() => goTo(index + 1)}><i className="fas fa-arrow-right" /></button>
-              {done.has(index) && (credit.has(index)
-                ? <span className="dx-done-pill"><i className="fas fa-check" /> Đã xong</span>
-                : <span className="dx-done-pill peek" title="Câu này đã xem đáp án trước khi làm đúng"><i className="fas fa-eye" /> Đã xong · không tính điểm</span>)}
+              {done.has(index) && <span className="dx-done-pill"><i className="fas fa-check" /> Đã xong</span>}
               {canReport && total > 0 && (
                 <button className={`dx-report-btn${reported.has(index) ? ' sent' : ''}`} id="dict-report-btn"
                   title={reported.has(index) ? 'Bạn đã báo lỗi câu này — bấm để sửa lại báo lỗi' : 'Báo lỗi câu này (đáp án sai, audio bị cắt…)'}
@@ -663,10 +648,6 @@ function Practice({ lesson, onBack, reportConfig }) {
                 <div className={`dict-settings${settingsOpen ? ' show' : ''}`} id="dict-settings">
                   <label className="dict-check"><input type="checkbox" id="opt-autoplay" checked={prefs.autoplay} onChange={(e) => changePrefs({ autoplay: e.target.checked })} /> Tự phát khi sang câu mới</label>
                   <label className="dict-check"><input type="checkbox" id="opt-autonext" checked={prefs.autonext} onChange={(e) => changePrefs({ autonext: e.target.checked })} /> Đúng 100% thì tự sang câu tiếp</label>
-                  <label className="dict-check"><input type="checkbox" id="opt-show-answer" checked={prefs.showAnswer} onChange={(e) => changePrefs({ showAnswer: e.target.checked })} /> Hiện từ đúng bên cạnh từ sai</label>
-                  {lesson.kind === 'section' && (
-                    <label className="dict-check"><input type="checkbox" id="opt-show-vi" checked={prefs.showVi} onChange={(e) => changePrefs({ showVi: e.target.checked })} /> Hiện nghĩa tiếng Việt trong lúc nghe</label>
-                  )}
                   <div className="dict-settings-note">Phím tắt: <kbd>Enter</kbd> kiểm tra / câu tiếp · <kbd>Shift</kbd>+<kbd>Enter</kbd> xuống dòng · <kbd>Ctrl</kbd> nghe lại câu</div>
                 </div>
               </div>
@@ -691,66 +672,65 @@ function Practice({ lesson, onBack, reportConfig }) {
             </div>
 
             <div className="dict-prompt" id="dict-prompt">{isDrill && prompt}</div>
-            {/* "Hiện nghĩa tiếng Việt": the sentence's meaning while it's being listened to —
-                once it's revealed the meaning shows under the answer instead */}
-            {!isDrill && prefs.showVi && !revealed && !result && translations?.[index] && (
-              <div className="dict-vi-hint" id="dict-vi-hint"><b>Nghĩa:</b> {translations[index]}</div>
-            )}
             <textarea className="dict-input" id="dict-input" ref={inputRef} placeholder="Gõ những gì bạn nghe được rồi nhấn Enter..."
               autoComplete="off" autoCapitalize="off" spellCheck={false} value={typed}
               onChange={(e) => { live.current.lastKey = Date.now(); setTyped(e.target.value); }}
               onKeyDown={onInputKey} onPaste={blockPaste} onDrop={blockDrop} onDragOver={(e) => e.preventDefault()} />
 
-            {result && !showFull && <DiffLine r={result} showAnswer={prefs.showAnswer} stale={stale} />}
-            {result && !showFull && <ScoreLine r={result} />}
+            {/* what Lulu has told about this sentence so far (until it's typed right) */}
+            {!revealed && hint.n > 0 && (
+              <div className="dx-lulu-hint" id="dict-lulu-hint">
+                <span className="dx-lulu-title">🍊 Lulu gợi ý:</span>
+                {hint.vi && translations?.[index] && <div><b>Nghĩa:</b> {translations[index]}</div>}
+                {!!hint.words.length && <div><b>Có các từ:</b> {hint.words.map((w) => <span key={w} className="dx-lulu-word">{w}</span>)}</div>}
+                {isDrill && hint.step > 0 && (() => {
+                  const m = luluDrillMask(sentence.answer, hint.step);
+                  return <div><span className="dx-lulu-mask">{m.masked}</span> <span className="dx-lulu-count">({m.count} {m.unit})</span></div>;
+                })()}
+              </div>
+            )}
+
+            {result && <DiffLine r={result} showAnswer={revealed} stale={stale} />}
+            {result && <ScoreLine r={result} />}
             {result && (
               <div className={`dict-status dx-verdict${passed ? ' ok' : ' bad'}`} id="dict-status">
                 {result.perfect && <><i className="fas fa-circle-check" /> Correct! Chính xác 100%.</>}
                 {passed && !result.perfect && <><i className="fas fa-circle-check" /> Đạt {Math.round(result.ratio * 100)}%, câu đã xong. Sửa các từ tô đỏ rồi bấm Kiểm tra lại, hoặc sang câu tiếp.</>}
                 {!passed && !!result.caseErrors?.length && <><i className="fas fa-triangle-exclamation" /> Incorrect — tên riêng phải <b>viết hoa chữ cái đầu</b>: {result.caseErrors.map((c) => `${c.typed} → ${c.word}`).join(', ')}.</>}
-                {!passed && !result.caseErrors?.length && <><i className="fas fa-triangle-exclamation" /> Incorrect — {isDrill ? 'tên / con số phải đúng hết.' : `chưa đạt ${PASS_PCT}%. Nghe lại (Ctrl) rồi sửa các từ tô đỏ.`}</>}
+                {!passed && !result.caseErrors?.length && <><i className="fas fa-triangle-exclamation" /> Incorrect — {isDrill ? 'tên / con số phải đúng hết.' : `chưa đạt ${PASS_PCT}%. Nghe lại (Ctrl) rồi sửa các từ tô đỏ — bí thì bấm "Hỏi Lulu".`}</>}
               </div>
             )}
             {result && !!result.caseErrors?.length && <div className="dx-caps-tip" id="dict-caps-tip">💡 {CAPS_TIP}</div>}
-            {result && !showFull && <MistakeList mistakes={result.mistakes || []} showWord={prefs.showAnswer || revealed} />}
-            {/* the meaning as soon as the sentence is checked, right or not */}
-            {!isDrill && result && !revealed && <Meaning index={index} translations={translations} done />}
+            {result && <MistakeList mistakes={result.mistakes || []} showWord={revealed} />}
 
+            {/* typed right: the answer, its meaning and how it links */}
             <div className="dict-reveal" id="dict-reveal">
               {sentence && revealed && (
                 <>
                   {isDrill && <div className="dict-reveal-answer">{sentence.answer}</div>}
                   <div className="dict-correct-en">{sentence.text}</div>
-                  {!isDrill && <Meaning index={index} translations={translations} done={passed} />}
-                  {passed && peeked.has(index) && <div className="dict-peek-note">Câu này đã xem đáp án nên không tính điểm.</div>}
+                  {!isDrill && <Meaning index={index} translations={translations} done />}
                 </>
               )}
             </div>
-            {/* how it's said — words the answer would give away wait for the answer / "Hiện từ đúng" */}
-            {!isDrill && sentence && (revealed || (result && prefs.showAnswer)) && <LinkingCard text={sentence.text} />}
+            {!isDrill && sentence && revealed && <LinkingCard text={sentence.text} />}
 
             <div className="dx-actions">
               {passed && !stale
                 ? <button className="dict-btn dict-btn-ok" id="dict-next-sentence-btn" onClick={goNext}>Câu tiếp (Enter)</button>
                 : <button className="dict-btn dict-btn-primary" id="dict-check-btn" onClick={check}>{result ? 'Kiểm tra lại' : 'Kiểm tra'} (Enter)</button>}
               {passed && !stale && !result.perfect && <button className="dict-btn dict-btn-ghost" id="dict-recheck-btn" onClick={check}>Kiểm tra lại</button>}
-              <button className={`dict-btn dict-btn-ghost${showFull ? ' active' : ''}`} id="dict-reveal-btn" onClick={() => toggleShowFull(!showFull)}
-                title={showFull ? undefined : 'Phần bạn đã gõ được chấm trước rồi mới hiện đáp án. Xem đáp án khi chưa làm đúng thì câu đó không tính điểm.'}>{showFull ? 'Ẩn đáp án' : 'Hiện đáp án'}</button>
+              {!revealed && (
+                <button className="dict-btn dict-btn-ghost ask-lulu" id="dict-lulu-btn" disabled={hint.n >= LULU_MAX} onClick={askLulu}
+                  title={isDrill ? 'Hỏi Lulu: vài chữ cái / chữ số đầu' : 'Hỏi Lulu: nghĩa tiếng Việt, rồi vài từ trong câu'}>
+                  <span className="ask-lulu-ic" /> Hỏi Lulu ({LULU_MAX - hint.n})
+                </button>
+              )}
               {!passed && <button className="dict-btn dict-btn-ghost" id="dict-skip-btn" onClick={skip}>Bỏ qua</button>}
             </div>
             {total > 0 && done.size === total && (
               <div className="dx-summary" id="dict-summary">
-                <div className="dx-summary-score">
-                  🎉 Xong cả bài! Tính điểm: <b>{credit.size}/{total}</b> câu ({Math.round((credit.size / total) * 100)}%)
-                  {credit.size / total >= HOMEWORK_PCT / 100
-                    ? <span className="dx-summary-ok"> — đạt yêu cầu bài tập ✓</span>
-                    : <span className="dx-summary-low"> — bài tập cần ≥{HOMEWORK_PCT}% câu tự làm đúng (không xem đáp án trước).</span>}
-                </div>
-                {done.size > credit.size && (
-                  <button className="dict-btn dict-btn-primary" id="dict-redo-btn" onClick={redoUncounted}>
-                    <i className="fas fa-rotate-right" /> Làm lại {done.size - credit.size} câu chưa tính điểm
-                  </button>
-                )}
+                <div className="dx-summary-score">🎉 Xong cả bài! Cậu tự chép đúng cả <b>{total}</b> câu — đạt yêu cầu bài tập ✓</div>
                 <MistakeTally tally={tallyMistakes(Object.values(firstMistakes))} title="Lỗi hay gặp trong bài:" />
               </div>
             )}
@@ -763,13 +743,15 @@ function Practice({ lesson, onBack, reportConfig }) {
         </div>
 
         <div className={`dict-pane${tab === 'transcript' ? '' : ' hidden'}`} id="dict-pane-transcript">
-          <p className="dict-transcript-note">Bấm vào một câu để quay lại luyện câu đó.</p>
+          <p className="dict-transcript-note">Câu nào chép đúng rồi mới hiện ở đây. Bấm vào một câu để luyện câu đó.</p>
           <ol className="dict-transcript-list" id="dict-transcript-list">
             {tab === 'transcript' && sentences.map((s, i) => (
-              <li key={i} className={`${done.has(i) ? 'done' : ''}${i === index ? ' current' : ''}`} onClick={() => { setTab('dictation'); goTo(i); }}>
-                {s.answer && <><b className="dict-t-answer">{s.answer}</b> — </>}{s.text}
+              <li key={i} className={`${done.has(i) ? 'done' : 'locked'}${i === index ? ' current' : ''}`} onClick={() => { setTab('dictation'); goTo(i); }}>
+                {done.has(i)
+                  ? <>{s.answer && <><b className="dict-t-answer">{s.answer}</b> — </>}{s.text}</>
+                  : <span className="dict-t-locked"><i className="fas fa-lock" /> Chưa chép đúng — bấm để luyện</span>}
                 {s.sourceTitle && <> <span className="dict-t-src">{s.sourceTitle}</span></>}
-                {prefs.showVi && translations?.[i] && <div className="dict-t-vi">{translations[i]}</div>}
+                {done.has(i) && translations?.[i] && <div className="dict-t-vi">{translations[i]}</div>}
                 {canReport && (
                   <button className={`dict-t-report${reported.has(i) ? ' sent' : ''}`} title={`Báo lỗi câu ${i + 1}`} aria-label={`Báo lỗi câu ${i + 1}`}
                     onClick={(e) => { e.stopPropagation(); openReport(i); }}><i className="fas fa-flag" /></button>
@@ -791,13 +773,18 @@ function Practice({ lesson, onBack, reportConfig }) {
         <summary>Full Audio &amp; Plain Transcript</summary>
         <div className="dict-full-body">
           <audio id="dict-full-audio" ref={fullAudioRef} controls preload="none" src={lesson.kind === 'section' ? lesson.audioUrl : undefined} />
-          <div className="dict-full-text" id="dict-full-text">{paragraphs.map((p, i) => <p key={i}>{p}</p>)}</div>
+          {/* the whole text = every answer: only once the lesson is done */}
+          <div className="dict-full-text" id="dict-full-text">
+            {total > 0 && done.size === total
+              ? paragraphs.map((p, i) => <p key={i}>{p}</p>)
+              : <p className="dict-t-locked"><i className="fas fa-lock" /> Transcript hiện khi bạn chép đúng hết {total} câu.</p>}
+          </div>
         </div>
       </details>
 
       <audio id="dict-audio" ref={audioRef} preload="metadata" />
       {reportFor !== null && sentences[reportFor] && (
-        <ReportModal lesson={lesson} index={reportFor} sentence={sentences[reportFor]} config={reportConfig}
+        <ReportModal lesson={lesson} index={reportFor} sentence={sentences[reportFor]} solved={done.has(reportFor)} config={reportConfig}
           typed={reportFor === index ? typed : ''} onClose={() => setReportFor(null)}
           onSent={(i) => setReported((s) => new Set(s).add(i))} />
       )}

@@ -2,10 +2,47 @@
 //   analyzeMistakes — each wrong word sorted into a kind of listening
 //                     mistake (ending -s, weak form, th-sound, teen/ty…)
 //   linkingGuide    — how the sentence links when spoken (nối âm)
+//   luluHintWord / luluDrillMask — "Hỏi Lulu" hints (the answer itself is
+//                     never shown before the sentence is typed right)
 // All rule-based from spelling, so it works offline and instantly; the
 // sound rules are approximations of standard British speech, shown as tips.
 
-import { normWord } from './dictation';
+import { dictWords, normWord } from './dictation';
+
+// ── Hỏi Lulu ───────────────────────────────────────────────────────────
+
+// Asks per sentence (as on the site's other graded drills)
+export const LULU_MAX = 3;
+
+// One word of the sentence to give away: one not typed right at the last
+// check (`okRefs`), not given before, the longest such — content words
+// first; the small weak-form words are left for the student to catch.
+export function luluHintWord(text, okRefs, given) {
+  const words = dictWords(text).map((w) => w.replace(/^[^\w'’]+|[^\w'’]+$/g, ''));
+  const taken = new Set(given.map((w) => w.toLowerCase()));
+  const open = words.map((w, r) => ({ w, r }))
+    .filter(({ w, r }) => w && !okRefs.has(r) && !taken.has(w.toLowerCase()));
+  const content = open.filter(({ w }) => !FUNCTION_WORDS.has(normWord(w)));
+  const pool = content.length ? content : open;
+  if (!pool.length) return '';
+  return pool.reduce((best, x) => (x.w.length > best.w.length ? x : best)).w;
+}
+
+// A drill answer with only its first letters / digits shown — `step` asks
+// show more, never more than half: "K _ _ _ _ _"
+export function luluDrillMask(answer, step) {
+  const chars = [...String(answer || '')].filter((ch) => /[A-Za-z0-9]/.test(ch));
+  const shown = Math.min(Math.floor(chars.length / 2), Math.ceil((chars.length * step) / 6));
+  let k = 0;
+  const masked = String(answer || '').split(/\s+/).filter(Boolean).map((word) => [...word].map((ch) => {
+    if (!/[A-Za-z0-9]/.test(ch)) return ch;
+    k += 1;
+    return k <= shown ? ch : '_';
+  }).join(' ')).join('   ');
+  const digits = chars.every((ch) => /\d/.test(ch));
+  const letters = chars.every((ch) => /[A-Za-z]/.test(ch));
+  return { masked, count: chars.length, unit: digits ? 'chữ số' : letters ? 'chữ cái' : 'ký tự' };
+}
 
 // The mistake kinds. `tip` is the default advice; some mistakes bring a
 // more specific `note` of their own (which two sounds were confused).
