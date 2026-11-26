@@ -25,6 +25,7 @@ const User = require('../models/User');
 const Message = require('../models/Message');
 const Block = require('../models/Block');
 const bank = require('./vocabBattleBank');
+const presence = require('./presenceService');
 const { getVNDay } = require('../utils/streak');
 const { isFlameRole } = require('../constants/shop');
 const R = require('../constants/vocabBattle');
@@ -336,6 +337,13 @@ function view(b, viewerId, now = new Date()) {
 }
 
 // ── actions ────────────────────────────────────────────────────────
+function gameText(b) {
+  const c = b.config || {};
+  return b.kind === 'chain'
+    ? `Nối chữ (${c.count} từ, ${c.turnSeconds}s/lượt)`
+    : `${c.count} câu: ${(c.types || []).map((t) => (R.QUESTION_TYPES[t] || { label: t }).label).join(', ')}`;
+}
+
 function openCount(userId) {
   return VocabBattle.countDocuments({
     status: { $in: OPEN },
@@ -369,6 +377,13 @@ async function create(userId, body = {}) {
 
   await sweepDue();
   if (!solo && (await openCount(userId)) >= R.MAX_OPEN) return { status: 'limit', max: R.MAX_OPEN };
+  // Someone mid-test (js/shared/battle-invites.js reports it): the host is
+  // warned first and re-sends with confirmBusy. Exam-mode ones only see the
+  // popup once they've finished.
+  if (!solo && body.confirmBusy !== true) {
+    const busy = rivals.map((u) => ({ id: sid(u._id), name: displayName(u), activity: presence.get(u._id) })).filter((x) => x.activity);
+    if (busy.length) return { status: 'opponent_busy', busy };
+  }
 
   const config = { types: [], count, source, lessonId: '', lessonTitle: '', turnSeconds: 15, lives: 2 };
   let questions = [];
@@ -428,9 +443,7 @@ async function create(userId, body = {}) {
   }
 
   if (solo) return { status: 'ok', battle: view(b.toObject(), userId, now) };
-  const game = kind === 'chain'
-    ? `Nối chữ (${count} từ, ${config.turnSeconds}s/lượt)`
-    : `${count} câu: ${config.types.map((t) => R.QUESTION_TYPES[t].label).join(', ')}`;
+  const game = gameText(b);
   const bet = stake ? `Cược ${stake} 🔥 — người thắng ẵm cả pot!` : 'Trận giao hữu — người thắng được thưởng 🔥.';
   for (const id of ids) {
     await notify(userId, hostName, id, `⚔️ ${hostName} thách đấu từ vựng với bạn!`,
@@ -733,6 +746,35 @@ async function sweepDue() {
   return due.length;
 }
 
+// Invites still waiting for this student's answer — polled every ~10 s on
+// every page by js/shared/battle-invites.js, which pops them up ("Vào trận
+// ngay"). The same poll reports what the student is doing (`activity`,
+// services/presenceService.js) so an inviter can be warned.
+async function pendingInvites(userId, activity) {
+  if (activity !== undefined) presence.set(userId, activity);
+  const now = new Date();
+  const rows = await VocabBattle.find({
+    memberIds: userId, status: 'open', solo: { $ne: true }, expiresAt: { $gt: now },
+    players: { $elemMatch: { userId, state: 'invited' } },
+  }).select('kind stake config players hostId expiresAt createdAt').sort({ createdAt: -1 }).limit(5).lean();
+  return rows.map((b) => {
+    const host = b.players.find((p) => sid(p.userId) === sid(b.hostId)) || {};
+    return {
+      id: sid(b._id),
+      kind: b.kind,
+      stake: b.stake || 0,
+      game: gameText(b),
+      fromName: host.name || 'Một bạn',
+      fromAvatar: host.avatar || '',
+      others: b.players
+        .filter((p) => ![sid(userId), sid(b.hostId)].includes(sid(p.userId)) && p.state !== 'declined')
+        .map((p) => p.name),
+      createdAt: b.createdAt,
+      expiresAt: b.expiresAt,
+    };
+  });
+}
+
 // Who can be invited: classmates first, then anyone matching `q`
 async function players(userId, q) {
   const { userSearchFilter } = require('../utils/userSearch');
@@ -763,6 +805,7 @@ async function players(userId, q) {
       avatar: u.avatar || '',
       classmate: !!cls && u.className === cls,
       online: !!u.lastSeen && now - new Date(u.lastSeen) < 5 * 60 * 1000,
+      busy: presence.get(u._id, now), // mid Listening/Reading test → the form warns
     }))
     .sort((a, b) => (b.online - a.online) || (b.classmate - a.classmate) || a.name.localeCompare(b.name, 'vi'))
     .slice(0, 40);
@@ -780,6 +823,6 @@ function rules() {
 }
 
 module.exports = {
-  create, respond, cancel, leave, get, next, answer, start, playWord, review, list, players, rules, sweepDue,
+  create, respond, cancel, leave, get, next, answer, start, playWord, review, list, players, rules, sweepDue, pendingInvites,
   _internal: { tick, finish, view, mutate },
 };

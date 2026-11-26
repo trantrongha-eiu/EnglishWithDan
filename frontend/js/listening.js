@@ -579,6 +579,14 @@ function showScreen(name) {
     // Exam screen uses the computer-delivered-test footer instead of
     // #section-nav-fixed (css/cd-exam.css keys off this class).
     document.body.classList.toggle('cd-exam-on', name === 'exam');
+    // Mid-test → ⚔️ invite popups wait during exam mode, inviters are warned (js/shared/battle-invites.js)
+    if (window.EwdActivity) {
+        let _act = null;
+        if (name === 'exam') _act = { skill: 'listening', mode: _mockMode ? 'simulation' : state.mode };
+        else if (name === 'practice') _act = { skill: 'listening', mode: typeof _ltPracticeMode !== 'undefined' ? _ltPracticeMode : 'practice' };
+        else if (name === 'gapfill') _act = { skill: 'listening', mode: 'practice' };
+        window.EwdActivity.set(_act);
+    }
     if (typeof window.hideTopNav === 'function') {
         name === 'list' ? window.showTopNav() : window.hideTopNav();
     }

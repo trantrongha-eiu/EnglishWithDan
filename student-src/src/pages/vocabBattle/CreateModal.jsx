@@ -7,6 +7,18 @@ import Avatar from './Avatar';
 //   solo=false → "Mời bạn": opponents (1–3), how many, word source, stake
 //   solo=true  → "Chơi một mình": just how many + word source (Nối chữ: vs Lulu 🤖)
 // `initialPicked` = opponents already chosen (⚔️ on a BXH row).
+// Someone mid Listening/Reading test (`busy`, backend/services/presenceService.js)
+// gets a "📝 đang thi / đang luyện đề" tag and a warning; the server also
+// asks for a confirm (code opponent_busy) before inviting them.
+
+// "đang làm đề Reading (chế độ thi): …" — what the invitee will see
+function busyLine(a) {
+  if (!a) return '';
+  return a.mode === 'simulation'
+    ? `đang làm ${a.label} — lời mời chỉ hiện popup khi bạn ấy làm xong bài.`
+    : `đang làm ${a.label} — popup lời mời sẽ hiện ngay, có thể làm bạn ấy mất tập trung.`;
+}
+
 export default function CreateModal({ game, solo, rules, wallet, initialPicked = [], onClose, onCreated }) {
   const kind = game.kind;
   const [q, setQ] = useState('');
@@ -22,6 +34,9 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
   const [stake, setStake] = useState(0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  // Picked opponents who are mid Listening/Reading test (the server said so
+  // on create) → confirm before the invite goes out
+  const [busyWarn, setBusyWarn] = useState(null); // [{ id, name, activity: { mode, label } }]
   const seq = useRef(0);
 
   // Only the word sources that can feed this game
@@ -68,6 +83,7 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
   const mix = kind === 'quiz' && !game.types;
 
   function toggle(p) {
+    setBusyWarn(null);
     setPicked((cur) => {
       if (cur.some((x) => x.id === p.id)) return cur.filter((x) => x.id !== p.id);
       if (cur.length >= maxPick) return cur;
@@ -78,16 +94,19 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
     setTypes((cur) => (cur.includes(key) ? cur.filter((x) => x !== key) : [...cur, key]));
   }
 
-  async function submit() {
+  // confirmBusy: the host saw the "đang làm đề" warning and still invites
+  async function submit(confirmBusy = false) {
     setError('');
+    setBusyWarn(null);
     if (!solo && !picked.length) { setError('Chọn ít nhất 1 bạn để thách đấu.'); return; }
     if (kind === 'quiz' && !usable.length) { setError('Chọn ít nhất 1 dạng câu hỏi.'); return; }
     setBusy(true);
     const d = await battleApi('POST', '', {
       kind, solo, opponents: solo ? [] : picked.map((p) => p.id), stake: solo ? 0 : stake, count,
-      types: usable, source, lessonId: lessonId || undefined, turnSeconds, lives,
+      types: usable, source, lessonId: lessonId || undefined, turnSeconds, lives, confirmBusy,
     });
     setBusy(false);
+    if (d.code === 'opponent_busy' && Array.isArray(d.busy)) { setBusyWarn(d.busy); return; }
     if (!d.success) { setError(d.message || 'Không tạo được trận.'); return; }
     onCreated(d.battle);
   }
@@ -100,11 +119,22 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
       title={`${solo ? '🎯 Chơi một mình' : '⚔️ Mời bạn thách đấu'}: ${game.emoji} ${game.name}`}
       onClose={onClose}
       size={solo ? 'modal-sm' : 'modal-lg'}
-      footer={(
+      footer={busyWarn ? (
+        <div className="vb-busy-confirm" role="alert">
+          <div className="vb-busy-text">
+            {busyWarn.map((b) => <div key={b.id}>📝 <b>{b.name}</b> {busyLine(b.activity)}</div>)}
+            <div className="vb-muted">Vẫn gửi lời mời?</div>
+          </div>
+          <div className="vb-busy-btns">
+            <button className="btn btn-ghost" onClick={() => setBusyWarn(null)}>Để sau</button>
+            <button className="btn btn-primary" onClick={() => submit(true)} disabled={busy}>{busy ? 'Đang tạo…' : 'Vẫn mời'}</button>
+          </div>
+        </div>
+      ) : (
         <>
           {error && <span className="vb-form-err">{error}</span>}
           <button className="btn btn-ghost" onClick={onClose}>Huỷ</button>
-          <button className="btn btn-primary" onClick={submit} disabled={busy}>{cta}</button>
+          <button className="btn btn-primary" onClick={() => submit(false)} disabled={busy}>{cta}</button>
         </>
       )}
     >
@@ -123,6 +153,9 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
                 ))}
               </div>
             )}
+            {picked.filter((p) => p.busy).map((p) => (
+              <div key={p.id} className="vb-busy-note">⚠️ <b>{p.name}</b> {busyLine(p.busy)}</div>
+            ))}
             <input className="vb-input" placeholder="🔍 Tìm theo tên…" value={q} onChange={(e) => setQ(e.target.value)} />
             <div className="vb-people">
               {players === null && <div className="vb-muted">Đang tải…</div>}
@@ -135,6 +168,11 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
                     <Avatar p={p} small online={p.online} />
                     <span className="vb-person-name">{p.name}</span>
                     {p.classmate && <span className="vb-tag">cùng lớp</span>}
+                    {p.busy && (
+                      <span className="vb-tag vb-tag--busy" title={`Đang làm ${p.busy.label}`}>
+                        📝 {p.busy.mode === 'simulation' ? 'đang thi' : 'đang luyện đề'}
+                      </span>
+                    )}
                     <span className="vb-check">{on ? '✓' : '+'}</span>
                   </button>
                 );

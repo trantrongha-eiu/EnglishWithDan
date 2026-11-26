@@ -585,6 +585,13 @@ function showScreen(name) {
   });
   const el = document.getElementById(`screen-${name}`);
   if (el) { el.classList.remove('hidden'); el.classList.add('active'); }
+  // Mid-test → ⚔️ invite popups wait during exam mode, inviters are warned (js/shared/battle-invites.js)
+  if (window.EwdActivity) {
+    let act = null;
+    if (name === 'exam') act = { skill: 'reading', mode: _mockMode ? 'simulation' : state.mode };
+    else if (name === 'retry') act = { skill: 'reading', mode: (_retryState && _retryState.mode) || 'practice' };
+    window.EwdActivity.set(act);
+  }
   if (typeof window.hideTopNav === 'function') {
     name === 'list' ? window.showTopNav() : window.hideTopNav();
   }

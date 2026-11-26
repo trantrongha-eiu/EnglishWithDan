@@ -16,9 +16,12 @@ const limit = (windowMs, max) => rateLimit({
 const createLimiter = limit(15 * 60 * 1000, 20);
 // A room polls every ~2s and a player answers fast
 const playLimiter = limit(60 * 1000, 150);
+// Every open tab polls ~every 10 s (js/shared/battle-invites.js)
+const inviteLimiter = limit(60 * 1000, 40);
 
 router.get('/', auth, ctrl.list);
 router.get('/players', auth, ctrl.players);
+router.get('/invites', auth, inviteLimiter, ctrl.invites);
 router.get('/lessons', auth, ctrl.lessons);
 router.get('/leaderboard', auth, ctrl.leaderboard);
 router.post('/', auth, createLimiter, ctrl.create);

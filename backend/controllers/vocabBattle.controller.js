@@ -3,6 +3,7 @@ const svc = require('../services/vocabBattleService');
 const bank = require('../services/vocabBattleBank');
 const R = require('../constants/vocabBattle');
 const lb = require('../services/vocabBattleLeaderboard');
+const presence = require('../services/presenceService');
 
 // ⚔️ Đấu trường từ vựng — /api/vocab-battle (services/vocabBattleService.js)
 const MESSAGES = {
@@ -38,6 +39,7 @@ const MESSAGES = {
   chain_blocked: [400, 'Từ này không dùng trong trò chơi nhé 🙂'],
   not_finished: [400, 'Làm xong lượt của bạn rồi mới xem đáp án nhé.'],
   busy: [409, 'Máy chủ đang bận, thử lại nhé.'],
+  opponent_busy: [409, 'Có bạn đang làm đề luyện tập — xác nhận trước khi mời nhé.'],
 };
 
 function send(res, result) {
@@ -66,6 +68,15 @@ exports.leaderboard = catchAsync(async (req, res) => {
 });
 exports.players = catchAsync(async (req, res) => {
   send(res, { status: 'ok', players: await svc.players(req.user._id, String(req.query.q || '').slice(0, 60)) });
+});
+// js/shared/battle-invites.js — every page, ~10 s: pending invites + what
+// this student is doing (?act=listening|reading|none&mode=practice|simulation)
+exports.invites = catchAsync(async (req, res) => {
+  const q = req.query || {};
+  // act=none → the test ended; no act → this tab knows nothing (another tab may be mid-test)
+  const act = String(q.act || '');
+  const activity = act === 'none' ? null : (presence.parse({ act, mode: String(q.mode || '') }) || undefined);
+  send(res, { status: 'ok', invites: await svc.pendingInvites(req.user._id, activity) });
 });
 exports.lessons = catchAsync(async (req, res) => {
   const [lessons, stats] = await Promise.all([bank.lessonOptions(), bank.bankStats()]);

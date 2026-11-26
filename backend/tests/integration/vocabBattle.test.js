@@ -426,6 +426,67 @@ describe('/api/vocab-battle', () => {
     expect(res.body.players.find((p) => p.id === String(mate._id)).classmate).toBe(true);
   });
 
+  describe('📨 invite popup + "đang làm đề" (js/shared/battle-invites.js)', () => {
+    const presence = require('../../services/presenceService');
+    beforeEach(() => presence._reset());
+    const quiz = (host, rival, extra = {}) => request(app).post('/api/vocab-battle').set(auth(host))
+      .send({ kind: 'quiz', opponents: [String(rival._id)], stake: 0, count: 10, source: 'all', types: ['meaning'], ...extra });
+
+    test('the invitee polls their pending invites; answered ones drop out', async () => {
+      const a = await createStudent({ extra: { firstName: 'An' } });
+      const b = await createStudent({ extra: { firstName: 'Bình' } });
+      const created = await quiz(a, b);
+      expect(created.status).toBe(200);
+      const id = created.body.battle.id;
+
+      let res = await request(app).get('/api/vocab-battle/invites').set(auth(b));
+      expect(res.status).toBe(200);
+      expect(res.body.invites).toHaveLength(1);
+      expect(res.body.invites[0]).toMatchObject({ id, kind: 'quiz', stake: 0, fromName: expect.stringContaining('An') });
+      expect(res.body.invites[0].game).toMatch(/10 câu/);
+      // The host has nothing to answer
+      expect((await request(app).get('/api/vocab-battle/invites').set(auth(a))).body.invites).toHaveLength(0);
+
+      await request(app).post(`/api/vocab-battle/${id}/decline`).set(auth(b));
+      res = await request(app).get('/api/vocab-battle/invites').set(auth(b));
+      expect(res.body.invites).toHaveLength(0);
+    });
+
+    test('mid-test: the players list tags them and inviting asks for a confirm first', async () => {
+      const a = await createStudent({ extra: { className: 'K2', firstName: 'An' } });
+      const b = await createStudent({ extra: { className: 'K2', firstName: 'Bình' } });
+      await request(app).get('/api/vocab-battle/invites?act=reading&mode=simulation').set(auth(b));
+
+      const list = await request(app).get('/api/vocab-battle/players').set(auth(a));
+      expect(list.body.players.find((p) => p.id === String(b._id)).busy)
+        .toMatchObject({ skill: 'reading', mode: 'simulation', label: 'đề Reading (chế độ thi)' });
+
+      let res = await quiz(a, b);
+      expect(res.status).toBe(409);
+      expect(res.body.code).toBe('opponent_busy');
+      expect(res.body.busy).toEqual([expect.objectContaining({ id: String(b._id), activity: expect.objectContaining({ mode: 'simulation' }) })]);
+      expect(await VocabBattle.countDocuments({ hostId: a._id })).toBe(0);
+
+      res = await quiz(a, b, { confirmBusy: true });
+      expect(res.status).toBe(200);
+
+      // A poll without act (another tab) keeps it; act=none clears it
+      await request(app).get('/api/vocab-battle/invites').set(auth(b));
+      expect(presence.get(b._id)).toMatchObject({ skill: 'reading' });
+      await request(app).get('/api/vocab-battle/invites?act=none').set(auth(b));
+      expect(presence.get(b._id)).toBeNull();
+      const c = await createStudent();
+      expect((await quiz(c, b)).status).toBe(200);
+    });
+
+    test('a stale report expires', () => {
+      presence.set('u1', { skill: 'listening', mode: 'practice' }, 1000);
+      expect(presence.get('u1', 1000 + presence.TTL_MS - 1)).toMatchObject({ label: 'đề Listening (luyện tập)' });
+      expect(presence.get('u1', 1000 + presence.TTL_MS + 1)).toBeNull();
+      expect(presence.parse({ act: 'writing' })).toBeNull();
+    });
+  });
+
   describe('🏆 BXH Đấu trường', () => {
     const board = (u, qs = '') => request(app).get(`/api/vocab-battle/leaderboard?${qs}`).set(auth(u));
     async function friendly(a, b) {

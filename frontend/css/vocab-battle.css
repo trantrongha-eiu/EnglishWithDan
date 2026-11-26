@@ -158,6 +158,17 @@
 .vb-check { font-weight: 900; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; background: var(--surface2, #eee); }
 .vb-person.on .vb-check { background: var(--pf-sun, #ffd23f); color: #1d1a16; }
 .vb-form-err { color: var(--vb-bad); font-weight: 700; font-size: 14px; margin-right: auto; }
+/* Opponent mid Listening/Reading test (CreateModal busyLine) */
+.vb-tag--busy { background: #fef3c7; color: #92400e; }
+[data-theme="dark"] .vb-tag--busy { background: #3b2a12; color: #fcd34d; }
+.vb-busy-note {
+  margin: 6px 0; padding: 8px 12px; border-radius: 12px; font-size: 13px; line-height: 1.45;
+  background: #fffbeb; border: 1.5px solid #fcd34d; color: #78350f;
+}
+[data-theme="dark"] .vb-busy-note { background: #2a2010; border-color: #b45309; color: #fde68a; }
+.vb-busy-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; width: 100%; }
+.vb-busy-text { flex: 1 1 260px; font-size: 14px; line-height: 1.45; color: var(--text); }
+.vb-busy-btns { display: flex; gap: 8px; margin-left: auto; }
 
 /* ── room ──────────────────────────────────────────────────────────── */
 .vb-room-top { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
