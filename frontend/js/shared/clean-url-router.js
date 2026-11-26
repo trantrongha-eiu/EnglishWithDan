@@ -89,7 +89,7 @@
     // shadowing.js reads both /shadowing/:slug and ?lesson= — but without
     // this row the clean form was a real 404 on Render (routing audit 2026-11-14).
     [new RegExp('^/shadowing/' + SEG + '$'), function (m) { return '/shadowing.html?lesson=' + m[1]; }],
-    [new RegExp('^/task2-practice/' + SEG + '$'), function (m) { return '/task2-practice.html?topicId=' + m[1]; }],
+    [new RegExp('^/task2-practice/' + SEG + '$'), function (m) { return '/app/task2-practice?topicId=' + m[1]; }],
     [new RegExp('^/vocab/lesson/' + SEG + '$'), function (m) { return '/dashboard.html?view=lesson&lessonId=' + m[1]; }],
     [/^\/vocabulary$/, function () { return '/dashboard.html'; }],
     // Test đầu vào — open to visitors (name + phone, no account needed).

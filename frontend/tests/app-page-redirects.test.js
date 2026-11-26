@@ -50,11 +50,15 @@ describe('static pages that moved to /app/', () => {
     ['task2-template.html', '/task2-template.html', '/app/task2-template'],
     ['task2-template.html', '/writing/templates', '/app/task2-template'],
     ['task2-template.html', '/task2-template.html?type=type04&level=band7', '/app/task2-template?type=type04&level=band7'],
+    ['task2-practice.html', '/task2-practice.html', '/app/task2-practice'],
+    ['task2-practice.html', '/task2-practice.html?week=3&topicId=t1', '/app/task2-practice?week=3&topicId=t1'],
+    ['task2-practice.html', '/task2-practice.html?week=3&topicId=t1&write=1', '/app/task2-practice?week=3&topicId=t1&write=1'],
+    ['task2-practice.html', '/task2-practice/t1', '/app/task2-practice?topicId=t1'],
   ])('%s: %s → %s', (file, url, to) => {
     expect(redirectOf(file, url)).toBe(to);
   });
 
-  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html', 'advanced-sentences.html', 'writing-practice.html', 'task1-practice.html', 'speaking-part2.html', 'task2-template.html'])('%s stays put with ?legacy=1', (file) => {
+  it.each(['vocab-leaderboard.html', 'shop.html', 'inbox.html', 'profile.html', 'tuition.html', 'review-history.html', 'dictation.html', 'shadowing.html', 'goal.html', 'essential-grammar.html', 'advanced-sentences.html', 'writing-practice.html', 'task1-practice.html', 'speaking-part2.html', 'task2-template.html', 'task2-practice.html'])('%s stays put with ?legacy=1', (file) => {
     expect(redirectOf(file, `/${file}?legacy=1`)).toBeUndefined();
   });
 });

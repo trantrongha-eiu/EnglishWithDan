@@ -27,6 +27,7 @@ const WritingPractice = lazy(() => import('./pages/WritingPractice'));
 const Task1Grammar = lazy(() => import('./pages/Task1Grammar'));
 const SpeakingPart2 = lazy(() => import('./pages/SpeakingPart2'));
 const Task2Template = lazy(() => import('./pages/Task2Template'));
+const Task2Practice = lazy(() => import('./pages/Task2Practice'));
 const Affiliate = lazy(() => import('./pages/Affiliate'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
@@ -46,6 +47,7 @@ const WRITING_PRACTICE_CSS = ['writing-practice', 'writing-practice-page', 'play
 const TASK1_CSS = ['writing-practice', 'task1-practice', 'playful', 'pf-pages'];
 const SPEAKING_PART2_CSS = ['writing-practice', 'task2-practice', 'playful', 'pf-pages', 'speaking-part2'];
 const TASK2_TEMPLATE_CSS = ['writing-practice', 'task2-highlight', 'task2-generic-tpl', 'task2-template', 'playful'];
+const TASK2_PRACTICE_CSS = ['writing-practice', 'task2-practice', 'task2-generic-tpl', 'playful', 'pf-pages'];
 const AFFILIATE_CSS = ['pf-pages'];
 
 // Hồ sơ → Affiliate became its own page (/app/affiliate, under BXH vocab)
@@ -85,6 +87,8 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="task1-practice" element={<PageCss names={TASK1_CSS}><Task1Grammar /></PageCss>} />
       <Route path="speaking-part2" element={<PageCss names={SPEAKING_PART2_CSS}><SpeakingPart2 /></PageCss>} />
       <Route path="task2-template" element={<PageCss names={TASK2_TEMPLATE_CSS}><Task2Template /></PageCss>} />
+      <Route path="task2-practice" element={<PageCss names={TASK2_PRACTICE_CSS}><Task2Practice /></PageCss>} />
+      <Route path="task2-practice/:topicId" element={<PageCss names={TASK2_PRACTICE_CSS}><Task2Practice /></PageCss>} />
       <Route path="affiliate" element={<PageCss names={AFFILIATE_CSS}><Affiliate /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>

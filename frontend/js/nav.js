@@ -92,7 +92,7 @@
         { href: 'writing-task1.html',        icon: 'fa-chart-line', label: 'Task 1 Writing' },
         { href: 'writing-task2-course.html', icon: 'fa-edit',       label: 'Task 2 Writing' },
         { divider: true, label: 'Luyện tập' },
-        { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
+        { href: 'app/task2-practice',    icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
         { href: 'app/task2-template',    icon: 'fa-book-open',     label: 'Task 2 Templates' },
         { divider: true, label: 'Ngữ pháp' },
         { href: 'app/essential-grammar', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
@@ -509,7 +509,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=43178b689c';
+      s.src = '/js/shared/page-help.js?v=f92a02e06d';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);

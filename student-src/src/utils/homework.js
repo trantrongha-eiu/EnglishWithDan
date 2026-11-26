@@ -109,7 +109,7 @@ function resourcePath(r) {
     }
     case 'task1_practice': return `writing.html?taskType=1&taskId=${id}`;
     case 'task2_practice': return `writing.html?taskType=2&taskId=${id}`;
-    case 'task2': return code ? `task2-practice.html?week=${enc(code)}&topicId=${id}` : 'task2-practice.html';
+    case 'task2': return code ? `app/task2-practice?week=${enc(code)}&topicId=${id}` : 'app/task2-practice';
     case 'advanced_sentences': return code ? `app/advanced-sentences?week=${enc(code)}&groupId=${id}` : 'app/advanced-sentences';
     case 'speaking': return `speaking.html?questionId=${id}`;
     case 'speaking_topic': return `speaking.html?topicSet=${id}`;

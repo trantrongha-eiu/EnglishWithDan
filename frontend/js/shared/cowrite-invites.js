@@ -1,7 +1,7 @@
 /**
  * shared/cowrite-invites.js — "Mời bạn viết cùng" invite popup.
  *
- * A classmate on the Task 2 writer (task2-practice.html) invited this
+ * A classmate on the Task 2 writer (/app/task2-practice) invited this
  * student to write the same lesson together (backend/services/
  * task2CoWriteService.js). Invites arrive with peer-chat-widget.js's 20s
  * every-page poll (GET /user/peer/conversations → cowriteInvites), which
@@ -90,7 +90,12 @@
   function _writerUrl(room) {
     var q = new URLSearchParams({ topicId: String(room.topicId), write: '1' });
     if (room.week) q.set('week', String(room.week));
-    return '/task2-practice.html?' + q.toString();
+    return '/app/task2-practice?' + q.toString();
+  }
+  // Inside the React app (/app/…) the writer opens without a page load
+  function _go(url) {
+    if (/^\/app(\/|$)/.test(location.pathname) && window.ewsNavigate) window.ewsNavigate(url.slice('/app'.length));
+    else window.location.href = url;
   }
 
   function _renderBack() {
@@ -116,7 +121,8 @@
     el.querySelector('.cwi-back-go').onclick = function () {
       var id = String(room.topicId);
       if (typeof window.T2CoWriteOpen === 'function' && window.T2CoWriteOpen(id)) { _renderBack(); return; }
-      window.location.href = _writerUrl(room);
+      _go(_writerUrl(room));
+      setTimeout(_renderBack, 0);
     };
     el.querySelector('.cwi-back-x').onclick = function () {
       try { sessionStorage.setItem(_dismissedKey(room), '1'); } catch (e) { /* ignore */ }
@@ -165,9 +171,8 @@
         var d = await _api('/task2/cowrite/room/' + encodeURIComponent(inv.roomId) + '/accept', { method: 'POST' });
         var topicId = String(d.topicId || inv.topicId);
         if (typeof window.T2CoWriteJoined === 'function' && window.T2CoWriteJoined(topicId)) { _close(); return; }
-        var q = new URLSearchParams({ topicId: topicId, write: '1' });
-        if (inv.week) q.set('week', String(inv.week));
-        window.location.href = '/task2-practice.html?' + q.toString();
+        _close();
+        _go(_writerUrl({ topicId: topicId, week: inv.week }));
       } catch (e) {
         if (window.showToast) window.showToast(e.message || 'Lời mời đã hết hạn', 'warn');
         _close();

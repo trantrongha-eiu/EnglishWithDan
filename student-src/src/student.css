@@ -71,6 +71,8 @@ body > :is(.sp2-full-ov, .t2-quit-overlay) { line-height: normal; }
 /* Task 2 Templates: the page and its dialogs (on <body>), as on the old page */
 #root > .tpl-page { width: 100%; line-height: normal; }
 body > .tpl-hist-overlay { line-height: normal; }
+/* Task 2 Luyện đề tuần: its dialogs sit on <body>, like the old page's */
+body > :is(#t2-hist-overlay, #t2-preview-overlay, .t2-tg-overlay) { line-height: normal; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }

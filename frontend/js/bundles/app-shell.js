@@ -1389,7 +1389,7 @@
         { href: 'writing-task1.html',        icon: 'fa-chart-line', label: 'Task 1 Writing' },
         { href: 'writing-task2-course.html', icon: 'fa-edit',       label: 'Task 2 Writing' },
         { divider: true, label: 'Luyện tập' },
-        { href: 'task2-practice.html',   icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
+        { href: 'app/task2-practice',    icon: 'fa-calendar-week', label: 'Task 2 Luyện đề tuần', badgeId: 'navTask2Badge' },
         { href: 'app/task2-template',    icon: 'fa-book-open',     label: 'Task 2 Templates' },
         { divider: true, label: 'Ngữ pháp' },
         { href: 'app/essential-grammar', icon: 'fa-graduation-cap', label: 'Essential Grammar' },
@@ -1806,7 +1806,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=43178b689c';
+      s.src = '/js/shared/page-help.js?v=f92a02e06d';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -3179,7 +3179,7 @@
   function pageKey() {
     if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
     if (/^\/app\/speaking-part2(\/|$)/.test(location.pathname)) return 'speaking';
-    if (/^\/app\/(essential-grammar|advanced-sentences|writing-practice|task1-practice|task2-template)(\/|$)/.test(location.pathname)) return 'writing';
+    if (/^\/app\/(essential-grammar|advanced-sentences|writing-practice|task1-practice|task2-template|task2-practice)(\/|$)/.test(location.pathname)) return 'writing';
     if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
     var pg = (location.pathname.split('/').pop() || '').replace('.html', '');
     return /listening|dictation|shadowing/.test(pg) ? 'listening'
@@ -4573,7 +4573,7 @@
 /**
  * shared/cowrite-invites.js — "Mời bạn viết cùng" invite popup.
  *
- * A classmate on the Task 2 writer (task2-practice.html) invited this
+ * A classmate on the Task 2 writer (/app/task2-practice) invited this
  * student to write the same lesson together (backend/services/
  * task2CoWriteService.js). Invites arrive with peer-chat-widget.js's 20s
  * every-page poll (GET /user/peer/conversations → cowriteInvites), which
@@ -4662,7 +4662,12 @@
   function _writerUrl(room) {
     var q = new URLSearchParams({ topicId: String(room.topicId), write: '1' });
     if (room.week) q.set('week', String(room.week));
-    return '/task2-practice.html?' + q.toString();
+    return '/app/task2-practice?' + q.toString();
+  }
+  // Inside the React app (/app/…) the writer opens without a page load
+  function _go(url) {
+    if (/^\/app(\/|$)/.test(location.pathname) && window.ewsNavigate) window.ewsNavigate(url.slice('/app'.length));
+    else window.location.href = url;
   }
 
   function _renderBack() {
@@ -4688,7 +4693,8 @@
     el.querySelector('.cwi-back-go').onclick = function () {
       var id = String(room.topicId);
       if (typeof window.T2CoWriteOpen === 'function' && window.T2CoWriteOpen(id)) { _renderBack(); return; }
-      window.location.href = _writerUrl(room);
+      _go(_writerUrl(room));
+      setTimeout(_renderBack, 0);
     };
     el.querySelector('.cwi-back-x').onclick = function () {
       try { sessionStorage.setItem(_dismissedKey(room), '1'); } catch (e) { /* ignore */ }
@@ -4737,9 +4743,8 @@
         var d = await _api('/task2/cowrite/room/' + encodeURIComponent(inv.roomId) + '/accept', { method: 'POST' });
         var topicId = String(d.topicId || inv.topicId);
         if (typeof window.T2CoWriteJoined === 'function' && window.T2CoWriteJoined(topicId)) { _close(); return; }
-        var q = new URLSearchParams({ topicId: topicId, write: '1' });
-        if (inv.week) q.set('week', String(inv.week));
-        window.location.href = '/task2-practice.html?' + q.toString();
+        _close();
+        _go(_writerUrl({ topicId: topicId, week: inv.week }));
       } catch (e) {
         if (window.showToast) window.showToast(e.message || 'Lời mời đã hết hạn', 'warn');
         _close();
@@ -5749,7 +5754,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template|affiliate)(?=\/|$)/);
+    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template|task2-practice|affiliate)(?=\/|$)/);
     if (!m) return '/app/'; // the vocab home, whatever is open inside it
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }
