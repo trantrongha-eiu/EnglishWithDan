@@ -17,6 +17,7 @@ const TITLES = {
   '/writing-practice': 'Luyện viết câu giao tiếp',
   '/task1-practice': 'Task 1 Grammar',
   '/speaking-part2': 'Speaking Part 2 · 7 câu chuyện gốc',
+  '/reading-listening-strategy': 'Chiến lược luyện đề',
 };
 
 // The top nav comes from the site shell (js/bundles/app-shell.js → nav.js).

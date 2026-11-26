@@ -76,7 +76,7 @@
   }
 
   function pageKey() {
-    if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
+    if (/^\/app\/(dictation|shadowing|reading-listening-strategy)(\/|$)/.test(location.pathname)) return 'listening';
     if (/^\/app\/speaking-part2(\/|$)/.test(location.pathname)) return 'speaking';
     if (/^\/app\/(essential-grammar|advanced-sentences|writing-practice|task1-practice|task2-template|task2-practice)(\/|$)/.test(location.pathname)) return 'writing';
     if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';

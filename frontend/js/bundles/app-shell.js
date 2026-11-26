@@ -1355,7 +1355,7 @@
         { href: 'reading.html?mode=full',   icon: 'fa-file-alt',   label: 'Full đề' },
         { href: 'reading.html?mode=single', icon: 'fa-book-open',  label: 'Bài lẻ' },
         { href: 'reading.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Reading Tips' },
-        { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+        { href: 'app/reading-listening-strategy', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
         { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
@@ -1367,7 +1367,7 @@
         { href: 'listening.html?mode=full',   icon: 'fa-headphones', label: 'Full đề' },
         { href: 'listening.html?mode=single', icon: 'fa-music',      label: 'Bài lẻ' },
         { href: 'listening.html?mode=tips',   icon: 'fa-lightbulb',  label: 'Listening Tips' },
-        { href: 'reading-listening-strategy.html', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
+        { href: 'app/reading-listening-strategy', icon: 'fa-chess-knight', label: 'Chiến lược luyện đề' },
         { divider: true, label: 'Khóa học' },
         { href: 'mindset-0.html',           icon: 'fa-seedling',   label: 'Mindset Foundation' },
         { href: 'mindset-1.html',           icon: 'fa-leaf',       label: 'Mindset Level 1' },
@@ -1808,7 +1808,7 @@
       loading = true;
       var s = document.createElement('script');
       s.id = 'ews-page-help-js';
-      s.src = '/js/shared/page-help.js?v=f92a02e06d';
+      s.src = '/js/shared/page-help.js?v=c9c5c9015c';
       s.onload = function () { loading = false; if (window.PageHelp) window.PageHelp.open(); };
       s.onerror = function () { loading = false; s.remove(); };
       document.body.appendChild(s);
@@ -3179,7 +3179,7 @@
   }
 
   function pageKey() {
-    if (/^\/app\/(dictation|shadowing)(\/|$)/.test(location.pathname)) return 'listening';
+    if (/^\/app\/(dictation|shadowing|reading-listening-strategy)(\/|$)/.test(location.pathname)) return 'listening';
     if (/^\/app\/speaking-part2(\/|$)/.test(location.pathname)) return 'speaking';
     if (/^\/app\/(essential-grammar|advanced-sentences|writing-practice|task1-practice|task2-template|task2-practice)(\/|$)/.test(location.pathname)) return 'writing';
     if (/^\/app(\/|$)/.test(location.pathname)) return /^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history)(\/|$)/.test(location.pathname) ? '_' : 'dashboard';
@@ -5797,7 +5797,7 @@
   // admin "Trang đã mở" list and usage counts stay comparable.
   function currentPage() {
     if (!/^\/app(\/|$)/.test(location.pathname)) return location.pathname;
-    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template|task2-practice|affiliate)(?=\/|$)/);
+    var m = location.pathname.match(/^\/app\/(classroom|leaderboard|shop|inbox|profile|tuition|review-history|dictation|shadowing|essential-grammar|advanced-sentences|writing-practice|task1-practice|speaking-part2|task2-template|task2-practice|affiliate|reading-listening-strategy)(?=\/|$)/);
     if (!m) return '/app/'; // the vocab home, whatever is open inside it
     return m[1] === 'leaderboard' ? '/vocab-leaderboard.html' : '/' + m[1] + '.html';
   }

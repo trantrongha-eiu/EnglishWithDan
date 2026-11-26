@@ -30,6 +30,7 @@ const Task2Template = lazy(() => import('./pages/Task2Template'));
 const Task2Practice = lazy(() => import('./pages/Task2Practice'));
 const Affiliate = lazy(() => import('./pages/Affiliate'));
 const VocabBattle = lazy(() => import('./pages/VocabBattle'));
+const ReadingListeningStrategy = lazy(() => import('./pages/ReadingListeningStrategy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 // Each list is the page's stylesheets in the old static page's order
@@ -51,6 +52,7 @@ const TASK2_TEMPLATE_CSS = ['writing-practice', 'task2-highlight', 'task2-generi
 const TASK2_PRACTICE_CSS = ['writing-practice', 'task2-practice', 'task2-generic-tpl', 'playful', 'pf-pages'];
 const AFFILIATE_CSS = ['pf-pages'];
 const VOCAB_BATTLE_CSS = ['playful', 'vocab-battle'];
+const STRATEGY_CSS = ['reading-listening-strategy', 'playful', 'pf-pages'];
 
 // Hồ sơ → Affiliate became its own page (/app/affiliate, under BXH vocab)
 function ProfileRoute() {
@@ -94,6 +96,7 @@ const router = createBrowserRouter(createRoutesFromElements(
       <Route path="affiliate" element={<PageCss names={AFFILIATE_CSS}><Affiliate /></PageCss>} />
       <Route path="vocab-battle" element={<PageCss names={VOCAB_BATTLE_CSS}><VocabBattle /></PageCss>} />
       <Route path="vocab-battle/:id" element={<PageCss names={VOCAB_BATTLE_CSS}><VocabBattle /></PageCss>} />
+      <Route path="reading-listening-strategy" element={<PageCss names={STRATEGY_CSS}><ReadingListeningStrategy /></PageCss>} />
       <Route path="*" element={<NotFound />} />
     </Route>
     <Route path="*" element={<Navigate to="/dashboard" replace />} />

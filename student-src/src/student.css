@@ -73,6 +73,10 @@ body > :is(.sp2-full-ov, .t2-quit-overlay) { line-height: normal; }
 body > .tpl-hist-overlay { line-height: normal; }
 /* Task 2 Luyện đề tuần: its dialogs sit on <body>, like the old page's */
 body > :is(#t2-hist-overlay, #t2-preview-overlay, .t2-tg-overlay) { line-height: normal; }
+/* Chiến lược luyện đề: the sidebar + article row, as on the old page */
+#root > .st-layout { width: 100%; line-height: normal; }
+/* …and the browser's checkbox margin, which dashboard.css's * { margin: 0 } removes */
+#root > .st-layout input[type=checkbox] { margin: 3px 3px 3px 4px; }
 body:has(> #root > .shop-shell) .duel-modal { line-height: normal; }
 [data-theme="dark"] #root > .shop-shell .btn-ghost,
 [data-theme="dark"] body:has(> #root > .shop-shell) .duel-modal .btn-ghost { background: var(--surface); }
