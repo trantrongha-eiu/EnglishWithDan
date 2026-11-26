@@ -1,16 +1,26 @@
 // @ts-check
 /**
- * /app/dictation (old links: dictation.html) — the dailydictation-style player
- * and the "Đánh vần tên / Số dài & mã số" drills (clips of the site's own
- * Listening audio).
+ * /app/dictation (React, student-src/src/pages/Dictation.jsx; old links
+ * dictation.html redirect there) — the sentence player, the "Đánh vần tên /
+ * Số dài & mã số" drills (per-item clips on R2) and a Listening section.
+ *
+ * What the page promises the student:
+ *   - the answer (and whatever gives it away) shows only once a sentence is
+ *     typed right; a wrong try shows marks, never the right word
+ *   - a drill needs the name / number exact — capital letter of a name
+ *     included — while digit grouping and hyphens don't matter
+ *   - a section sentence is done from 80% of its words; only a perfect
+ *     sentence moves on by itself
+ *   - "Hỏi Lulu" gives the meaning / a few letters, 3 asks per sentence
+ *   - leaving saves the attempt
  *
  * Self-contained like mindset-passage-page.spec.js: in-memory MongoDB seeded
  * with the real drills (scripts/data/dictationDrills.json) + one Listening
- * section, the real backend on a random port, a static server for frontend/
- * on :3000, the production API rerouted to it. Clip audio streams from R2
+ * section, the real backend on a random port, a static server for frontend/,
+ * the production API rerouted to it. Clip audio streams from R2
  * (media.ieltsthayha.com) — needs network.
  *
- * Run: npm run test:e2e -- dictation-drills
+ * Run: npx playwright test e2e/dictation-drills.spec.js --workers=1
  *      E2E_SHOTS=<dir> also saves screenshots.
  */
 const { test, expect } = require('@playwright/test');
@@ -22,11 +32,18 @@ const ROOT = path.join(__dirname, '..');
 const BACKEND = path.join(ROOT, 'backend');
 const FRONTEND = path.join(ROOT, 'frontend');
 const PROD_API = 'https://englishwithdan.onrender.com';
+// The real backend's CORS allows http://localhost:3000 only
 const STATIC_PORT = 3000;
+const BASE = `http://localhost:${STATIC_PORT}`;
 const SHOTS = process.env.E2E_SHOTS || '';
 
 const breq = (m) => require(require.resolve(m, { paths: [BACKEND] }));
 const drills = require(path.join(BACKEND, 'scripts', 'data', 'dictationDrills.json'));
+
+const S1 = 'Good morning, how can I help you?';
+const S2 = 'I would like to book a room.';
+const VI1 = 'Chào buổi sáng, tôi có thể giúp gì cho bạn?';
+const VI2 = 'Tôi muốn đặt một phòng.';
 
 let mongod, apiServer, staticServer, apiBase, student, studentToken, section, DictationAttempt;
 
@@ -55,7 +72,7 @@ function startStatic() {
 }
 
 test.describe.configure({ mode: 'serial' });
-test.use({ baseURL: `http://localhost:${STATIC_PORT}` });
+test.use({ baseURL: BASE });
 
 test.beforeAll(async () => {
   test.setTimeout(240 * 1000);
@@ -72,14 +89,17 @@ test.beforeAll(async () => {
   await require(path.join(BACKEND, 'scripts', 'seedDictationDrills')).runSeed();
   DictationAttempt = require(path.join(BACKEND, 'models', 'DictationAttempt'));
   const { createListeningSection } = require(path.join(BACKEND, 'tests', 'factories', 'contentFactory'));
-  const clip = drills[0].items[1]; // a real R2 file
+  const clip = drills[0].items[1]; // a real R2 file (a clip of its own: 0 → end)
+  const mid = Math.round(clip.end * 50) / 100;
   section = await createListeningSection({
     title: 'E2E Part 1 — Hotel booking', extra: {
-      audioUrl: clip.audioUrl, transcript: 'Good morning, how can I help you?\nI would like to book a room.',
+      audioUrl: clip.audioUrl, transcript: `${S1}\n${S2}`,
       dictationSentences: [
-        { text: 'Good morning, how can I help you?', start: clip.start, end: clip.end },
-        { text: 'I would like to book a room.', start: clip.end, end: clip.end + 2 },
+        { text: S1, start: clip.start, end: mid },
+        { text: S2, start: mid, end: clip.end },
       ],
+      // the meanings are stored already: no AI call
+      dictationVi: [{ text: S1, vi: VI1 }, { text: S2, vi: VI2 }],
     },
   });
   const users = require(path.join(BACKEND, 'tests', 'factories', 'userFactory'));
@@ -109,7 +129,7 @@ async function wire(page) {
         throw e;
       }
     }
-    if (url.startsWith(`http://localhost:${STATIC_PORT}`) || url.startsWith('https://media.ieltsthayha.com/') || url.startsWith('https://cdnjs.cloudflare.com/') || /fonts.(googleapis|gstatic).com/.test(url)) return route.continue();
+    if (url.startsWith(BASE) || url.startsWith('https://media.ieltsthayha.com/') || url.startsWith('https://cdnjs.cloudflare.com/') || /fonts.(googleapis|gstatic).com/.test(url)) return route.continue();
     return route.abort();
   });
   await page.addInitScript(([t, u]) => {
@@ -117,10 +137,12 @@ async function wire(page) {
     localStorage.setItem('user', u);
     localStorage.setItem('lastLoginAt', String(Date.now()));
     localStorage.setItem('ews_seen_streak35_notice', '1');
+    localStorage.setItem('ews_page_help_seen', '1');
+    localStorage.setItem('ews_onboarding_tour_v1_dashboard.html', '1');
     localStorage.setItem('ews_onboarding_tour_v1_dictation.html', '1');
     document.addEventListener('DOMContentLoaded', () => {
       const st = document.createElement('style');
-      st.textContent = '#nav-vocab-goal-nudge{display:none!important}';
+      st.textContent = '#nav-vocab-goal-nudge,#pcw-root,.nav-corner-dock,#ews-pet-layer,.ews-mascot-dock{display:none!important}';
       document.head.appendChild(st);
     });
   }, [studentToken, JSON.stringify({ _id: String(student._id), username: student.username, role: student.role,
@@ -132,11 +154,16 @@ async function wire(page) {
 }
 
 const shot = (page, name) => SHOTS && page.screenshot({ path: path.join(SHOTS, name), fullPage: true });
+const counter = (page) => page.locator('.dict-counter');
+const answer = async (page, text) => {
+  await page.locator('#dict-input').fill(text);
+  await page.locator('#dict-input').press('Enter');
+};
 
-test('drill: chips, wrong → masked hint, right → Correct + auto-next, transcript tab, full answer, audio', async ({ page }) => {
+test('spelling drill: chips, wrong → marks only, missing capital, right → answer + auto-next, Lulu, transcript tab, audio, saved', async ({ page }) => {
   const errors = await wire(page);
   await page.setViewportSize({ width: 1360, height: 900 });
-  await page.goto('/dictation.html');
+  await page.goto('/app/dictation');
 
   const spellCount = drills.filter((d) => d.category === 'spelling').length;
   await expect(page.locator('.dict-chip[data-part="drill-spelling"] .n')).toHaveText(`(${spellCount})`);
@@ -145,90 +172,157 @@ test('drill: chips, wrong → masked hint, right → Correct + auto-next, transc
   await shot(page, 'list-spelling.png');
 
   const d = drills[0];
+  const n = d.items.length;
   await page.locator('#dict-grid .dict-card', { hasText: d.title }).click();
   await expect(page.locator('#screen-practice')).toBeVisible();
   await expect(page.locator('#dict-section-title')).toHaveText(d.title);
-  await expect(page.locator('.dict-counter')).toHaveText(`1 / ${d.items.length}`);
-  await expect(page).toHaveURL(/drill=spelling-1/);
+  await expect(counter(page)).toHaveText(`Câu 1/${n}`);
+  await expect(page).toHaveURL(/\/app\/dictation\?drill=spelling-1/);
 
-  // wrong spelling: Incorrect + one masked word revealed with the wrong letter marked
+  // wrong letter: Incorrect + the typed word marked, the right one never shown
   const ans = d.items[0].answer;
   const wrong = ans.slice(0, 2) + (ans[2] === 'x' ? 'y' : 'x') + ans.slice(3);
-  await page.locator('#dict-input').fill(wrong);
-  await page.locator('#dict-input').press('Enter');
+  await answer(page, wrong);
   await expect(page.locator('#dict-status')).toContainText('Incorrect');
-  await expect(page.locator('#dict-mask .m-show')).toHaveText(ans.split(' ')[0]);
-  await expect(page.locator('#dict-mask .m-err')).toHaveCount(1);
+  await expect(page.locator('#dict-diff .dx-bad')).toHaveText(wrong);
+  await expect(page.locator('#dict-diff .dx-fix')).toHaveCount(0);
+  await expect(page.locator('#dict-reveal')).toBeEmpty();
+  await expect(page.locator('#dict-pane-dictation')).not.toContainText(ans);
+  await expect(page.locator('#dict-skip-btn')).toBeVisible();
   await shot(page, 'drill-incorrect.png');
 
-  // right (case-insensitive) → Correct, answer revealed, auto-next to 2
-  await page.locator('#dict-input').fill(ans.toLowerCase());
-  await page.locator('#dict-input').press('Enter');
+  // right letters, no capital: still wrong (IELTS marks "amyes" wrong) + the Caps Lock tip
+  await answer(page, ans.toLowerCase());
+  await expect(page.locator('#dict-status')).toContainText('viết hoa chữ cái đầu');
+  await expect(page.locator('#dict-caps-tip')).toBeVisible();
+  await expect(page.locator('#dict-reveal')).toBeEmpty();
+  await expect(page.locator('.dict-num-btn[data-i="0"]')).not.toHaveClass(/done/);
+
+  // right → Correct, the answer + the clip's sentence shown, auto-next to 2
+  await answer(page, ans);
   await expect(page.locator('#dict-status')).toContainText('Correct!');
   await expect(page.locator('.dict-reveal-answer')).toHaveText(ans);
+  await expect(page.locator('.dict-correct-en')).toHaveText(d.items[0].text);
   await shot(page, 'drill-correct.png');
-  await expect(page.locator('.dict-counter')).toHaveText(`2 / ${d.items.length}`, { timeout: 5000 });
+  await expect(counter(page)).toHaveText(`Câu 2/${n}`, { timeout: 5000 });
   await expect(page.locator('.dict-num-btn[data-i="0"]')).toHaveClass(/done/);
+  await expect(page.locator('#dict-session-score')).toHaveText(`1/${n} ✓`);
 
-  // full transcript tab lists every clip; clicking one jumps back to it
+  // 🍊 Hỏi Lulu on a drill: the first letter(s), the rest masked; 3 asks
+  const ans2 = d.items[1].answer;
+  await expect(page.locator('#dict-lulu-btn')).toContainText('(3)');
+  await page.locator('#dict-lulu-btn').click();
+  await expect(page.locator('#dict-lulu-btn')).toContainText('(2)');
+  const mask = page.locator('#dict-lulu-hint .dx-lulu-mask');
+  await expect(mask).toContainText(ans2[0]);
+  await expect(mask).toContainText('_');
+  await expect(mask).not.toHaveText(ans2);
+
+  // full transcript tab: done sentences show, the rest stay locked; a click opens one
   await page.locator('.dx-tab[data-tab="transcript"]').click();
-  await expect(page.locator('#dict-transcript-list li')).toHaveCount(d.items.length);
-  await page.locator('#dict-transcript-list li').nth(4).click();
+  const rows = page.locator('#dict-transcript-list li');
+  await expect(rows).toHaveCount(n);
+  await expect(rows.nth(0)).toHaveClass(/done/);
+  await expect(rows.nth(0)).toContainText(ans);
+  await expect(rows.nth(1)).toHaveClass(/locked/);
+  await expect(rows.nth(1)).not.toContainText(ans2);
+  await rows.nth(4).click();
   await expect(page.locator('#dict-pane-dictation')).toBeVisible();
-  await expect(page.locator('.dict-counter')).toHaveText(`5 / ${d.items.length}`);
-
-  // show full answer
-  await page.locator('#opt-show-full').check();
-  await expect(page.locator('.dict-reveal-answer')).toHaveText(d.items[4].answer);
+  await expect(counter(page)).toHaveText(`Câu 5/${n}`);
 
   // the clip really plays from its start and stops by its end
-  // (jumping to it already auto-played it; replay always restarts from the clip start)
+  // (opening it may already have auto-played it; replay always restarts from the start)
+  const it = d.items[4];
   await page.locator('.dict-restart-btn').click();
   await expect.poll(() => page.evaluate(() => document.getElementById('dict-audio').currentTime), { timeout: 20000 })
-    .toBeGreaterThan(d.items[4].start + 0.3);
+    .toBeGreaterThan(it.start + 0.3);
   await expect.poll(() => page.evaluate(() => document.getElementById('dict-audio').paused), { timeout: 20000 }).toBe(true);
   const t = await page.evaluate(() => document.getElementById('dict-audio').currentTime);
-  expect(t).toBeLessThan(d.items[4].end + 0.6);
+  expect(t).toBeLessThan(it.end + 0.6);
 
-  // back → the session is saved with the drill
+  // back → the list again, and the session is saved with the drill
   await page.locator('.dict-back-btn').click();
   await expect(page.locator('#screen-list')).toBeVisible();
+  await expect(page).toHaveURL(/\/app\/dictation$/);
   await expect.poll(async () => DictationAttempt.countDocuments({ userId: student._id, drillId: { $exists: true } })).toBe(1);
   expect(errors).toEqual([]);
 });
 
-test('numbers drill: digit grouping and spacing do not matter', async ({ page }) => {
+test('numbers drill via the old dictation.html link: digit grouping and hyphens do not matter', async ({ page }) => {
   const errors = await wire(page);
   await page.setViewportSize({ width: 1360, height: 900 });
   const d = drills.find((x) => x.slug.startsWith('phone'));
-  const k = d.items.findIndex((x) => /^\d[\d ]+\d$/.test(x.answer) && x.answer.includes(' '));
+  const spaced = d.items.findIndex((x) => /^\d[\d ]+\d$/.test(x.answer) && x.answer.includes(' '));
+  const hyphen = d.items.findIndex((x) => /^\d[\d-]+\d$/.test(x.answer) && x.answer.includes('-'));
+  expect(spaced).toBeGreaterThanOrEqual(0);
+  expect(hyphen).toBeGreaterThanOrEqual(0);
+
   await page.goto(`/dictation.html?drill=${d.slug}`);
+  await expect(page).toHaveURL(new RegExp(`/app/dictation\\?drill=${d.slug}$`));
   await expect(page.locator('#dict-section-title')).toHaveText(d.title);
-  await page.locator(`.dict-num-btn[data-i="${k}"]`).click();
-  await page.locator('#dict-input').fill(d.items[k].answer.replace(/ /g, ''));
-  await page.locator('#dict-input').press('Enter');
-  await expect(page.locator('#dict-status')).toContainText('Correct!');
+  await expect(page.locator('#dict-prompt')).toContainText('con số');
+
+  for (const k of [spaced, hyphen]) {
+    await page.locator(`.dict-num-btn[data-i="${k}"]`).click();
+    await expect(counter(page)).toHaveText(`Câu ${k + 1}/${d.items.length}`);
+    await answer(page, d.items[k].answer.replace(/[ -]/g, ''));
+    await expect(page.locator('#dict-status')).toContainText('Correct!');
+    await expect(page.locator('.dict-reveal-answer')).toHaveText(d.items[k].answer);
+  }
   expect(errors).toEqual([]);
 });
 
-test('Listening section: whole-sentence dictation, full audio panel, phone layout', async ({ page }) => {
+test('Listening section: 80% to pass, meaning via Lulu, no auto-next below 100%, transcript after all done, phone layout', async ({ page }) => {
   const errors = await wire(page);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`/dictation.html?sectionId=${section._id}`);
+  const meanings = page.waitForResponse((r) => r.url().includes(`/dictation/section/${section._id}/translations`));
+  await page.goto(`/app/dictation?sectionId=${section._id}`);
   await expect(page.locator('#dict-section-title')).toHaveText('E2E Part 1 — Hotel booking');
-  await page.locator('#dict-input').fill('good morning how can i help');
-  await page.locator('#dict-input').press('Enter');
+  await expect(counter(page)).toHaveText('Câu 1/2');
+  await meanings;
+
+  // 2 of 7 words: Incorrect, the missing words are gaps — not the words
+  await answer(page, 'good morning');
   await expect(page.locator('#dict-status')).toContainText('Incorrect');
-  // "Show answer immediately" (default on) reveals the first missing word…
-  await expect(page.locator('#dict-mask .m-show')).toHaveText('you?');
-  // …off: it stays masked
-  await page.locator('#opt-show-answer').uncheck();
-  await expect(page.locator('#dict-mask')).toHaveText('Good morning, how can I help ***?');
-  await page.locator('#dict-input').fill('Good morning, how can I help you?');
-  await page.locator('#dict-input').press('Enter');
-  await expect(page.locator('#dict-status')).toContainText('Correct!');
+  await expect(page.locator('#dict-score')).toContainText('2/7');
+  await expect(page.locator('#dict-diff .dx-ok')).toHaveCount(2);
+  await expect(page.locator('#dict-diff .dx-miss')).toHaveCount(5);
+  await expect(page.locator('#dict-diff .dx-miss').first()).toHaveText('＿＿');
+  await expect(page.locator('#dict-pane-dictation')).not.toContainText('help you');
+
+  // 🍊 the first ask of a sentence = its Vietnamese meaning
+  await page.locator('#dict-lulu-btn').click();
+  await expect(page.locator('#dict-lulu-hint')).toContainText(VI1);
+  await expect(page.locator('#dict-lulu-btn')).toContainText('(2)');
+
+  // 6 of 7 (86%) passes: the sentence is done and shown with its meaning, but
+  // only a perfect one moves on by itself
+  await answer(page, 'good morning how can i help');
+  await expect(page.locator('#dict-status')).toContainText('Đạt 86%');
+  await expect(page.locator('.dict-correct-en')).toHaveText(S1);
+  await expect(page.locator('#dict-vi')).toContainText(VI1);
+  await expect(page.locator('#dict-diff .dx-miss')).toHaveText('you?');
+  await expect(page.locator('#dict-next-sentence-btn')).toBeVisible();
+  await expect(page.locator('#dict-session-score')).toHaveText('1/2 ✓');
+  await page.waitForTimeout(2000);
+  await expect(counter(page)).toHaveText('Câu 1/2');
+
+  // the plain transcript = every answer: locked until the whole section is done
   await page.locator('#dict-full summary').click();
+  await expect(page.locator('#dict-full-text')).toContainText('Transcript hiện khi');
+  await expect(page.locator('#dict-full-text')).not.toContainText(S2);
+
+  await page.locator('#dict-next-sentence-btn').click();
+  await expect(counter(page)).toHaveText('Câu 2/2');
+  await answer(page, S2);
+  await expect(page.locator('#dict-status')).toContainText('Correct!');
+  await expect(page.locator('#dict-summary')).toBeVisible();
   await expect(page.locator('#dict-full-text p')).toHaveCount(2);
+  await expect(page.locator('#dict-full-text')).toContainText(S2);
+
+  // finishing saves at once
+  await expect.poll(async () => DictationAttempt.countDocuments({ userId: student._id, sectionId: section._id })).toBe(1);
+
   // no horizontal scroll at phone width
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
