@@ -129,6 +129,9 @@ const AssignmentSchema = new mongoose.Schema({
   title:       { type: String, required: true, trim: true, maxlength: 200 },
   instruction: { type: String, default: '', trim: true, maxlength: 4000 },
   deadline:    { type: Date, default: null }, // null = no deadline
+  // "🧪 Bài thi" — exams are never homework-locked (assignmentService
+  // .isExamAssignment). null = automatic (has a Writing exam / mock item).
+  isExam:      { type: Boolean, default: null },
 
   resources:   { type: [assignmentResourceSchema], default: [] },
 

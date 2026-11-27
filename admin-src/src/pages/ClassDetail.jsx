@@ -1111,6 +1111,15 @@ function AssignmentsTab({ cls }) {
     } catch (e) { toast(e.message, 'error'); }
   }
 
+  async function toggleExam(a) {
+    const next = !a.examEffective;
+    try {
+      await apiFetch(`/classes/${cls._id}/assignments/${a._id}`, { method: 'PUT', body: JSON.stringify({ isExam: next }) });
+      toast(next ? `"${a.title}" là bài thi — học viên không bị khoá` : `"${a.title}" là bài tập thường`);
+      load();
+    } catch (e) { toast(e.message, 'error'); }
+  }
+
   function remove(a) {
     confirm(`Xoá vĩnh viễn bài tập "${a.title}"? Tiến độ của học viên với bài này cũng bị xoá và không thể hoàn tác. (Muốn ẩn tạm thì dùng "Lưu trữ".)`, async () => {
       try {
@@ -1151,7 +1160,8 @@ function AssignmentsTab({ cls }) {
               : list.map((a) => (
                 <React.Fragment key={a._id}>
                   <tr>
-                    <td><button onClick={() => setOpenId(openId === a._id ? null : a._id)} style={{ fontWeight: 700, color: 'var(--purple)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{a.title}</button></td>
+                    <td><button onClick={() => setOpenId(openId === a._id ? null : a._id)} style={{ fontWeight: 700, color: 'var(--purple)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>{a.title}</button>
+                      {a.examEffective && <span className="badge" style={{ marginLeft: 8, background: '#fef2f2', color: '#b91c1c' }} title="Bài thi — học viên không bị khoá dù còn nợ bài cũ">🧪 Bài thi</span>}</td>
                     <td style={{ fontSize: 13 }}>{a.resourceCount}</td>
                     <td style={{ fontSize: 13 }}>{a.completedStudents}/{a.assignedStudents ?? enrolledCount}</td>
                     <td style={{ fontSize: 13 }}>{a.deadline ? formatDate(a.deadline) : '—'}</td>
@@ -1159,6 +1169,10 @@ function AssignmentsTab({ cls }) {
                     <td>
                       <div className="row-actions">
                         <button className="btn btn-ghost btn-sm" onClick={() => { setEditing(a); setShowEditor(true); }}>Sửa</button>
+                        <button className="btn btn-ghost btn-sm" onClick={() => toggleExam(a)}
+                          style={a.examEffective ? { color: '#b91c1c', borderColor: '#b91c1c', fontWeight: 700 } : undefined}
+                          title={a.examEffective ? 'Đang là bài thi (không bị khoá) — bấm để chuyển về bài tập thường' : 'Đánh dấu là bài thi — học viên còn nợ bài cũ vẫn làm được'}>
+                          {a.examEffective ? '🧪 Bài thi ✓' : '🧪 Bài thi'}</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => setOpenId(openId === a._id ? null : a._id)}>{openId === a._id ? 'Ẩn' : 'Chi tiết'}</button>
                         <button className="btn btn-ghost btn-sm" onClick={() => archive(a)}>{a.status === 'archived' ? 'Mở lại' : 'Lưu trữ'}</button>
                         <button className="btn btn-danger btn-sm btn-icon" onClick={() => remove(a)} title="Xoá bài tập">🗑</button>
@@ -1627,6 +1641,14 @@ function classMockTitle(cls, d = new Date()) {
   return `Full Mock Test – ${cls.name} – ${day}`;
 }
 
+// "🧪 Bài thi" — exams are never homework-locked for students. isExam null =
+// automatic: any Writing exam / class mock / Speaking full mock item makes it one
+// (mirrors backend assignmentService.isExamAssignment).
+const EXAM_RES_TYPES = new Set(['writing_exam', 'mock_test', 'speaking_full_mock']);
+function autoIsExam(resources) {
+  return (resources || []).some((r) => r.kind === 'internal' && EXAM_RES_TYPES.has(r.resourceType));
+}
+
 function AssignmentEditor({ cls, assignment, allAssignments, preset = null, onClose, onSaved }) {
   const toast = useToast();
   const isEdit = !!assignment;
@@ -1638,6 +1660,8 @@ function AssignmentEditor({ cls, assignment, allAssignments, preset = null, onCl
   // deadline 3 days from now — both still editable before saving.
   const [title, setTitle] = useState(() => (isEdit ? assignment.title || '' : isMockPreset ? classMockTitle(cls) : defaultAssignmentTitle()));
   const [instruction, setInstruction] = useState(() => (isMockPreset ? CLASS_MOCK_NOTICE : assignment?.instruction || ''));
+  // null = automatic (follows the picked resources) until the teacher ticks it
+  const [isExam, setIsExam] = useState(() => (isMockPreset ? true : isEdit && typeof assignment.isExam === 'boolean' ? assignment.isExam : null));
   const [deadline, setDeadline] = useState(() => toDatetimeLocalValue(isEdit ? assignment.deadline : new Date(Date.now() + DEFAULT_DEADLINE_DAYS * 864e5)));
   const [picked, setPicked] = useState(() => (assignment?.resources || [])
     .filter((r) => r.kind === 'internal')
@@ -1871,7 +1895,7 @@ function AssignmentEditor({ cls, assignment, allAssignments, preset = null, onCl
       const url = isEdit ? `/classes/${cls._id}/assignments/${assignment._id}` : `/classes/${cls._id}/assignments`;
       await apiFetch(url, {
         method: isEdit ? 'PUT' : 'POST',
-        body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources, gapFillHandled: true }),
+        body: JSON.stringify({ title: title.trim(), instruction: instruction.trim(), deadline: deadline || null, resources, gapFillHandled: true, isExam }),
       });
       toast(isEdit ? 'Đã lưu thay đổi' : 'Đã giao bài tập');
       onSaved();
@@ -1902,6 +1926,14 @@ function AssignmentEditor({ cls, assignment, allAssignments, preset = null, onCl
             <label className="form-label">Deadline</label>
             <input className="form-input" type="datetime-local" value={deadline} onChange={(e) => setDeadline(e.target.value)} />
           </div>
+          <label style={{ display: 'flex', alignItems: 'flex-start', gap: 8, fontSize: 13, cursor: 'pointer', padding: '8px 12px', borderRadius: 8,
+            border: `1px solid ${(isExam ?? autoIsExam(picked)) ? '#b91c1c' : 'var(--border)'}`, background: (isExam ?? autoIsExam(picked)) ? '#fef2f2' : 'transparent' }}>
+            <input type="checkbox" checked={isExam ?? autoIsExam(picked)} onChange={(e) => setIsExam(e.target.checked)} style={{ marginTop: 2 }} />
+            <span>
+              <b>🧪 Đây là bài thi</b> — học viên luôn làm được, <b>không bị khoá</b> dù còn nợ bài tập cũ.
+              {isExam === null && <span style={{ color: 'var(--text3)' }}> (Tự động: {autoIsExam(picked) ? 'có bài thi Writing / Mock Test' : 'bài tập thường'})</span>}
+            </span>
+          </label>
 
           <fieldset style={{ border: '1px solid var(--border)', borderRadius: 8, padding: '12px 14px' }}>
             <legend style={{ fontSize: 12, fontWeight: 700, color: 'var(--text2)', padding: '0 6px' }}>Tài nguyên trên hệ thống</legend>

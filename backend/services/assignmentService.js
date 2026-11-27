@@ -209,6 +209,16 @@ function leftBeforeAssigned(assignment, enrollment) {
 // locked. Completed assignments are never locked (work already done stays
 // done). Stateless: recomputed on every read, so finishing an old one
 // unlocks the next straight away. Mutates `rows`.
+// Exams are never locked: they run on a fixed date, so a student behind on
+// homework must still be able to sit them on time. A missed exam still
+// counts as old work owed. The teacher sets it per assignment ("🧪 Bài thi",
+// Assignment.isExam); left unset (null) it's automatic — any Writing exam /
+// class mock / Speaking full mock item makes it one.
+const EXAM_TYPES = new Set(['writing_exam', 'mock_test', 'speaking_full_mock']);
+function isExamAssignment(a) {
+  if (a.isExam === true || a.isExam === false) return a.isExam;
+  return (a.resources || []).some((r) => r.kind === 'internal' && EXAM_TYPES.has(r.resourceType));
+}
 function applyHomeworkLocks(rows, classMap) {
   const byClass = new Map();
   for (const r of rows) {
@@ -225,7 +235,7 @@ function applyHomeworkLocks(rows, classMap) {
     for (const r of list) {
       r.locked = false;
       if (r.status === 'completed') continue;
-      if (olderOpen.length > thr) {
+      if (olderOpen.length > thr && !r.isExam) {
         const blockers = olderOpen.filter((o) => !o.locked);
         r.locked = true;
         r.lockThreshold = thr;
@@ -507,7 +517,7 @@ async function getStudentAssignments(studentId, now = new Date(), { persist = fa
       _id: a._id, title: a.title, instruction: a.instruction,
       className: cls.name, classId: a.classId,
       teacherName: displayNameOf(teacherMap.get(String(cls.teacherId))),
-      deadline: a.deadline, createdAt: a.createdAt, archived,
+      deadline: a.deadline, createdAt: a.createdAt, archived, isExam: isExamAssignment(a),
       status, late, done, total, resources: resourcesShaped,
     });
   }
@@ -859,6 +869,7 @@ async function getAssignmentProgressTable(assignment, now = new Date()) {
 
 module.exports = {
   deriveAssignmentStatus,
+  isExamAssignment,
   getStudentAssignments,
   getStudentAssignmentsShared,
   getStudentHomeworkSummary,

@@ -486,6 +486,7 @@ exports.listAssignments = async (req, res) => {
       return {
         ...a,
         resourceCount: a.resources.length,
+        examEffective: svc.isExamAssignment(a),
         completedStudents: rows.filter((r) => !r.removed && r.status === 'completed').length,
         // denominator: active students this was actually assigned to — those
         // who joined after it was given are excluded (not_applicable)
@@ -499,10 +500,15 @@ exports.listAssignments = async (req, res) => {
   }
 };
 
+// "🧪 Bài thi" flag: true / false, anything else = automatic (null)
+function parseIsExam(v) {
+  return v === true || v === false ? v : null;
+}
+
 // POST /api/classes/:classId/assignments
 exports.createAssignment = async (req, res) => {
   try {
-    const { title, instruction = '', deadline = null, resources, gapFillHandled = false } = req.body;
+    const { title, instruction = '', deadline = null, resources, gapFillHandled = false, isExam } = req.body;
     if (!title || !String(title).trim()) return res.status(400).json({ success: false, message: 'Tên bài tập là bắt buộc' });
     const built = await buildResources(resources, [], { classId: req.classGroup._id, gapFillHandled: gapFillHandled === true });
     if (built.error) return res.status(400).json({ success: false, message: built.error });
@@ -515,6 +521,7 @@ exports.createAssignment = async (req, res) => {
       instruction: String(instruction).trim(),
       deadline: parseVnDeadline(deadline),
       resources: built.resources,
+      isExam: parseIsExam(isExam),
     });
 
     // Notify enrolled students in their inbox (decision: inbox for "new
@@ -561,7 +568,8 @@ exports.updateAssignment = async (req, res) => {
   try {
     const assignment = await Assignment.findOne({ _id: req.params.assignmentId, classId: req.classGroup._id });
     if (!assignment) return res.status(404).json({ success: false, message: 'Không tìm thấy bài tập' });
-    const { title, instruction, deadline, resources, status, gapFillHandled = false } = req.body;
+    const { title, instruction, deadline, resources, status, gapFillHandled = false, isExam } = req.body;
+    if (isExam !== undefined) assignment.isExam = parseIsExam(isExam);
     if (title !== undefined) assignment.title = String(title).trim();
     if (instruction !== undefined) assignment.instruction = String(instruction).trim();
     if (deadline !== undefined) assignment.deadline = parseVnDeadline(deadline);

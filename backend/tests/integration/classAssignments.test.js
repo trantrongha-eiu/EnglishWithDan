@@ -1162,6 +1162,43 @@ describe('homework lock (too many old assignments unfinished)', () => {
     expect(summary.lock.lockedCount).toBe(1);
   });
 
+  test('an exam (writing_exam) is never locked, even with many old assignments unfinished', async () => {
+    const { s, cls, asgs } = await setup();
+    const exam = await createWritingExam();
+    const examAsg = await createAssignment(cls, {
+      title: 'Bài Thi Writing',
+      resources: [{ kind: 'internal', resourceType: 'writing_exam', resourceId: exam._id }],
+    });
+    const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body;
+    expect(rowOf(mine, examAsg).locked).toBe(false);
+    // ordinary homework is still locked as before
+    expect(asgs.slice(3).map((a) => rowOf(mine, a).locked)).toEqual([true, true]);
+  });
+
+  test('teacher "🧪 Bài thi" flag: on unlocks any assignment, off re-locks an exam', async () => {
+    const { s, cls, asgs } = await setup();
+    const t = await createAdmin();
+    const exam = await createWritingExam();
+    const examAsg = await createAssignment(cls, {
+      title: 'Bài Thi Writing',
+      resources: [{ kind: 'internal', resourceType: 'writing_exam', resourceId: exam._id }],
+    });
+    // mark an ordinary homework as an exam
+    let res = await request(app).put(`/api/classes/${cls._id}/assignments/${asgs[4]._id}`).set(authH(t)).send({ isExam: true });
+    expect(res.status).toBe(200);
+    // and turn the writing exam off
+    res = await request(app).put(`/api/classes/${cls._id}/assignments/${examAsg._id}`).set(authH(t)).send({ isExam: false });
+    expect(res.status).toBe(200);
+    const mine = (await request(app).get('/api/assignments/mine').set(authH(s))).body;
+    expect(rowOf(mine, asgs[4]).locked).toBe(false);
+    expect(rowOf(mine, asgs[3]).locked).toBe(true);
+    expect(rowOf(mine, examAsg).locked).toBe(true);
+
+    const list = (await request(app).get(`/api/classes/${cls._id}/assignments`).set(authH(t))).body.assignments;
+    expect(list.find((a) => a._id === String(asgs[4]._id)).examEffective).toBe(true);
+    expect(list.find((a) => a._id === String(examAsg._id)).examEffective).toBe(false);
+  });
+
   test('archived misses count as old incomplete; threshold is per class policy', async () => {
     const { s, asgs } = await setup({ homeworkLockThreshold: 0 });
     await Assignment.updateOne({ _id: asgs[0]._id }, { status: 'archived' });
