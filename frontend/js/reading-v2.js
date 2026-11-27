@@ -1516,8 +1516,8 @@ function _rdRenderPassageCard(p) {
   const qCount    = p.questionCount || 0;
   const catCls    = { passage1:'p1', passage2:'p2', passage3:'p3' }[p.category] || 'p1';
   const catName   = { passage1:'P1', passage2:'P2', passage3:'P3' }[p.category] || '';
-  // Cambridge passages: "Cam 15" badge + "Cam 15 - Test 1" line over the title
-  const camBook   = (/^Cam \d+/.exec(p.source || '') || [''])[0];
+  // Cambridge passages: "Quýt 15" badge + "Quýt 15 - Test 1" line over the title (the label was "Cam N" before 2026-11-26)
+  const camBook   = (/^(?:Quýt|Cam) \d+/.exec(p.source || '') || [''])[0];
   const badgeLabel= isActual
     ? `<div style="position:absolute;bottom:8px;left:8px;display:flex;gap:4px;align-items:center">
         <span class="practice-card-cat-badge at" style="position:static">${camBook ? escHtml(camBook) : 'Actual'}</span>

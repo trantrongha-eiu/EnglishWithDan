@@ -28,7 +28,8 @@
 
   // Query word → other spellings that count as the same word.
   var ALIASES = {
-    cam: ['cambridge'], cambridge: ['cam'], camb: ['cam'],
+    cam: ['cambridge', 'quyt'], cambridge: ['cam', 'quyt'], camb: ['cam', 'quyt'],
+    quyt: ['cam', 'cambridge'], // 2026-11-26 the "Cam N" book label became "Quýt N" — old searches still find it
     vol: ['volume'], volume: ['vol'],
     part: ['section'], section: ['part'], sec: ['part', 'section'],
     mocktest: ['mock'], mock: ['mocktest'],

@@ -974,7 +974,7 @@ export default function Dictation() {
           </div>
           <div className="dict-search">
             <i className="fas fa-search" />
-            <input type="search" id="dict-search" placeholder="Tìm bài... (vd: Cam 18, festival, flights)" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input type="search" id="dict-search" placeholder="Tìm bài... (vd: Quýt 18, festival, flights)" autoComplete="off" value={query} onChange={(e) => setQuery(e.target.value)} />
           </div>
         </div>
 

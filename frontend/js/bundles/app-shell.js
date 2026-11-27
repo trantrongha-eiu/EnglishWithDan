@@ -1104,7 +1104,8 @@
 
   // Query word → other spellings that count as the same word.
   var ALIASES = {
-    cam: ['cambridge'], cambridge: ['cam'], camb: ['cam'],
+    cam: ['cambridge', 'quyt'], cambridge: ['cam', 'quyt'], camb: ['cam', 'quyt'],
+    quyt: ['cam', 'cambridge'], // 2026-11-26 the "Cam N" book label became "Quýt N" — old searches still find it
     vol: ['volume'], volume: ['vol'],
     part: ['section'], section: ['part'], sec: ['part', 'section'],
     mocktest: ['mock'], mock: ['mocktest'],
@@ -1769,7 +1770,7 @@
   if (!document.getElementById('ews-i18n-js')) {
     var i18nScript = document.createElement('script');
     i18nScript.id = 'ews-i18n-js';
-    i18nScript.src = '/js/shared/i18n.js?v=4fc1002517';
+    i18nScript.src = '/js/shared/i18n.js?v=54b3ff01fe';
     document.body.appendChild(i18nScript);
   }
 

@@ -2764,7 +2764,7 @@
     'tím': 'purple',
     'Tím': 'Purple',
     'Tìm bài quiz theo tên...': 'Search quizzes by name...',
-    'Tìm bài... (vd: Cam 18, festival, flights)': 'Search tests... (e.g. Cam 18, festival, flights)',
+    'Tìm bài... (vd: Quýt 18, festival, flights)': 'Search tests... (e.g. Quýt 18, festival, flights)',
     'Tìm bạn học...': 'Find a classmate...',
     'Tìm câu hỏi...': 'Search questions...',
     'Tìm đề...': 'Search tests...',

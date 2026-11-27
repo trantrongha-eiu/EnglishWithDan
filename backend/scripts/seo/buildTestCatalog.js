@@ -19,7 +19,7 @@ function seriesOf(name, series) {
   let m;
   if ((m = s.match(/^Vol\s*(\d+)$/i))) return { id: `vol-${m[1]}`, label: `IELTS Vol ${m[1]}`, order: 1000 - +m[1], vol: +m[1] };
   if (/actual/i.test(s) || /^Actual/i.test(name)) return { id: 'recent-actual-tests', label: 'IELTS Recent Actual Tests', order: 2000 };
-  if ((m = s.match(/^Cam\s*(\d+)$/i))) return { id: `cambridge-${m[1]}`, label: `Cambridge IELTS ${m[1]}`, order: 3000 - +m[1] };
+  if ((m = s.match(/^(?:Quýt|Cam)\s*(\d+)$/i))) return { id: `cambridge-${m[1]}`, label: `Cambridge IELTS ${m[1]}`, order: 3000 - +m[1] };
   return null;
 }
 
