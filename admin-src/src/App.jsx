@@ -59,6 +59,7 @@ const Shadowing = lazy(() => import('./pages/Shadowing'));
 const DictationReports = lazy(() => import('./pages/DictationReports'));
 const SpeakingPart2 = lazy(() => import('./pages/SpeakingPart2'));
 const Shop = lazy(() => import('./pages/Shop'));
+const VocabBattle = lazy(() => import('./pages/VocabBattle'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 export default function App() {
@@ -112,6 +113,7 @@ export default function App() {
                 <Route path="dictation-reports" element={<DictationReports />} />
                 <Route path="speaking-part2" element={<SpeakingPart2 />} />
                 <Route path="shop" element={<Shop />} />
+                <Route path="vocab-battle" element={<VocabBattle />} />
                 <Route path="reading-stats" element={<ReadingStats />} />
                 <Route path="listening-stats" element={<ListeningStats />} />
                 <Route path="vocab-activity" element={<VocabActivity />} />

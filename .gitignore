@@ -53,6 +53,7 @@ backend/scripts/writingCovers/web/
 backend/scripts/writingCovers/shots/
 backend/scripts/idiomImages/web/
 backend/scripts/idiomImages/shots/
+backend/scripts/vocabBattlePictures/shots/
 
 # Listening audio → R2 migration (done 2026-10): encode scratch space
 backend/scripts/data/audioR2Backup/work/

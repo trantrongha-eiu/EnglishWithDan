@@ -1,0 +1,807 @@
+# ⚔️ Đấu trường — "Nhìn hình đoán từ" picture words.
+# Pictures = Microsoft Fluent Emoji 3D (MIT licence,
+# github.com/microsoft/fluentui-emoji). build.js uploads each picture to R2
+# and writes ../../data/vocabBattle/pictureWords.json.
+#
+# "## <set id> | <set title>" starts a set (wrong options come from the same
+# set). Each line: <Fluent Emoji folder name> | <English word> | <nghĩa>
+# Rules used when picking: the picture must show THAT word and nothing else
+# in its set could be the answer too (one of bus/minibus, ship/ferry, …).
+# "~ a, b, c" = words of the set that look alike: never offered together
+# (asked "rain", "cloud" is not a wrong option).
+
+## animals | Hình ảnh – Động vật có vú
+elephant | elephant | con voi
+giraffe | giraffe | hươu cao cổ
+zebra | zebra | ngựa vằn
+lion | lion | sư tử
+tiger | tiger | con hổ
+leopard | leopard | con báo
+bear | bear | con gấu
+polar bear | polar bear | gấu Bắc Cực
+panda | panda | gấu trúc
+koala | koala | gấu túi
+kangaroo | kangaroo | chuột túi
+monkey | monkey | con khỉ
+gorilla | gorilla | khỉ đột
+orangutan | orangutan | đười ươi
+camel | camel | lạc đà
+rhinoceros | rhinoceros | tê giác
+hippopotamus | hippopotamus | hà mã
+horse | horse | con ngựa
+donkey | donkey | con lừa
+cow | cow | con bò
+water buffalo | buffalo | con trâu
+pig | pig | con lợn
+goat | goat | con dê
+ewe | sheep | con cừu
+llama | llama | lạc đà không bướu
+deer | deer | con hươu
+moose | moose | nai sừng tấm
+bison | bison | bò rừng
+boar | wild boar | lợn rừng
+wolf | wolf | chó sói
+fox | fox | con cáo
+dog | dog | con chó
+cat | cat | con mèo
+rabbit | rabbit | con thỏ
+mouse | mouse | con chuột
+hamster | hamster | chuột hamster
+hedgehog | hedgehog | con nhím
+chipmunk | chipmunk | sóc chuột
+bat | bat | con dơi
+raccoon | raccoon | gấu mèo
+skunk | skunk | chồn hôi
+badger | badger | con lửng
+beaver | beaver | hải ly
+otter | otter | rái cá
+sloth | sloth | con lười
+mammoth | mammoth | voi ma mút
+unicorn | unicorn | kỳ lân
+~ bear, polar bear, panda, koala
+~ horse, donkey, zebra, unicorn
+~ cow, buffalo, bison
+~ camel, llama
+~ deer, moose
+~ pig, wild boar
+~ mouse, hamster, chipmunk
+~ monkey, gorilla, orangutan
+~ wolf, dog, fox
+~ elephant, mammoth
+~ raccoon, badger, skunk
+~ beaver, otter
+
+## wildlife | Hình ảnh – Chim, cá, bò sát & côn trùng
+bird | bird | con chim
+eagle | eagle | đại bàng
+owl | owl | con cú
+parrot | parrot | con vẹt
+peacock | peacock | con công
+penguin | penguin | chim cánh cụt
+flamingo | flamingo | chim hồng hạc
+swan | swan | thiên nga
+duck | duck | con vịt
+goose | goose | con ngỗng
+chicken | hen | gà mái
+rooster | rooster | gà trống
+turkey | turkey | gà tây
+dove | dove | chim bồ câu
+baby chick | chick | gà con
+dodo | dodo | chim dodo
+fish | fish | con cá
+tropical fish | tropical fish | cá nhiệt đới
+shark | shark | cá mập
+whale | whale | cá voi
+dolphin | dolphin | cá heo
+octopus | octopus | bạch tuộc
+jellyfish | jellyfish | con sứa
+seal | seal | hải cẩu
+blowfish | pufferfish | cá nóc
+coral | coral | san hô
+spiral shell | seashell | vỏ ốc biển
+crab | crab | con cua
+lobster | lobster | tôm hùm
+shrimp | shrimp | con tôm
+squid | squid | con mực
+oyster | oyster | con hàu
+turtle | turtle | con rùa
+crocodile | crocodile | cá sấu
+snake | snake | con rắn
+lizard | lizard | thằn lằn
+frog | frog | con ếch
+t-rex | dinosaur | khủng long
+dragon | dragon | con rồng
+butterfly | butterfly | con bướm
+honeybee | bee | con ong
+ant | ant | con kiến
+lady beetle | ladybird | bọ rùa
+mosquito | mosquito | con muỗi
+fly | fly | con ruồi
+cockroach | cockroach | con gián
+spider | spider | con nhện
+spider web | spider web | mạng nhện
+scorpion | scorpion | bọ cạp
+snail | snail | ốc sên
+worm | worm | con giun
+cricket | cricket | con dế
+microbe | bacteria | vi khuẩn
+feather | feather | lông vũ
+nest with eggs | nest | tổ chim
+paw prints | paw print | dấu chân thú
+~ bird, dove, eagle, owl, parrot
+~ hen, rooster, chick, turkey
+~ duck, goose, swan
+~ fish, tropical fish, pufferfish
+~ whale, dolphin, shark, seal
+~ shrimp, lobster, crab
+~ dinosaur, dragon, lizard, crocodile
+~ spider, spider web
+~ bee, fly, mosquito
+~ ladybird, cricket, cockroach
+~ squid, octopus
+~ seashell, snail, oyster
+~ nest, feather, bird, chick
+~ worm, snake
+
+## fruitveg | Hình ảnh – Rau củ & trái cây
+red apple | apple | quả táo
+banana | banana | quả chuối
+grapes | grapes | quả nho
+watermelon | watermelon | dưa hấu
+melon | melon | dưa lưới
+strawberry | strawberry | dâu tây
+cherries | cherries | quả anh đào
+peach | peach | quả đào
+pear | pear | quả lê
+pineapple | pineapple | quả dứa
+mango | mango | quả xoài
+coconut | coconut | quả dừa
+lemon | lemon | quả chanh vàng
+tangerine | orange | quả cam
+kiwi fruit | kiwi | quả kiwi
+blueberries | blueberries | việt quất
+avocado | avocado | quả bơ
+olive | olive | quả ô liu
+tomato | tomato | cà chua
+carrot | carrot | cà rốt
+potato | potato | khoai tây
+roasted sweet potato | sweet potato | khoai lang
+onion | onion | củ hành
+garlic | garlic | tỏi
+ginger root | ginger | gừng
+broccoli | broccoli | bông cải xanh
+cucumber | cucumber | dưa chuột
+eggplant | aubergine | cà tím
+ear of corn | corn | bắp ngô
+hot pepper | chilli | ớt
+bell pepper | bell pepper | ớt chuông
+mushroom | mushroom | nấm
+leafy green | lettuce | rau xà lách
+pea pod | peas | đậu Hà Lan
+peanuts | peanuts | đậu phộng
+chestnut | chestnut | hạt dẻ
+beans | beans | hạt đậu
+herb | herb | rau thơm
+sheaf of rice | rice plant | cây lúa
+~ lemon, orange
+~ melon, watermelon
+~ chilli, bell pepper
+~ sweet potato, potato, ginger
+~ peas, beans, peanuts
+~ apple, peach, pear
+~ grapes, blueberries, cherries, olive
+~ lettuce, herb, broccoli
+~ garlic, onion
+~ corn, rice plant
+
+## food | Hình ảnh – Món ăn & đồ uống
+bread | bread | bánh mì
+baguette bread | baguette | bánh mì que
+croissant | croissant | bánh sừng bò
+sandwich | sandwich | bánh mì kẹp
+hamburger | hamburger | bánh hamburger
+hot dog | hot dog | xúc xích kẹp bánh mì
+pizza | pizza | bánh pizza
+french fries | chips | khoai tây chiên
+popcorn | popcorn | bỏng ngô
+pancakes | pancakes | bánh kếp
+waffle | waffle | bánh quế
+egg | egg | quả trứng
+bacon | bacon | thịt xông khói
+cheese wedge | cheese | phô mai
+butter | butter | bơ (thực phẩm)
+cut of meat | meat | thịt
+poultry leg | chicken leg | đùi gà
+green salad | salad | món sa lát
+spaghetti | spaghetti | mì Ý
+steaming bowl | noodles | mì sợi
+cooked rice | rice | cơm
+curry rice | curry | cà ri
+sushi | sushi | món sushi
+dumpling | dumpling | bánh bao, sủi cảo
+taco | taco | bánh taco
+burrito | burrito | bánh cuộn burrito
+pretzel | pretzel | bánh quy xoắn
+bagel | bagel | bánh vòng bagel
+salt | salt | muối
+canned food | canned food | đồ hộp
+birthday cake | birthday cake | bánh sinh nhật
+cupcake | cupcake | bánh nướng nhỏ
+cookie | biscuit | bánh quy
+doughnut | doughnut | bánh vòng donut
+chocolate bar | chocolate | sô-cô-la
+candy | sweets | kẹo
+lollipop | lollipop | kẹo mút
+ice cream | ice cream | kem
+honey pot | honey | mật ong
+pie | pie | bánh nướng nhân
+moon cake | mooncake | bánh trung thu
+glass of milk | milk | sữa
+hot beverage | coffee | cà phê
+teapot | teapot | ấm trà
+bubble tea | bubble tea | trà sữa trân châu
+beer mug | beer | bia
+wine glass | wine | rượu vang
+tropical drink | cocktail | đồ uống cocktail
+baby bottle | baby bottle | bình sữa em bé
+ice | ice | nước đá
+chopsticks | chopsticks | đôi đũa
+spoon | spoon | cái thìa
+fork and knife | cutlery | dao nĩa
+kitchen knife | knife | con dao
+jar | jar | cái lọ
+~ bread, baguette, croissant, sandwich, bagel, pretzel
+~ hamburger, sandwich, hot dog
+~ noodles, spaghetti
+~ rice, curry, sushi
+~ birthday cake, cupcake, pie, mooncake
+~ biscuit, mooncake, waffle, pancakes
+~ sweets, lollipop, chocolate
+~ coffee, teapot, bubble tea
+~ beer, wine, cocktail
+~ milk, baby bottle
+~ knife, cutlery, spoon, chopsticks
+~ meat, bacon, chicken leg
+~ dumpling, mooncake
+~ taco, burrito
+~ ice cream, ice
+~ honey, jar
+~ bagel, doughnut
+
+## transport | Hình ảnh – Phương tiện giao thông
+automobile | car | xe ô tô
+taxi | taxi | xe taxi
+bus | bus | xe buýt
+police car | police car | xe cảnh sát
+ambulance | ambulance | xe cứu thương
+fire engine | fire engine | xe cứu hỏa
+delivery truck | van | xe tải nhỏ
+articulated lorry | lorry | xe tải lớn
+pickup truck | pickup truck | xe bán tải
+tractor | tractor | máy kéo
+racing car | racing car | xe đua
+motorcycle | motorbike | xe máy
+motor scooter | scooter | xe tay ga
+bicycle | bicycle | xe đạp
+kick scooter | kick scooter | xe trượt scooter
+skateboard | skateboard | ván trượt
+manual wheelchair | wheelchair | xe lăn
+locomotive | steam train | tàu hơi nước
+high-speed train | high-speed train | tàu cao tốc
+metro | underground | tàu điện ngầm
+tram | tram | xe điện
+monorail | monorail | tàu một ray
+aerial tramway | cable car | cáp treo
+airplane | aeroplane | máy bay
+helicopter | helicopter | trực thăng
+rocket | rocket | tên lửa
+satellite | satellite | vệ tinh
+parachute | parachute | cái dù
+flying saucer | UFO | đĩa bay
+passenger ship | ship | tàu thủy
+sailboat | sailing boat | thuyền buồm
+canoe | canoe | ca nô, xuồng
+speedboat | speedboat | xuồng máy
+anchor | anchor | mỏ neo
+fuel pump | petrol station | trạm xăng
+vertical traffic light | traffic light | đèn giao thông
+stop sign | stop sign | biển báo dừng
+construction | roadworks | công trường trên đường
+railway track | railway | đường ray
+motorway | motorway | đường cao tốc
+wheel | wheel | bánh xe
+luggage | luggage | hành lý
+seat | seat | ghế ngồi
+~ car, taxi, police car, racing car
+~ van, lorry, pickup truck, ambulance, fire engine
+~ motorbike, scooter
+~ bicycle, kick scooter
+~ steam train, high-speed train, underground, tram, monorail, railway
+~ ship, sailing boat, canoe, speedboat
+~ aeroplane, helicopter
+~ rocket, satellite, UFO
+~ motorway, roadworks, railway
+~ traffic light, stop sign
+~ cable car, monorail
+
+## places | Hình ảnh – Nơi chốn & công trình
+house | house | ngôi nhà
+house with garden | garden | khu vườn
+hut | hut | túp lều
+office building | office building | tòa nhà văn phòng
+school | school | trường học
+hospital | hospital | bệnh viện
+bank | bank | ngân hàng
+hotel | hotel | khách sạn
+post office | post office | bưu điện
+department store | department store | trung tâm thương mại
+convenience store | convenience store | cửa hàng tiện lợi
+factory | factory | nhà máy
+stadium | stadium | sân vận động
+castle | castle | lâu đài
+church | church | nhà thờ
+mosque | mosque | nhà thờ Hồi giáo
+classical building | museum | bảo tàng
+building construction | construction site | công trường xây dựng
+derelict house | abandoned house | ngôi nhà bỏ hoang
+bridge at night | bridge | cây cầu
+fountain | fountain | đài phun nước
+tent | tent | cái lều
+camping | campsite | khu cắm trại
+circus tent | circus | rạp xiếc
+ferris wheel | Ferris wheel | vòng đu quay
+roller coaster | roller coaster | tàu lượn siêu tốc
+playground slide | slide | cầu trượt
+statue of liberty | statue | bức tượng
+cityscape | city | thành phố
+station | station | nhà ga
+bus stop | bus stop | trạm xe buýt
+wedding | wedding | đám cưới
+world map | map | bản đồ
+globe showing europe-africa | globe | quả địa cầu
+compass | compass | la bàn
+brick | brick | viên gạch
+rock | rock | tảng đá
+wood | wood | gỗ
+~ house, hut, garden, abandoned house
+~ office building, city, hotel, bank, department store, convenience store
+~ church, mosque, castle, museum
+~ tent, campsite, circus
+~ Ferris wheel, roller coaster, slide
+~ station, bus stop
+~ map, globe, compass
+~ brick, rock, wood
+~ construction site, abandoned house
+~ fountain, statue
+~ bank, museum
+
+## nature | Hình ảnh – Thiên nhiên & thời tiết
+sun | sun | mặt trời
+full moon | full moon | trăng tròn
+crescent moon | crescent moon | trăng lưỡi liềm
+star | star | ngôi sao
+shooting star | shooting star | sao băng
+comet | comet | sao chổi
+ringed planet | planet | hành tinh
+milky way | galaxy | dải ngân hà
+cloud | cloud | đám mây
+cloud with rain | rain | mưa
+cloud with lightning | lightning | tia chớp
+cloud with snow | snow | tuyết
+snowflake | snowflake | bông tuyết
+snowman | snowman | người tuyết
+tornado | tornado | lốc xoáy
+rainbow | rainbow | cầu vồng
+umbrella with rain drops | umbrella | cái ô
+water wave | wave | con sóng
+droplet | water drop | giọt nước
+fire | fire | lửa
+high voltage | electricity | điện
+thermometer | thermometer | nhiệt kế
+sunrise | sunrise | bình minh
+sunset | sunset | hoàng hôn
+mountain | mountain | ngọn núi
+snow-capped mountain | snowy mountain | núi tuyết
+volcano | volcano | núi lửa
+desert | desert | sa mạc
+desert island | island | hòn đảo
+beach with umbrella | beach | bãi biển
+national park | national park | công viên quốc gia
+evergreen tree | pine tree | cây thông
+deciduous tree | tree | cái cây
+palm tree | palm tree | cây cọ
+cactus | cactus | cây xương rồng
+seedling | seedling | cây non
+potted plant | houseplant | cây cảnh trong chậu
+fallen leaf | leaf | chiếc lá
+maple leaf | maple leaf | lá phong
+four leaf clover | clover | cỏ ba lá
+rose | rose | hoa hồng
+sunflower | sunflower | hoa hướng dương
+tulip | tulip | hoa tulip
+lotus | lotus | hoa sen
+cherry blossom | cherry blossom | hoa anh đào
+hibiscus | hibiscus | hoa dâm bụt
+bouquet | bouquet | bó hoa
+wilted flower | wilted flower | hoa héo
+~ cloud, rain, lightning, snow
+~ sun, sunrise, sunset
+~ snow, snowflake, snowman, snowy mountain
+~ mountain, snowy mountain, volcano, national park
+~ tree, pine tree, palm tree
+
+~ full moon, crescent moon, planet
+~ star, shooting star, comet, galaxy
+~ leaf, maple leaf, clover
+~ beach, island
+~ rose, bouquet, wilted flower, tulip, hibiscus
+~ seedling, houseplant
+~ rain, umbrella, water drop
+~ wave, water drop
+~ fire, electricity, lightning
+~ sunflower, sun
+
+## clothing | Hình ảnh – Quần áo & phụ kiện
+t-shirt | T-shirt | áo phông
+dress | dress | váy liền
+jeans | jeans | quần bò
+shorts | shorts | quần soóc
+coat | coat | áo khoác
+scarf | scarf | khăn quàng cổ
+gloves | gloves | găng tay
+socks | socks | tất, vớ
+necktie | tie | cà vạt
+kimono | kimono | áo kimono
+bikini | bikini | đồ bơi hai mảnh
+one-piece swimsuit | swimsuit | đồ bơi
+lab coat | lab coat | áo blouse phòng thí nghiệm
+safety vest | safety vest | áo phản quang
+billed cap | cap | mũ lưỡi trai
+top hat | top hat | mũ chóp cao
+graduation cap | graduation cap | mũ tốt nghiệp
+crown | crown | vương miện
+military helmet | helmet | mũ bảo hiểm
+running shoe | trainers | giày thể thao
+high-heeled shoe | high heels | giày cao gót
+hiking boot | boots | đôi ủng, giày cổ cao
+thong sandal | flip-flops | dép xỏ ngón
+ballet shoes | ballet shoes | giày múa ba lê
+glasses | glasses | kính mắt
+sunglasses | sunglasses | kính râm
+goggles | goggles | kính bơi
+handbag | handbag | túi xách
+backpack | backpack | ba lô
+purse | purse | ví cầm tay
+shopping bags | shopping bags | túi mua sắm
+ring | ring | nhẫn
+gem stone | diamond | kim cương
+lipstick | lipstick | son môi
+folding hand fan | fan | cái quạt
+~ T-shirt, dress
+~ coat, lab coat, safety vest, kimono
+~ cap, top hat, graduation cap, helmet, crown
+~ trainers, high heels, boots, flip-flops, ballet shoes
+~ glasses, sunglasses, goggles
+~ handbag, purse, backpack, shopping bags
+~ swimsuit, bikini
+~ ring, diamond
+~ jeans, shorts
+~ scarf, tie
+
+## home | Hình ảnh – Đồ dùng trong nhà & dụng cụ
+bed | bed | cái giường
+chair | chair | cái ghế
+couch and lamp | sofa | ghế sô-pha
+door | door | cánh cửa
+window | window | cửa sổ
+mirror | mirror | cái gương
+bathtub | bathtub | bồn tắm
+shower | shower | vòi sen
+toilet | toilet | bồn cầu
+toothbrush | toothbrush | bàn chải đánh răng
+soap | soap | xà phòng
+sponge | sponge | miếng bọt biển
+broom | broom | cái chổi
+bucket | bucket | cái xô
+basket | basket | cái giỏ
+roll of paper | toilet roll | cuộn giấy vệ sinh
+razor | razor | dao cạo
+lotion bottle | lotion | kem dưỡng da
+safety pin | safety pin | ghim băng
+elevator | lift | thang máy
+fire extinguisher | fire extinguisher | bình chữa cháy
+shopping cart | shopping trolley | xe đẩy mua hàng
+mouse trap | mousetrap | bẫy chuột
+key | key | chìa khóa
+locked | padlock | ổ khóa
+candle | candle | cây nến
+light bulb | light bulb | bóng đèn
+flashlight | torch | đèn pin
+hammer | hammer | cái búa
+wrench | spanner | cờ lê
+screwdriver | screwdriver | tua vít
+carpentry saw | saw | cái cưa
+axe | axe | cái rìu
+ladder | ladder | cái thang
+toolbox | toolbox | hộp dụng cụ
+nut and bolt | nut and bolt | đai ốc và bu lông
+magnet | magnet | nam châm
+chains | chain | dây xích
+gear | gear | bánh răng
+hook | hook | cái móc
+balance scale | scales | cái cân
+bomb | bomb | quả bom
+shield | shield | cái khiên
+bow and arrow | bow and arrow | cung tên
+boomerang | boomerang | cái boomerang
+sewing needle | needle | cây kim
+thread | thread | cuộn chỉ
+yarn | wool | len
+wrapped gift | present | món quà
+balloon | balloon | bóng bay
+teddy bear | teddy bear | gấu bông
+~ bathtub, shower
+~ key, padlock
+~ light bulb, torch, candle
+~ hammer, spanner, screwdriver, saw, axe, toolbox
+~ nut and bolt, gear
+~ needle, thread, wool, safety pin
+~ broom, bucket
+~ soap, sponge, lotion
+~ chain, hook
+~ bed, sofa, chair
+~ door, window, lift
+~ bucket, basket
+~ razor, toothbrush
+
+## office | Hình ảnh – Học tập, văn phòng & công nghệ
+pencil | pencil | bút chì
+pen | pen | cây bút
+fountain pen | fountain pen | bút máy
+crayon | crayon | bút sáp màu
+paintbrush | paintbrush | cọ vẽ
+straight ruler | ruler | thước kẻ
+scissors | scissors | cái kéo
+paperclip | paper clip | kẹp giấy
+pushpin | drawing pin | đinh ghim
+open book | book | quyển sách
+books | books | chồng sách
+notebook | notebook | cuốn vở
+newspaper | newspaper | tờ báo
+scroll | scroll | cuộn giấy da
+memo | note | ghi chú
+calendar | calendar | lịch
+clipboard | clipboard | bìa kẹp hồ sơ
+briefcase | briefcase | cặp tài liệu
+file folder | folder | bìa hồ sơ
+file cabinet | filing cabinet | tủ hồ sơ
+wastebasket | wastepaper basket | thùng rác văn phòng
+bar chart | bar chart | biểu đồ cột
+chart increasing | rising graph | biểu đồ tăng
+chart decreasing | falling graph | biểu đồ giảm
+envelope | envelope | phong bì
+package | parcel | bưu kiện
+postbox | postbox | hòm thư
+label | label | nhãn dán
+abacus | abacus | bàn tính
+laptop | laptop | máy tính xách tay
+desktop computer | desktop computer | máy tính để bàn
+keyboard | keyboard | bàn phím
+computer mouse | computer mouse | chuột máy tính
+printer | printer | máy in
+mobile phone | mobile phone | điện thoại di động
+telephone | telephone | điện thoại bàn
+fax machine | fax machine | máy fax
+battery | battery | pin, ắc quy
+electric plug | plug | phích cắm điện
+television | television | ti vi
+radio | radio | đài radio
+camera | camera | máy ảnh
+video camera | video camera | máy quay phim
+film projector | projector | máy chiếu
+satellite antenna | satellite dish | chảo vệ tinh
+headphone | headphones | tai nghe
+microphone | microphone | micrô
+loudspeaker | loudspeaker | loa phóng thanh
+megaphone | megaphone | loa cầm tay
+magnifying glass tilted left | magnifying glass | kính lúp
+microscope | microscope | kính hiển vi
+telescope | telescope | kính thiên văn
+test tube | test tube | ống nghiệm
+dna | DNA | ADN
+alarm clock | alarm clock | đồng hồ báo thức
+watch | watch | đồng hồ đeo tay
+hourglass done | hourglass | đồng hồ cát
+stopwatch | stopwatch | đồng hồ bấm giờ
+coin | coin | đồng xu
+dollar banknote | banknote | tiền giấy
+credit card | credit card | thẻ tín dụng
+money bag | money bag | túi tiền
+receipt | receipt | hóa đơn
+identification card | ID card | thẻ căn cước
+ticket | ticket | vé
+ballot box with ballot | ballot box | thùng phiếu
+~ pencil, pen, fountain pen, crayon, paintbrush
+~ book, books, notebook, newspaper, scroll, note
+~ calendar, note
+~ folder, filing cabinet, briefcase, clipboard
+~ bar chart, rising graph, falling graph
+~ envelope, parcel, postbox
+~ laptop, desktop computer, keyboard, computer mouse
+~ mobile phone, telephone, fax machine
+~ television, radio, desktop computer
+~ camera, video camera, projector
+~ headphones, microphone, loudspeaker, megaphone
+~ magnifying glass, microscope, telescope
+~ alarm clock, watch, hourglass, stopwatch
+~ coin, banknote, credit card, money bag, receipt
+~ ID card, ticket, credit card
+~ ruler, pencil
+~ battery, plug
+~ label, note
+
+## hobbies | Hình ảnh – Thể thao, sở thích & âm nhạc
+soccer ball | football | quả bóng đá
+basketball | basketball | bóng rổ
+volleyball | volleyball | bóng chuyền
+baseball | baseball | bóng chày
+tennis | tennis | quần vợt
+badminton | badminton | cầu lông
+ping pong | table tennis | bóng bàn
+american football | American football | bóng bầu dục Mỹ
+rugby football | rugby | bóng bầu dục
+ice hockey | ice hockey | khúc côn cầu trên băng
+cricket game | cricket bat | gậy cricket
+bowling | bowling | bowling
+boxing glove | boxing | quyền anh
+flag in hole | golf | đánh gôn
+skis | skiing | trượt tuyết
+ice skate | ice skating | trượt băng
+sled | sledge | xe trượt tuyết
+diving mask | snorkelling | lặn với ống thở
+fishing pole | fishing | câu cá
+goal net | goal | khung thành
+martial arts uniform | martial arts | võ thuật
+trophy | trophy | cúp
+1st place medal | gold medal | huy chương vàng
+sports medal | medal | huy chương
+bullseye | target | bia tập bắn
+kite | kite | con diều
+yo-yo | yo-yo | con quay yo-yo
+puzzle piece | jigsaw puzzle | ghép hình
+chess pawn | chess | cờ vua
+game die | dice | xúc xắc
+joystick | joystick | cần điều khiển
+video game | video game | trò chơi điện tử
+slot machine | slot machine | máy đánh bạc
+crystal ball | crystal ball | quả cầu pha lê
+artist palette | palette | bảng màu
+framed picture | painting | bức tranh
+performing arts | theatre | sân khấu kịch
+clapper board | film | phim
+admission tickets | tickets | vé vào cửa
+fireworks | fireworks | pháo hoa
+christmas tree | Christmas tree | cây thông Noel
+jack-o-lantern | pumpkin lantern | đèn bí ngô
+party popper | party popper | pháo giấy
+guitar | guitar | đàn ghi-ta
+violin | violin | đàn vi-ô-lông
+drum | drum | cái trống
+trumpet | trumpet | kèn trumpet
+saxophone | saxophone | kèn saxophone
+flute | flute | sáo
+accordion | accordion | đàn accordion
+musical keyboard | piano | đàn piano
+banjo | banjo | đàn banjo
+maracas | maracas | lục lạc maracas
+musical score | sheet music | bản nhạc
+musical notes | music | âm nhạc
+~ football, American football, rugby, goal
+~ basketball, volleyball
+~ baseball, cricket bat
+~ tennis, badminton, table tennis
+~ medal, gold medal, trophy
+~ skiing, ice skating, sledge
+~ tickets, film, theatre
+~ guitar, violin, banjo
+~ music, sheet music
+~ piano, accordion
+~ target, dice
+~ chess, jigsaw puzzle, dice
+~ video game, joystick
+~ fireworks, party popper
+~ Christmas tree, pumpkin lantern
+
+## people | Hình ảnh – Nghề nghiệp & con người
+teacher | teacher | giáo viên
+student | student | học sinh, sinh viên
+health worker | doctor | bác sĩ
+scientist | scientist | nhà khoa học
+farmer | farmer | nông dân
+cook | chef | đầu bếp
+firefighter | firefighter | lính cứu hỏa
+police officer | police officer | cảnh sát
+pilot | pilot | phi công
+astronaut | astronaut | phi hành gia
+judge | judge | thẩm phán
+mechanic | mechanic | thợ máy
+construction worker | builder | công nhân xây dựng
+factory worker | factory worker | công nhân nhà máy
+office worker | office worker | nhân viên văn phòng
+technologist | programmer | lập trình viên
+artist | artist | họa sĩ
+singer | singer | ca sĩ
+detective | detective | thám tử
+guard | guard | lính gác
+ninja | ninja | ninja
+santa claus | Santa Claus | ông già Noel
+prince | prince | hoàng tử
+princess | princess | công chúa
+baby | baby | em bé
+child | child | đứa trẻ
+older person | elderly person | người cao tuổi
+pregnant woman | pregnant woman | phụ nữ mang thai
+person in bed | sleep | ngủ
+person running | run | chạy
+person walking | walk | đi bộ
+person swimming | swim | bơi
+person biking | cycle | đạp xe
+person climbing | climb | leo trèo
+person lifting weights | lift weights | nâng tạ
+person surfing | surf | lướt sóng
+person rowing boat | row | chèo thuyền
+person juggling | juggle | tung hứng
+person golfing | play golf | chơi gôn
+person bowing | bow | cúi chào
+person raising hand | raise your hand | giơ tay
+person shrugging | shrug | nhún vai
+person taking bath | have a bath | tắm bồn
+person getting haircut | have a haircut | cắt tóc
+selfie | selfie | ảnh tự chụp
+waving hand | wave goodbye | vẫy tay chào
+clapping hands | clap | vỗ tay
+thumbs up | thumbs up | giơ ngón cái
+~ teacher, student
+~ doctor, scientist
+~ office worker, programmer
+~ police officer, guard, detective
+~ builder, factory worker, mechanic
+~ baby, child
+~ walk, run
+~ swim, surf, row
+~ wave goodbye, raise your hand, clap, thumbs up
+~ bow, shrug
+~ cycle, run
+~ prince, princess
+~ artist, singer
+~ lift weights, climb
+
+## body | Hình ảnh – Cơ thể & sức khỏe
+eye | eye | con mắt
+ear | ear | cái tai
+nose | nose | cái mũi
+mouth | mouth | cái miệng
+tongue | tongue | cái lưỡi
+tooth | tooth | cái răng
+brain | brain | bộ não
+anatomical heart | heart | trái tim
+lungs | lungs | lá phổi
+bone | bone | khúc xương
+leg | leg | cái chân
+foot | foot | bàn chân
+flexed biceps | muscle | cơ bắp
+pill | pill | viên thuốc
+syringe | injection | mũi tiêm
+adhesive bandage | plaster | băng dán cá nhân
+stethoscope | stethoscope | ống nghe
+crutch | crutch | cái nạng
+drop of blood | blood | máu
+x-ray | X-ray | phim chụp X-quang
+~ eye, ear, nose, mouth
+~ tongue, mouth, tooth
+~ heart, blood, lungs
+~ pill, injection
+~ plaster, crutch
+~ leg, foot, muscle
+~ bone, X-ray
+~ stethoscope, heart

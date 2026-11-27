@@ -353,6 +353,7 @@ function openCount(userId) {
 }
 
 async function create(userId, body = {}) {
+  if (!R.ENABLED) return { status: 'closed' };
   const kind = body.kind === 'chain' ? 'chain' : 'quiz';
   const solo = body.solo === true;
   const stake = solo ? 0 : Number(body.stake || 0);
@@ -361,7 +362,7 @@ async function create(userId, body = {}) {
   }
   const count = Number(body.count);
   if (!R.COUNTS.includes(count)) return { status: 'bad_count' };
-  const source = R.SOURCES[body.source] ? body.source : 'all';
+  const source = R.SOURCES[body.source] && !R.DISABLED_SOURCES.includes(body.source) ? body.source : 'all';
   const ids = solo ? [] : [...new Set((Array.isArray(body.opponents) ? body.opponents : []).map(String))];
   if (!solo && !ids.length) return { status: 'no_opponents' };
   if (ids.length > R.MAX_PLAYERS - 1) return { status: 'too_many', max: R.MAX_PLAYERS - 1 };
@@ -501,6 +502,18 @@ async function cancel(userId, id) {
   });
   if (res.status !== 'ok') return res;
   return { status: 'ok', battle: view(res.battle, userId) };
+}
+
+// Admin /vocab-battle: stop an open or running room — every stake goes back
+// to its player's ví lửa and the players get a note.
+async function adminCancel(id, reason = '') {
+  const why = 'Ban quản trị đã dừng trận này' + (reason ? ' (' + reason + ')' : '') + ' — 🔥 cược đã về lại ví lửa.';
+  return mutate(id, (b) => {
+    if (!OPEN.includes(b.status)) return { status: 'gone' };
+    const effects = [{ board: true }];
+    refundAll(b, effects, why);
+    return { status: 'ok', effects };
+  });
 }
 
 // A joined player leaves a chain lobby (refunded)
@@ -813,8 +826,11 @@ async function players(userId, q) {
 
 function rules() {
   return {
-    types: Object.entries(R.QUESTION_TYPES).map(([key, v]) => ({ key, label: v.label, limit: v.limit })),
-    sources: Object.entries(R.SOURCES).map(([key, v]) => ({ key, label: v.label, types: v.types, sets: v.sets })),
+    enabled: R.ENABLED,
+    types: Object.entries(R.QUESTION_TYPES).filter(([key]) => !R.DISABLED_TYPES.includes(key))
+      .map(([key, v]) => ({ key, label: v.label, limit: v.limit })),
+    sources: Object.entries(R.SOURCES).filter(([key]) => !R.DISABLED_SOURCES.includes(key))
+      .map(([key, v]) => ({ key, label: v.label, types: v.types.filter((t) => !R.DISABLED_TYPES.includes(t)), sets: v.sets })),
     counts: R.COUNTS, maxPlayers: R.MAX_PLAYERS, minStake: R.MIN_STAKE, maxStake: R.MAX_STAKE,
     turnSeconds: R.TURN_SECONDS, lives: R.LIVES, inviteHours: R.INVITE_HOURS,
     friendlyWin: R.FRIENDLY_WIN_FLAMES, friendlyDaily: R.FRIENDLY_DAILY_WINS,
@@ -823,6 +839,6 @@ function rules() {
 }
 
 module.exports = {
-  create, respond, cancel, leave, get, next, answer, start, playWord, review, list, players, rules, sweepDue, pendingInvites,
+  create, respond, cancel, leave, get, next, answer, start, playWord, review, list, players, rules, sweepDue, pendingInvites, adminCancel, gameText,
   _internal: { tick, finish, view, mutate },
 };

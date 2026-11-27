@@ -77,6 +77,8 @@ function Hub() {
   const invites = battles.filter((b) => b.status === 'open' && b.me?.state === 'invited');
   const live = battles.filter((b) => (b.status === 'open' || b.status === 'playing') && b.me?.state === 'joined');
   const past = battles.filter((b) => b.status === 'done' || b.status === 'cancelled');
+  // Admin → ⚔️ Đấu trường → Cài đặt can close it (no new rooms; running ones finish)
+  const closed = !!data && data.rules.enabled === false;
   const stats = data?.stats;
 
   return (
@@ -153,8 +155,11 @@ function Hub() {
               <button className="vb-link" onClick={() => setTarget(null)} aria-label="Bỏ chọn">✕</button>
             </div>
           )}
+          {closed && (
+            <div className="vb-closed" role="status">⛔ Đấu trường đang tạm đóng — chưa tạo được trận mới. Các trận đang dở vẫn chơi tiếp được nhé!</div>
+          )}
           <div className="vb-games">
-            {GAMES.map((g) => {
+            {GAMES.filter((g) => !data || !g.types || g.types.some((t) => data.rules.types.some((x) => x.key === t))).map((g) => {
               const best = data?.bests?.[g.key];
               return (
                 <div key={g.key} className={`vb-game vb-game--${g.key}`}>
@@ -167,10 +172,10 @@ function Hub() {
                   </div>
                   <p className="vb-game-desc">{g.desc}</p>
                   <div className="vb-game-act">
-                    <button className="vb-btn vb-btn--primary" disabled={!data} onClick={() => setCreating({ game: g, solo: false })}>
+                    <button className="vb-btn vb-btn--primary" disabled={!data || closed} onClick={() => setCreating({ game: g, solo: false })}>
                       ⚔️ {target ? `Thách ${target.name.split(' ').slice(-1)[0]}` : 'Mời bạn'}
                     </button>
-                    <button className="vb-btn vb-btn--ghost" disabled={!data} onClick={() => setCreating({ game: g, solo: true })}>🎯 Chơi một mình</button>
+                    <button className="vb-btn vb-btn--ghost" disabled={!data || closed} onClick={() => setCreating({ game: g, solo: true })}>🎯 Chơi một mình</button>
                   </div>
                 </div>
               );

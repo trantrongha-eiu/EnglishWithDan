@@ -48,5 +48,6 @@ router.use(require('./dictationReports')); // Báo lỗi Dictation: student sent
 router.use(require('./shadowing'));        // Shadowing (Video): lessons list / preview / sentence fixes / show-hide
 router.use(require('./speakingPart2'));    // Part 2 · 7 câu chuyện gốc: per-story + per-student progress (read-only)
 router.use(require('./shop'));             // BXH vocab + Cửa hàng lửa: players, purchases, duels (read-only)
+router.use(require('./vocabBattle'));      // ⚔️ Đấu trường từ vựng: rooms, word bank (pictures / Từ điển mở), Nối chữ words, settings
 
 module.exports = router;

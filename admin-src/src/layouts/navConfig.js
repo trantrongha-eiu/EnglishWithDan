@@ -86,6 +86,7 @@ export const NAV_GROUPS = [
   { id: 'fun', label: 'BXH vocab', items: [
     { to: '/shop', icon: '🏆', label: 'Bảng xếp hạng', student: 'vocab-leaderboard.html' },
     { to: '/shop?tab=shop', icon: '🔥', label: 'Cửa hàng lửa', student: 'shop.html' },
+    { to: '/vocab-battle', icon: '⚔️', label: 'Đấu trường từ vựng', student: 'app/vocab-battle' },
   ] },
   { id: 'finance', label: 'Tài chính', items: [
     { to: '/upgrade-requests', icon: '⭐', label: 'Yêu cầu nâng cấp', badge: 'pendingUpgrades', badgeTitle: 'Yêu cầu đang chờ duyệt', adminOnly: true },

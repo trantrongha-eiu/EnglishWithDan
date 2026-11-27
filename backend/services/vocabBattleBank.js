@@ -17,9 +17,15 @@
 //               one entry per word, the meaning most students kept; a word
 //               must be a real English word (ENABLE / ChainWord)
 //   dictionary  Từ điển — DictionaryCollocation phrases + DictionaryPhrase
+//   pictures    "Từ có hình ảnh" — BattleWord kind 'picture' (a picture each;
+//               `near` = look-alike words never offered as wrong options)
+//   wikt        Từ điển mở — BattleWord kind 'dict': ~6k common words the
+//               site doesn't teach (Vietnamese Wiktionary meanings). Their
+//               meanings show in Nối chữ but they earn no ⭐ (not taught).
+//               Both kinds are edited on admin /vocab-battle → Kho từ.
 // Đồng nghĩa = paraphrase pairs (Học Paraphrase + DictionaryPhrase
 // alternatives); Trái nghĩa = data/vocabBattle/antonyms.js (hand-written,
-// asked both ways).
+// asked both ways) + BattleWord.ant pairs.
 // Two right answers are kept out: an option never overlaps the answer
 // ("hobby" / "cooking as a hobby", "while" / "meanwhile") and is never a word
 // the site gives the same meaning (or the prompt's meaning) anywhere.
@@ -47,9 +53,11 @@ const Task2Topic = require('../models/Task2Topic');
 const ListeningSection = require('../models/ListeningSection');
 const VocabBook = require('../models/VocabBook');
 const ChainWord = require('../models/ChainWord');
+const BattleWord = require('../models/BattleWord');
 const { ANTONYMS, NEAR } = require('../data/vocabBattle/antonyms');
 const { BLOCK, lookupWiktionary, lookupFreeDict } = require('./wordCheck');
-const { QUESTION_TYPES, SOURCES } = require('../constants/vocabBattle');
+const R = require('../constants/vocabBattle');
+const { QUESTION_TYPES, SOURCES } = R;
 
 const POOL_TTL_MS = 10 * 60 * 1000;
 let poolCache = null; // { at, pools }
@@ -139,16 +147,18 @@ for (const g of NEAR) for (const a of g) for (const b of g) if (a !== b) addTo(N
 const alike = (w) => [norm(w), ...(NEAR_OF.get(norm(w)) || [])];
 // Is `o` a fair answer to "the opposite of `prompt`"? (it or a near-synonym
 // of it is an opposite of the prompt or of a near-synonym of the prompt)
-function isOpposite(prompt, o) {
+function isOpposite(prompt, o, opp = OPP) {
   const os = alike(o);
-  return alike(prompt).some((p) => os.some((x) => OPP.get(p)?.has(x)));
+  return alike(prompt).some((p) => os.some((x) => opp.get(p)?.has(x)));
 }
+// Admin-blocked Nối chữ words (admin → Cài đặt), on top of the swear list
+const blockedWord = (w) => BLOCK.has(w) || R.BLOCKED_WORDS.has(w);
 const near = (a, b) => norm(a) === norm(b) || (NEAR_OF.get(norm(a))?.has(norm(b)) ?? false);
 
 // ── pools ──────────────────────────────────────────────────────────
 async function loadPools() {
   if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.pools;
-  const [units, lessons, dict, chainDocs, t2, colls, sections, saved] = await Promise.all([
+  const [units, lessons, dict, chainDocs, t2, colls, sections, saved, battleWords] = await Promise.all([
     VocabUnit.find({ isActive: { $ne: false } }).select('title words').lean(),
     VocabularyLesson.find({ published: true, $or: [{ targetClass: '' }, { targetClass: { $exists: false } }] })
       .select('title words').lean(),
@@ -169,6 +179,8 @@ async function loadPools() {
         pos: { $push: '$words.partOfSpeech' },
       } },
     ]).catch(() => []),
+    BattleWord.find({ hidden: { $ne: true } }).select('kind word meaning pos set setTitle imageUrl example near ant')
+      .sort({ set: 1, word: 1 }).lean().catch(() => []),
   ]);
   if (chainDocs.length) setChainWords(chainDocs);
   const enable = englishWords();
@@ -178,6 +190,7 @@ async function loadPools() {
   const entry = (set, w) => ({
     word: clean(w.word), meaning: tidyMeaning(w.meaning), example: clean(w.example),
     imageUrl: w.imageUrl || '', distractors: (w.distractors || []).map(clean).filter(Boolean),
+    near: (w.near || []).map(norm).filter(Boolean),
     lessonId: set.id, lessonTitle: set.title,
   });
   const okEntry = (w) => w.word && w.meaning && /[A-Za-z]/.test(w.word) && norm(w.word) !== norm(w.meaning) && w.meaning.length <= 90;
@@ -301,6 +314,39 @@ async function loadPools() {
   })));
   for (const set of sets) if (set.src === 'dictionary') for (const w of set.words) addSingles(w.word, w.meaning);
 
+  // Đấu trường's own words (BattleWord): pictures + Từ điển mở. Not "taught"
+  // (no ⭐ in Nối chữ), but their meaning shows there.
+  const bwSets = new Map();
+  for (const w of battleWords) {
+    const src = w.kind === 'picture' ? 'pictures' : 'wikt';
+    const id = `${src}:${w.set}`;
+    let g = bwSets.get(id);
+    if (!g) { g = { title: w.setTitle || w.set, src, words: [] }; bwSets.set(id, g); }
+    g.words.push(w);
+  }
+  for (const [id, g] of bwSets) addSet(id, g.title, g.src, g.words);
+  for (const w of battleWords) {
+    if (w.kind !== 'dict' || wordCount(w.word) !== 1) continue;
+    const t = norm(w.word);
+    if (/^[a-z]{3,}$/.test(t) && !viOf.has(t)) viOf.set(t, tidyMeaning(w.meaning));
+  }
+  // Their antonyms (BattleWord.ant) join the hand-written pairs
+  const POS_OF = { n: 'noun', noun: 'noun', v: 'verb', verb: 'verb', adj: 'adj', adv: 'adv' };
+  const antonyms = [...ANTONYMS];
+  const opp = new Map([...OPP].map(([k, v]) => [k, new Set(v)]));
+  const seenPair = new Set(ANTONYMS.map((r) => [norm(r.w), norm(r.a)].sort().join('|')));
+  for (const w of battleWords) {
+    const a = clean(w.ant);
+    const pos = POS_OF[w.pos];
+    if (!a || !pos || wordCount(w.word) !== 1 || wordCount(a) !== 1) continue;
+    const key = [norm(w.word), norm(a)].sort().join('|');
+    if (seenPair.has(key)) continue;
+    seenPair.add(key);
+    antonyms.push({ w: clean(w.word), a, vi: tidyMeaning(w.meaning), pos, extra: true });
+    addTo(opp, norm(w.word), norm(a));
+    addTo(opp, norm(a), norm(w.word));
+  }
+
   const dictSyn = [];
   for (const d of dict) {
     for (const alt of d.alternatives || []) {
@@ -326,10 +372,10 @@ async function loadPools() {
     lulu.add(w);
     (luluByLetter[w[0]] = luluByLetter[w[0]] || []).push(w);
   };
-  for (const w of verified.lulu) if (w.length <= 8) addLulu(w);
-  for (const w of bank) if (enable.has(w) || verified.lulu.has(w)) addLulu(w);
+  for (const w of verified.lulu) if (w.length <= 8 && !blockedWord(w)) addLulu(w);
+  for (const w of bank) if ((enable.has(w) || verified.lulu.has(w)) && !blockedWord(w)) addLulu(w);
 
-  const pools = { para, dictSyn, sets, topics: sets.filter((s) => s.src === 'topics'), bank, viOf, meansOf, wordsOf, lulu, luluByLetter };
+  const pools = { para, dictSyn, sets, topics: sets.filter((s) => s.src === 'topics'), bank, viOf, meansOf, wordsOf, lulu, luluByLetter, antonyms, opp };
   poolCache = { at: Date.now(), pools };
   return pools;
 }
@@ -405,8 +451,10 @@ function genSynonym(ctx) {
 
 // Either way round: "abundant" → scarce, or "scarce" → abundant
 function genAntonym(ctx) {
+  const list = ctx.pools.antonyms || ANTONYMS;
+  const opp = ctx.pools.opp || OPP;
   const fresh = [];
-  for (const r of ANTONYMS) {
+  for (const r of list) {
     if (ctx.used.has('ant:' + norm(r.w)) || ctx.used.has('ant:' + norm(r.a))) continue;
     fresh.push({ r, rev: false });
     if (wordCount(r.a) === 1) fresh.push({ r, rev: true });
@@ -416,10 +464,10 @@ function genAntonym(ctx) {
     const { r, rev } = pick(fresh);
     const prompt = rev ? r.a : r.w;
     const right = rev ? r.w : r.a;
-    const group = ANTONYMS.filter((o) => o.pos === r.pos && o !== r);
+    const group = list.filter((o) => o.pos === r.pos && o !== r);
     const cands = shuffle(group.flatMap((o) => [o.a, o.w]));
     const wrong = distinct(cands, 3, [right, prompt],
-      (o) => !isOpposite(prompt, o) && !near(o, right) && !near(o, prompt) && !close(o, right) && !close(o, prompt));
+      (o) => !isOpposite(prompt, o, opp) && !near(o, right) && !near(o, prompt) && !close(o, right) && !close(o, prompt));
     if (wrong.length < 3) continue;
     ctx.used.add('ant:' + norm(r.w));
     ctx.used.add('ant:' + norm(r.a));
@@ -447,7 +495,8 @@ function setOf(ctx, w) {
 // A wrong English option for word `w`: not overlapping it, and not a word
 // the site also gives w's meaning (that would be a second right answer)
 function okWrongWord(ctx, w, o) {
-  return !close(o, w.word) && !(ctx.pools.meansOf.get(norm(o))?.has(norm(w.meaning)));
+  return !close(o, w.word) && !(ctx.pools.meansOf.get(norm(o))?.has(norm(w.meaning)))
+    && !(w.near || []).includes(norm(o)); // a look-alike picture ("rain" for "cloud")
 }
 // A wrong Vietnamese option for word `w`: not overlapping its meaning, and
 // not another meaning the site gives w
@@ -541,16 +590,23 @@ function genOrder(ctx) {
 
 const hearable = (w) => wordCount(w.word) <= 3 && !PLACEHOLDER.test(w.word);
 
+// A sentence worth a gap: the word in it, and ≥ 4 other words around the gap
+// ("- Up _____." gave nothing to go on)
+function listenable(w) {
+  if (!w.example || !hearable(w)) return false;
+  const re = new RegExp(`\\b${escapeRe(w.word)}\\b`, 'gi');
+  return re.test(w.example) && wordCount(w.example.replace(re, ' ').replace(/[^A-Za-z' ]+/g, ' ')) >= 4;
+}
+
 function genListen(ctx) {
-  const fresh = scopeWords(ctx, (w) => w.example && !ctx.used.has('w:' + norm(w.word)) && hearable(w)
-    && new RegExp(`\\b${escapeRe(w.word)}\\b`, 'i').test(w.example));
+  const fresh = scopeWords(ctx, (w) => !ctx.used.has('w:' + norm(w.word)) && listenable(w));
   if (!fresh.length) return null;
   const w = pick(fresh);
   const re = new RegExp(`\\b${escapeRe(w.word)}\\b`, 'gi');
   const m = new RegExp(`\\b${escapeRe(w.word)}\\b`, 'i').exec(w.example);
   const answer = m[0];
   // Every time the word is said is a gap (else the sentence gives it away)
-  const masked = w.example.replace(re, '_____');
+  const masked = w.example.replace(re, '_____').replace(/^[-–—]\s*/, '');
   ctx.used.add('w:' + norm(w.word));
   return {
     type: 'listen', prompt: masked, speak: w.example, hint: w.meaning,
@@ -578,7 +634,7 @@ const GENERATORS = {
 // Which of `types` the source can actually feed.
 function usableTypes(types, source) {
   const allowed = (SOURCES[source] || SOURCES.all).types;
-  return types.filter((t) => GENERATORS[t] && allowed.includes(t));
+  return types.filter((t) => GENERATORS[t] && allowed.includes(t) && !R.DISABLED_TYPES.includes(t));
 }
 
 // The set a room may be limited to (a lesson / topic / test of that source)
@@ -682,7 +738,7 @@ async function onlineWord(w) {
 async function chainWordInfo(w) {
   const pools = await loadPools();
   const parts = w.split('-');
-  if (BLOCK.has(w) || parts.some((p) => BLOCK.has(p))) return { known: false, blocked: true, bank: false, vi: '' };
+  if (blockedWord(w) || parts.some((p) => blockedWord(p))) return { known: false, blocked: true, bank: false, vi: '' };
   const flat = parts.join('');
   const local = (x) => englishWords().has(x) || chainWords().all.has(x) || pools.bank.has(x);
   const bank = pools.bank.has(flat);
@@ -695,7 +751,7 @@ async function chainWordInfo(w) {
 async function chainStartWord() {
   const pools = await loadPools();
   const verified = chainWords();
-  const easy = (w) => w.length >= 4 && w.length <= 8 && !/[xqzjvy]$/.test(w);
+  const easy = (w) => w.length >= 4 && w.length <= 8 && !/[xqzjvy]$/.test(w) && !blockedWord(w);
   const taught = [...pools.bank].filter((w) => easy(w) && verified.lulu.has(w));
   if (taught.length) return pick(taught);
   const any = [...verified.lulu].filter(easy);
@@ -707,7 +763,7 @@ async function chainStartWord() {
 // it's stuck.
 function botWord(letter, used) {
   const pools = poolCache ? poolCache.pools : null;
-  const list = ((pools ? pools.luluByLetter : chainWords().byLetter)[letter] || []).filter((w) => !used.has(w));
+  const list = ((pools ? pools.luluByLetter : chainWords().byLetter)[letter] || []).filter((w) => !used.has(w) && !blockedWord(w));
   const bankSet = pools ? pools.bank : new Set();
   const taught = list.filter((w) => bankSet.has(w));
   if (taught.length && Math.random() < 0.7) return { w: pick(taught), bank: true };
@@ -739,7 +795,8 @@ async function bankStats() {
     if (key === 'all' || key === 'dictionary') for (const p of pools.dictSyn) words.add(norm(p.syn));
     sources[key] = words.size;
   }
-  return { sources, antonyms: ANTONYMS.length, chain: { lulu: pools.lulu.size, accepted: englishWords().size + chainWords().all.size } };
+  const pictures = pools.sets.reduce((n, s) => n + s.words.filter((w) => w.imageUrl).length, 0);
+  return { sources, antonyms: (pools.antonyms || ANTONYMS).length, pictures, chain: { lulu: pools.lulu.size, accepted: englishWords().size + chainWords().all.size } };
 }
 
 module.exports = {

@@ -19,6 +19,10 @@ const playLimiter = limit(60 * 1000, 150);
 // Every open tab polls ~every 10 s (js/shared/battle-invites.js)
 const inviteLimiter = limit(60 * 1000, 40);
 
+// Admin settings (services/vocabBattleSettings.js) re-read every 30 s
+const settings = require('../services/vocabBattleSettings');
+router.use((req, res, next) => { settings.refresh().then(() => next(), () => next()); });
+
 router.get('/', auth, ctrl.list);
 router.get('/players', auth, ctrl.players);
 router.get('/invites', auth, inviteLimiter, ctrl.invites);

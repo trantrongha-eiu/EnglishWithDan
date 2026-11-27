@@ -25,13 +25,13 @@ export const STAKES = [0, 5, 10, 20, 50, 100];
 export const GAMES = [
   { key: 'mix', kind: 'quiz', emoji: '🧠', name: 'Tổng hợp', desc: 'Trộn cả 8 dạng câu. Thử tài từ vựng toàn diện!', types: null },
   { key: 'synonym', kind: 'quiz', emoji: '🟰', name: 'Đồng nghĩa', desc: 'Chọn cụm paraphrase cùng nghĩa (từ bài Reading Cambridge và Từ điển).', types: ['synonym'] },
-  { key: 'antonym', kind: 'quiz', emoji: '↔️', name: 'Trái nghĩa', desc: 'Chọn từ mang nghĩa ngược lại: hơn 300 cặp, hỏi cả hai chiều.', types: ['antonym'] },
-  { key: 'meaning', kind: 'quiz', emoji: '📖', name: 'Nghĩa của từ', desc: 'Anh → Việt và Việt → Anh, hơn 10.000 từ từ Vocab Topics, Reading, Listening, Writing, Từ điển.', types: ['meaning'] },
+  { key: 'antonym', kind: 'quiz', emoji: '↔️', name: 'Trái nghĩa', desc: 'Chọn từ mang nghĩa ngược lại: hơn 400 cặp, hỏi cả hai chiều.', types: ['antonym'] },
+  { key: 'meaning', kind: 'quiz', emoji: '📖', name: 'Nghĩa của từ', desc: 'Anh → Việt và Việt → Anh, hơn 16.000 từ: Vocab Topics, Reading, Listening, Writing, Từ điển + Từ điển mở (Wiktionary).', types: ['meaning'] },
   { key: 'match', kind: 'quiz', emoji: '🧩', name: 'Nối từ – nghĩa', desc: 'Nối 5 từ với nghĩa đúng của chúng.', types: ['match'] },
   { key: 'order', kind: 'quiz', emoji: '🧱', name: 'Ghép câu', desc: 'Sắp xếp các từ thành câu hoàn chỉnh.', types: ['order'] },
   { key: 'listen', kind: 'quiz', emoji: '🎧', name: 'Nghe & điền', desc: 'Nghe câu ví dụ, điền từ còn thiếu.', types: ['listen'] },
   { key: 'spell', kind: 'quiz', emoji: '🔤', name: 'Nghe & gõ', desc: 'Nghe từ rồi gõ lại đúng chính tả.', types: ['spell'] },
-  { key: 'image', kind: 'quiz', emoji: '🖼️', name: 'Nhìn hình đoán từ', desc: 'Xem ảnh, chọn từ đúng.', types: ['image'] },
+  { key: 'image', kind: 'quiz', emoji: '🖼️', name: 'Nhìn hình đoán từ', desc: 'Xem hình, chọn từ đúng: hơn 700 hình con vật, đồ ăn, đồ vật, nghề nghiệp, thời tiết, idiom…', types: ['image'] },
   { key: 'chain', kind: 'chain', emoji: '🔗', name: 'Nối chữ', desc: 'tea → apple → egg… Từ sau bắt đầu bằng chữ cuối của từ trước. Chơi một mình là đấu với Lulu 🤖.', types: null },
 ];
 

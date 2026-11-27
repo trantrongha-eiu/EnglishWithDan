@@ -407,6 +407,12 @@
   background: var(--vb-accent-bg); border: 2.5px solid var(--vb-accent); font-weight: 700; animation: vb-pop .3s var(--pf-spring, ease);
 }
 .vb-target span { flex: 1; }
+/* Admin closed Đấu trường (rules.enabled false) */
+.vb-closed {
+  margin-bottom: 14px; padding: 10px 14px; border-radius: 16px; font-weight: 700;
+  background: #fff4e5; border: 2.5px solid #f59e0b; color: #92400e;
+}
+[data-theme="dark"] .vb-closed { background: #3b2a10; color: #fcd34d; }
 .vb-hist-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
 .vb-more { text-align: center; margin-top: 14px; }
 .vb-btn--sm { padding: 6px 12px; font-size: 13px; }
