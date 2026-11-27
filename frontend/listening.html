@@ -20,7 +20,7 @@
     <script src="/js/theme.js?v=5269b2b242"></script>
     <script src="/js/shared/site-guard.js?v=69a46f173e" defer></script>
     <script src="/js/shared/visit-tracker.js?v=4b5e3beead" defer></script>
-  <link rel="stylesheet" href="/css/playful.css?v=bb32f1417b"/>
+  <link rel="stylesheet" href="/css/playful.css?v=ff42ac5467"/>
 </head>
 
 <body>
@@ -45,6 +45,7 @@
 <script src="/js/shared/cd-footer.js?v=f2f465f188"></script>
 <script src="/js/shared/exam-mode-select.js?v=0e0a4ad5f9"></script>
 <script src="/js/shared/synonym-prompt.js?v=2503fd1f54"></script>
+<script src="/js/shared/series-nav.js?v=e7a0584827"></script>
 
     <!-- ══════════════════════════════════════════════
      SCREEN: LIST
@@ -106,10 +107,15 @@
                 <button class="resume-btn-dismiss" onclick="dismissResume()">Bỏ qua</button>
             </div>
 
-            <div id="tests-wrapper">
-                <div class="loading-spinner">Đang tải đề thi...</div>
+            <div class="sn-layout">
+                <aside id="series-nav" class="sn-aside" aria-label="Bộ đề"></aside>
+                <div class="sn-main">
+                    <div id="tests-wrapper">
+                        <div class="loading-spinner">Đang tải đề thi...</div>
+                    </div>
+                    <div id="tests-pagination"></div>
+                </div>
             </div>
-            <div id="tests-pagination"></div>
 
             <!-- Bài lẻ section picker (hidden initially) -->
             <div id="lele-picker-lt" class="hidden">
@@ -683,11 +689,11 @@
     <link rel="stylesheet" href="/css/listening-warmup.css?v=cd419383e2">
 
 
-    <script src="/js/listening.js?v=7c991f00eb"></script>
+    <script src="/js/listening.js?v=2b0caa4adb"></script>
 
     <!-- ══ Bài lẻ Listening – mode switch + practice flow ══════════════════ -->
     <script src="/js/shared/qtype-filter.js?v=a8ce27cba2"></script>
-    <script src="/js/listening-practice.js?v=d6084acb70"></script>
+    <script src="/js/listening-practice.js?v=b8b736781d"></script>
     <script src="/js/listening-warmup.js?v=3f279b60bd"></script>
     <script src="/js/listening-tips.js?v=ac65e3e36b"></script>
     <script src="/js/shared/tips-practice-shell.js?v=3b88607984"></script>

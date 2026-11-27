@@ -60,6 +60,9 @@ let _userPlan = 'free';   // refreshed on loadTests
 let _activeFilter = 'all';
 let _rdPage = 1;
 const RD_PAGE_SIZE = 8; // 4-column grid → exactly 2 full rows per page (matches Listening)
+// "Bộ đề" column (js/shared/series-nav.js): '' | 's:Quýt 18' | 'f:Quýt'.
+// Remembered for the tab so coming back from a test keeps the same book.
+let _rdSeries = (() => { try { return sessionStorage.getItem('rd-series') || ''; } catch (e) { return ''; } })();
 let _rdPracticePage = 1;
 const RD_PRACTICE_PAGE_SIZE = 15;
 let _allPracticePassages = [];
@@ -756,12 +759,32 @@ function filterTests(filter, btn) {
 
 function applyTestFilters() {
   _rdPage = 1;
+  // A search looks through every book, not just the one picked on the left.
+  if ((document.getElementById('test-search')?.value || '').trim()) _setRdSeries('');
   rerenderFilteredTests();
+}
+
+function _setRdSeries(key) {
+  _rdSeries = key || '';
+  try { sessionStorage.setItem('rd-series', _rdSeries); } catch (e) {}
+}
+
+function pickRdSeries(key) {
+  _setRdSeries(key);
+  const inp = document.getElementById('test-search');
+  if (inp && key) inp.value = '';
+  _rdPage = 1;
+  rerenderFilteredTests();
+  const wrap = document.getElementById('tests-wrapper');
+  if (wrap && wrap.getBoundingClientRect().top < 0) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function getFilteredTests() {
   const q = (document.getElementById('test-search')?.value || '').trim();
+  const SN = window.SeriesNav;
+  if (SN && !SN.exists(allTests, _rdSeries)) _setRdSeries('');
   const byStatus = allTests.filter(t => {
+    if (SN && !SN.match(t, _rdSeries)) return false;
     const done = !!t.lastAttempt;
     return _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
   });
@@ -782,6 +805,7 @@ function rerenderFilteredTests() {
   const start = (_rdPage - 1) * RD_PAGE_SIZE;
   renderTestList(filtered.slice(start, start + RD_PAGE_SIZE));
   renderPagination(filtered.length, _rdPage);
+  if (window.SeriesNav) window.SeriesNav.render(document.getElementById('series-nav'), allTests, _rdSeries, pickRdSeries);
 }
 
 function renderPagination(total, page) {
@@ -1328,6 +1352,8 @@ function setReadingMode(mode, pushHistory = true) {
   if (filterBar)    filterBar.style.display  = (isLele || isTips) ? 'none' : '';
   if (leleHdrBtns)  leleHdrBtns.style.display = isLele ? 'flex' : 'none';
   if (testsPag)     testsPag.style.display   = (isLele || isTips) ? 'none' : '';
+  const seriesNav   = document.getElementById('series-nav');
+  if (seriesNav)    seriesNav.style.display  = (isLele || isTips) ? 'none' : '';
   if (tipsPanel)    tipsPanel.classList.toggle('hidden', !isTips);
   if (!isLele) { const inp = document.getElementById('practice-search-input'); if (inp) inp.value = ''; }
   if (subtitle)  subtitle.style.display  = (isLele || isTips) ? 'none' : '';

@@ -985,6 +985,24 @@ function renderTestCard(t) {
 }
 
 let _activeFilter = 'all';
+// "Bộ đề" column (js/shared/series-nav.js): '' | 's:Vol 3' | 'f:Quýt'.
+// Remembered for the tab so coming back from a test keeps the same book.
+let _lsSeries = (() => { try { return sessionStorage.getItem('ls-series') || ''; } catch (e) { return ''; } })();
+
+function _setLsSeries(key) {
+    _lsSeries = key || '';
+    try { sessionStorage.setItem('ls-series', _lsSeries); } catch (e) {}
+}
+
+function pickLsSeries(key) {
+    _setLsSeries(key);
+    const inp = document.getElementById('test-search');
+    if (inp && key) inp.value = '';
+    _lsPage = 1;
+    rerenderLsFilteredTests();
+    const wrap = document.getElementById('tests-wrapper');
+    if (wrap && wrap.getBoundingClientRect().top < 0) wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
 function filterTests(mode, btn) {
     document.querySelectorAll('#ls-filter-bar .filter-btn').forEach(b => b.classList.remove('active'));
@@ -1001,13 +1019,18 @@ function applyTestFilters() {
     clearTimeout(_testFilterTimer);
     _testFilterTimer = setTimeout(() => {
         _lsPage = 1;
+        // A search looks through every book, not just the one picked on the left.
+        if ((document.getElementById('test-search')?.value || '').trim()) _setLsSeries('');
         rerenderLsFilteredTests();
     }, 250);
 }
 
 function getLsFilteredTests() {
     const q = (document.getElementById('test-search')?.value || '').trim();
+    const SN = window.SeriesNav;
+    if (SN && !SN.exists(state.tests, _lsSeries)) _setLsSeries('');
     const list = (state.tests || []).filter(t => {
+        if (SN && !SN.match(t, _lsSeries)) return false;
         const done = !!t.lastAttempt;
         return _activeFilter === 'all' || (_activeFilter === 'done' ? done : !done);
     });
@@ -1024,6 +1047,7 @@ function rerenderLsFilteredTests() {
     const pages = getGroupedPages(filtered);
     renderTestList(pages[_lsPage - 1] || []);
     renderLsPagination(pages.length, _lsPage, filtered.length);
+    if (window.SeriesNav) window.SeriesNav.render(document.getElementById('series-nav'), state.tests, _lsSeries, pickLsSeries);
 }
 
 function renderLsPagination(totalPages, page, totalTests) {

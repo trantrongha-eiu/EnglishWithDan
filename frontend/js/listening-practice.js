@@ -269,6 +269,8 @@ function setListeningMode(mode, pushHistory = true) {
     if (filterBar)    filterBar.style.display  = (isLele || isTips) ? 'none' : '';
     if (leleHdrBtns)  leleHdrBtns.style.display= isLele ? 'flex' : 'none';
     if (testsPag)     testsPag.style.display   = (isLele || isTips) ? 'none' : '';
+    const seriesNav   = document.getElementById('series-nav');
+    if (seriesNav)    seriesNav.style.display  = (isLele || isTips) ? 'none' : '';
     if (tipsPanel)    tipsPanel.classList.toggle('hidden', !isTips);
     if (!isLele) { const inp = document.getElementById('lt-practice-search-input'); if (inp) inp.value = ''; _ltSearchVal = ''; }
     if (subtitle)  subtitle.style.display   = (isLele || isTips) ? 'none' : '';
