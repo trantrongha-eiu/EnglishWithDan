@@ -93,8 +93,9 @@ function MovedToast({ players }) {
 }
 
 function ChainGame({ b, id, offset, players, onBattle }) {
-  const [text, setText] = useState('');
-  const [err, setErr] = useState('');
+  // The typed word + its error belong to one turn (turnKey below): a new
+  // turn starts with an empty box
+  const [box, setBox] = useState({ key: '', text: '', err: '' });
   const [sending, setSending] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const input = useRef(null);
@@ -113,6 +114,11 @@ function ChainGame({ b, id, offset, players, onBattle }) {
     return () => clearInterval(t);
   }, [b.status]);
   useEffect(() => { if (myTurn) input.current?.focus(); }, [myTurn, c.letter]);
+  const turnKey = `${c.turnId}|${c.words.length}`;
+  const text = box.key === turnKey ? box.text : '';
+  const err = box.key === turnKey ? box.err : '';
+  const setText = (v) => setBox({ key: turnKey, text: v, err: '' });
+  const setErr = (m) => setBox((cur) => ({ key: turnKey, text: cur.key === turnKey ? cur.text : '', err: m }));
   const playing = b.status === 'playing';
   useEffect(() => (playing ? battleFocus(() => true) : undefined), [playing]);
   useEffect(() => { list.current?.scrollTo?.({ left: 99999, behavior: 'smooth' }); }, [words.length]);
@@ -122,13 +128,17 @@ function ChainGame({ b, id, offset, players, onBattle }) {
     const w = text.trim().toLowerCase();
     if (!w || sending) return;
     setSending(true);
+    const sentAt = Date.now();
     const d = await battleApi('POST', `/${id}/word`, { word: w });
     setSending(false);
-    if (d.battle) onBattle(d.battle);
-    if (!d.success) { setErr(d.message || 'Từ không hợp lệ'); playSound('wrong'); return; }
+    if (d.battle) onBattle(d.battle, sentAt);
+    if (!d.success) {
+      playSound('wrong');
+      // Not your turn any more (the time ran out): the new turn already cleared the box
+      if (d.code !== 'not_your_turn' && d.code !== 'not_playing') setErr(d.message || 'Từ không hợp lệ');
+      return;
+    }
     playSound('correct');
-    setText('');
-    setErr('');
   }
 
   return (
@@ -172,7 +182,7 @@ function ChainGame({ b, id, offset, players, onBattle }) {
           {myTurn && (
             <form className="vb-typed" onSubmit={send}>
               <input ref={input} className="vb-input vb-input--big" value={text}
-                onChange={(e) => { setText(e.target.value.replace(/[^A-Za-z-]/g, '')); setErr(''); }}
+                onChange={(e) => { setText(e.target.value.replace(/[^A-Za-z-]/g, '')); }}
                 placeholder={`Một từ bắt đầu bằng "${c.letter}"…`} autoComplete="off" autoCapitalize="off" spellCheck={false} maxLength={30} />
               <button className="vb-btn vb-btn--primary" disabled={sending || !text.trim()}>Gửi</button>
             </form>

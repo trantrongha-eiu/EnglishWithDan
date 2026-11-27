@@ -4,8 +4,8 @@ import { speakWord } from '../../utils/vocab';
 // One battle question. `feedback` (after the reply) = the server's grading:
 // { frac, right (MCQ index / match columns), correct (text) }.
 // onDraft(value) = the answer as it stands, sent if the time runs out.
-export default function Question({ q, feedback, onSubmit, onDraft = () => {} }) {
-  if (q.options) return <Choice q={q} feedback={feedback} onSubmit={onSubmit} />;
+export default function Question({ q, attempt = 0, feedback, onSubmit, onDraft = () => {} }) {
+  if (q.options) return <Choice q={q} attempt={attempt} feedback={feedback} onSubmit={onSubmit} onDraft={onDraft} />;
   if (q.type === 'match') return <Match q={q} feedback={feedback} onSubmit={onSubmit} onDraft={onDraft} />;
   if (q.type === 'order') return <Order q={q} feedback={feedback} onSubmit={onSubmit} onDraft={onDraft} />;
   return <Typed q={q} feedback={feedback} onSubmit={onSubmit} onDraft={onDraft} />;
@@ -19,8 +19,12 @@ const ASK = {
   image: 'Hình này là từ nào?',
 };
 
-function Choice({ q, feedback, onSubmit }) {
-  const [chosen, setChosen] = useState(null);
+// A pick locks the buttons while it's sent; if the send failed the question
+// is read again (`attempt` changes) and they unlock.
+function Choice({ q, attempt, feedback, onSubmit, onDraft }) {
+  const [pickedAt, setPickedAt] = useState({ attempt, i: null });
+  const chosen = pickedAt.attempt === attempt ? pickedAt.i : null;
+  const pick = (i) => { setPickedAt({ attempt, i }); onDraft(i); onSubmit(i); };
   const ask = ASK[q.type === 'meaning' ? `meaning:${q.dir}` : q.type];
 
   // 1–4 on the keyboard (once: the first key is the answer)
@@ -28,10 +32,11 @@ function Choice({ q, feedback, onSubmit }) {
     if (feedback || chosen !== null) return undefined;
     const onKey = (e) => {
       const n = Number(e.key);
-      if (n >= 1 && n <= q.options.length && e.target.tagName !== 'INPUT') { setChosen(n - 1); onSubmit(n - 1); }
+      if (n >= 1 && n <= q.options.length && e.target.tagName !== 'INPUT') pick(n - 1);
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q, feedback, chosen, onSubmit]);
 
   return (
@@ -53,7 +58,7 @@ function Choice({ q, feedback, onSubmit }) {
           } else if (i === chosen) cls += ' picked';
           return (
             <button key={i} className={cls} disabled={!!feedback || chosen !== null}
-              onClick={() => { setChosen(i); onSubmit(i); }}>
+              onClick={() => pick(i)}>
               <span className="vb-opt-key">{i + 1}</span>{o}
             </button>
           );

@@ -30,6 +30,7 @@ const MESSAGES = {
   stale: [409, 'Câu này đã hết giờ.'],
   bad_kind: [400, 'Sai loại trận.'],
   need_players: [400, 'Cần ít nhất 2 người trong phòng mới bắt đầu được.'],
+  expired: [410, () => `Phòng chờ đã quá ${R.LOBBY_MINUTES} phút nên tự hủy — 🔥 cược đã về lại ví lửa.`],
   not_playing: [400, 'Trận Nối chữ chưa bắt đầu hoặc đã kết thúc.'],
   not_your_turn: [400, 'Chưa tới lượt bạn.'],
   chain_letters: [400, 'Chỉ gõ 1 từ tiếng Anh (chữ cái a–z).'],

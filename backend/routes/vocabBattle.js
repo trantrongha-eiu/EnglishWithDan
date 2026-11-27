@@ -14,8 +14,10 @@ const limit = (windowMs, max) => rateLimit({
   handler: (req, res) => res.status(429).json({ success: false, message: 'Thao tác nhanh quá, chờ chút rồi thử lại nhé.' }),
 });
 const createLimiter = limit(15 * 60 * 1000, 20);
-// A room polls every ~2s and a player answers fast
+// A player answers / types fast. The room poll (1–2 s, two tabs at worst)
+// has its own budget so it can never use up the moves' one mid-game.
 const playLimiter = limit(60 * 1000, 150);
+const pollLimiter = limit(60 * 1000, 200);
 // Every open tab polls ~every 10 s (js/shared/battle-invites.js)
 const inviteLimiter = limit(60 * 1000, 40);
 
@@ -29,7 +31,7 @@ router.get('/invites', auth, inviteLimiter, ctrl.invites);
 router.get('/lessons', auth, ctrl.lessons);
 router.get('/leaderboard', auth, ctrl.leaderboard);
 router.post('/', auth, createLimiter, ctrl.create);
-router.get('/:id', auth, playLimiter, ctrl.get);
+router.get('/:id', auth, pollLimiter, ctrl.get);
 router.get('/:id/review', auth, ctrl.review);
 router.post('/:id/accept', auth, ctrl.accept);
 router.post('/:id/decline', auth, ctrl.decline);

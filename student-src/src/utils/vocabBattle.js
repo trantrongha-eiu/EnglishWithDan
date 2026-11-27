@@ -97,8 +97,9 @@ export function shortName(p) {
 }
 
 // The create body that replays a finished room: same game, same settings,
-// and (for a thách đấu) the same people + stake.
-export function replayBody(b, { solo }) {
+// and (for a thách đấu) the same people + stake. `everyone` = all who were
+// invited, not only those who joined (a lobby that closed before it started).
+export function replayBody(b, { solo, everyone = false }) {
   const c = b.config || {};
   const body = {
     kind: b.kind, solo, count: c.count, types: c.types, source: c.source, lessonId: c.lessonId || undefined,
@@ -106,7 +107,7 @@ export function replayBody(b, { solo }) {
   };
   if (!solo) {
     body.stake = b.stake || 0;
-    body.opponents = b.players.filter((p) => !p.me && !p.bot && p.state === 'joined').map((p) => p.id);
+    body.opponents = b.players.filter((p) => !p.me && !p.bot && (everyone || p.state === 'joined')).map((p) => p.id);
   }
   return body;
 }

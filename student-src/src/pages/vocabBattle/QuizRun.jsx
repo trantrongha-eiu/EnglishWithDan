@@ -17,6 +17,7 @@ export default function QuizRun({ b, id, onBattle, onExit }) {
   const [feedback, setFeedback] = useState(null);
   const [left, setLeft] = useState(0);
   const [combo, setCombo] = useState(0);
+  const [attempt, setAttempt] = useState(0); // bumps on every /next (a re-read after a failed send unlocks the choices)
   const sending = useRef(false);
   const stuck = useRef(false); // a send failed: no auto-submit until the next /next
   const qRef = useRef(null);
@@ -46,6 +47,7 @@ export default function QuizRun({ b, id, onBattle, onExit }) {
     draft.current = null;
     stuck.current = false;
     setFeedback(null);
+    setAttempt((n) => n + 1);
     setQ(d.question);
     setLeft(d.remainingMs);
     setDeadline(Date.now() + d.remainingMs);
@@ -114,7 +116,7 @@ export default function QuizRun({ b, id, onBattle, onExit }) {
         <div className={`vb-timer${left < 5000 ? ' low' : ''}`}><i style={{ width: `${feedback ? 0 : pct}%` }} /></div>
         <span className={`vb-secs${left < 5000 && !feedback ? ' low' : ''}`}>{feedback ? '—' : `${secs}s`}</span>
       </div>
-      <Question key={q.i} q={q} feedback={feedback} onSubmit={submit} onDraft={onDraft} />
+      <Question key={q.i} q={q} attempt={attempt} feedback={feedback} onSubmit={submit} onDraft={onDraft} />
       {feedback && (
         <div className={`vb-feedback ${feedback.frac === 1 ? 'ok' : feedback.frac > 0 ? 'part' : 'bad'}`} role="status">
           {feedback.frac === 1 && <b>✅ Chính xác! +{feedback.pts}{feedback.combo >= 2 ? ` · 🔥 Combo x${feedback.combo}!` : ''}</b>}

@@ -188,6 +188,32 @@ describe('/api/vocab-battle', () => {
     expect(await wallet(b)).toBe(20);
   });
 
+  test('debug pass: a poll with nothing due writes nothing; Bắt đầu on an expired lobby refunds; turned-down rooms leave the list', async () => {
+    const a = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const b = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const id = (await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', opponents: [String(b._id)], stake: 10, count: 10, lives: 1, turnSeconds: 15 })).body.battle.id;
+    await request(app).post(`/api/vocab-battle/${id}/accept`).set(auth(b));
+    const r1 = (await request(app).get(`/api/vocab-battle/${id}`).set(auth(a))).body.battle;
+    const r2 = (await request(app).get(`/api/vocab-battle/${id}`).set(auth(a))).body.battle;
+    expect(typeof r1.rev).toBe('number');
+    expect(r2.rev).toBe(r1.rev); // seenAt fresh, nothing due → no write
+    // the 5 minutes ran out before the host pressed Bắt đầu
+    await VocabBattle.collection.updateOne({ _id: new (require('mongoose').Types.ObjectId)(id) }, { $set: { createdAt: new Date(Date.now() - 6 * 60000) } });
+    const st = await request(app).post(`/api/vocab-battle/${id}/start`).set(auth(a));
+    expect(st.body.code).toBe('expired');
+    expect(st.body.battle.status).toBe('cancelled');
+    expect(st.body.battle.endNote).toMatch(/tự hủy/);
+    expect(await wallet(a)).toBe(20);
+    expect(await wallet(b)).toBe(20);
+    // a quiz b turns down is not in b's list (no "Thua" in Lịch sử)
+    const q = (await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'quiz', opponents: [String(b._id)], stake: 0, count: 5, source: 'all', types: ['antonym'] })).body.battle.id;
+    await request(app).post(`/api/vocab-battle/${q}/decline`).set(auth(b));
+    const list = (await request(app).get('/api/vocab-battle').set(auth(b))).body.battles;
+    expect(list.some((x) => x.id === q)).toBe(false);
+  });
+
   test('going into another room drops a player out of their Nối chữ lobbies, and the others see it', async () => {
     const a = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
     const b = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });

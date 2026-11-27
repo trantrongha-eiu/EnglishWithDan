@@ -1649,6 +1649,9 @@
 
   function _renderVocabGoalCard(o) {
     if (document.getElementById('nav-vocab-goal-nudge')) return;
+    // Checked again here: a quiz / battle / modal may have started while the
+    // goal was being fetched (the card sat over Đấu trường's buttons)
+    if (_fullscreenActivityActive()) return;
     var card = document.createElement('div');
     card.id = 'nav-vocab-goal-nudge';
     card.style.cssText = [

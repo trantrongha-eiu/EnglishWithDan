@@ -71,6 +71,7 @@ const VocabBattleSchema = new mongoose.Schema({
   expiresAt: { type: Date, required: true },
   startedAt: { type: Date, default: null },
   endedAt:   { type: Date, default: null },
+  endNote:   { type: String, default: '' },   // why a room was cancelled (shown in the room)
   chain: {
     words:    { type: [mongoose.Schema.Types.Mixed], default: [] }, // { w, by, pts, bank, at }
     turn:     { type: Number, default: 0 },     // index into players

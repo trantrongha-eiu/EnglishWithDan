@@ -107,6 +107,7 @@ function refundAll(b, effects, why, skipId = null) {
   }
   b.status = 'cancelled';
   b.endedAt = new Date();
+  b.endNote = why;
   for (const p of joined(b)) {
     if (skipId && sid(p.userId) === sid(skipId)) continue;
     effects.push({ notify: [b.hostId, 'Đấu trường từ vựng', p.userId, '⚔️ Trận đấu từ vựng đã hủy', why] });
@@ -308,6 +309,8 @@ function view(b, viewerId, now = new Date()) {
     kind: b.kind,
     solo: !!b.solo,
     status: b.status,
+    rev: b.rev || 0, // the client drops a reply older than what it shows
+    endNote: b.status === 'cancelled' ? (b.endNote || '') : '',
     stake: b.stake,
     pot: b.status === 'done' ? b.pot : b.players.reduce((s, p) => s + (p.paid || 0), 0),
     config: b.config,
@@ -550,11 +553,13 @@ async function movedOn(userId, exceptId) {
 
 // Host, before anyone else has joined (or a chain lobby that hasn't started)
 async function cancel(userId, id) {
-  const res = await mutate(id, (b) => {
+  const res = await mutate(id, (b, now) => {
     if (sid(b.hostId) !== sid(userId)) return { status: 'forbidden' };
+    const effects = [];
+    // Expired meanwhile: it's already cancelled (and refunded) by tick
+    if (tick(b, now, effects, {}) && b.status !== 'open') return { status: 'ok', effects };
     if (b.status !== 'open') return { status: 'gone' };
     if (b.kind === 'quiz' && joined(b).some((p) => sid(p.userId) !== sid(userId))) return { status: 'started' };
-    const effects = [];
     refundAll(b, effects, 'Chủ phòng đã hủy trận — 🔥 cược đã về lại ví lửa.', userId);
     return { status: 'ok', effects };
   });
@@ -579,8 +584,9 @@ async function leave(userId, id) {
   const res = await mutate(id, (b, now) => {
     const p = me(b, userId);
     if (!p || p.state !== 'joined' || sid(b.hostId) === sid(userId)) return { status: 'forbidden' };
-    if (b.kind !== 'chain' || b.status !== 'open') return { status: 'started' };
     const effects = [];
+    if (b.kind === 'chain' && tick(b, now, effects, {}) && b.status !== 'open') return { status: 'ok', effects }; // lobby expired: already refunded
+    if (b.kind !== 'chain' || b.status !== 'open') return { status: 'started' };
     if (p.paid) { effects.push({ credit: p.userId, n: p.paid }); p.paid = 0; }
     p.state = 'left';
     tick(b, now, effects, {});
@@ -590,19 +596,52 @@ async function leave(userId, id) {
   return { status: 'ok', battle: view(res.battle, userId) };
 }
 
+// A copy of a lean room that tick() can change (ObjectIds shared, Dates copied)
+function copy(x) {
+  if (x instanceof Date) return new Date(x.getTime());
+  if (Array.isArray(x)) return x.map(copy);
+  if (x && typeof x === 'object' && !x._bsontype) {
+    const o = {};
+    for (const k of Object.keys(x)) o[k] = copy(x[k]);
+    return o;
+  }
+  return x;
+}
+// The friendly-reward daily cap is only read when a tick ends a trận giao hữu
+const endsFriendly = (b) => b.status === 'done' && !b.solo && !b.stake;
+
+// The room poll (every 1–2 s per player): one read when nothing is due and
+// the presence dot is fresh; the write path only when tick() changes the
+// room or seenAt is older than 8 s.
 async function get(userId, id) {
   if (!mongoose.isValidObjectId(id)) return { status: 'gone' };
-  const pre = await VocabBattle.findById(id).select('players.userId status').lean();
+  const pre = await VocabBattle.findById(id).lean();
   if (!pre || !me(pre, userId)) return { status: 'gone' };
-  const wins = OPEN.includes(pre.status) ? await friendlyWinsToday(pre.players.map((p) => p.userId)) : {};
-  const res = await mutate(id, (b, now) => {
-    const effects = [];
-    let changed = tick(b, now, effects, wins);
-    const p = me(b, userId);
-    // Presence (lobby dots), written at most every 8s per player
-    if (p && OPEN.includes(b.status) && (!p.seenAt || now - new Date(p.seenAt) > 8000)) { p.seenAt = now; changed = true; }
-    return changed ? { status: 'ok', effects } : { status: 'ok', write: false };
-  });
+  const now0 = new Date();
+  const probe = copy(pre);
+  const due = OPEN.includes(pre.status) && tick(probe, now0, [], {});
+  const p0 = me(pre, userId);
+  const seenOld = OPEN.includes(pre.status) && (!p0.seenAt || now0 - new Date(p0.seenAt) > 8000);
+  let res = { status: 'ok', battle: pre };
+  if (due || seenOld) {
+    const ids = pre.players.map((p) => p.userId);
+    let wins = due && endsFriendly(probe) ? await friendlyWinsToday(ids) : null;
+    for (let k = 0; k < 2; k++) {
+      res = await mutate(id, (b, now) => {
+        const effects = [];
+        const was = b.status;
+        let changed = tick(b, now, effects, wins || {});
+        // Ended a friendly room after all (a move landed meanwhile): read the cap first
+        if (!wins && was !== 'done' && endsFriendly(b)) return { status: 'need_wins' };
+        const p = me(b, userId);
+        // Presence (lobby dots), written at most every 8s per player
+        if (p && OPEN.includes(b.status) && (!p.seenAt || now - new Date(p.seenAt) > 8000)) { p.seenAt = now; changed = true; }
+        return changed ? { status: 'ok', effects } : { status: 'ok', write: false };
+      });
+      if (res.status !== 'need_wins') break;
+      wins = await friendlyWinsToday(ids);
+    }
+  }
   if (res.status !== 'ok') return res;
   const out = { status: 'ok', battle: view(res.battle, userId) };
   if (res.battle.solo && res.battle.status === 'done') {
@@ -681,9 +720,11 @@ async function start(userId, id) {
   const res = await mutate(id, (b, now) => {
     if (b.kind !== 'chain') return { status: 'bad_kind' };
     if (sid(b.hostId) !== sid(userId)) return { status: 'forbidden' };
+    const effects = [];
+    // The lobby ran out (LOBBY_MINUTES) before the click: cancelled, not started
+    if (tick(b, now, effects, {}) && b.status !== 'open') return { status: 'ok', effects, deny: 'expired' };
     if (b.status !== 'open') return { status: 'started' };
     if (joined(b).length < 2) return { status: 'need_players' };
-    const effects = [];
     // Invitees who didn't come drop out (they paid nothing)
     for (const p of b.players) if (p.state === 'invited') p.state = 'declined';
     for (const p of joined(b)) { p.lives = b.config.lives; p.out = false; p.score = 0; p.correct = 0; }
@@ -696,6 +737,7 @@ async function start(userId, id) {
     return { status: 'ok', effects };
   });
   if (res.status !== 'ok') return res;
+  if (res.deny) return { status: res.deny, battle: view(res.battle, userId) };
   return { status: 'ok', battle: view(res.battle, userId) };
 }
 
@@ -792,9 +834,11 @@ async function list(userId) {
     memberIds: userId,
     $or: [{ status: { $in: OPEN } }, { updatedAt: { $gte: since } }],
   }).sort({ updatedAt: -1 }).limit(60).lean();
+  // A room the student turned down or left before it began isn't theirs:
+  // not in Đang chơi, and not in Lịch sử as a "Thua"
   const visible = rows.filter((b) => {
     const p = me(b, userId);
-    return p && (p.state !== 'declined' || b.status !== 'open');
+    return p && p.state !== 'declined' && p.state !== 'left';
   });
   const u = await User.findById(userId).select('flameWallet').lean();
   return { status: 'ok', wallet: (u && u.flameWallet) || 0, battles: visible.map((b) => view(b, userId)), bests: await soloBests(userId) };
@@ -828,7 +872,7 @@ async function pendingInvites(userId, activity) {
   const rows = await VocabBattle.find({
     memberIds: userId, status: 'open', solo: { $ne: true }, expiresAt: { $gt: now },
     players: { $elemMatch: { userId, state: 'invited' } },
-  }).select('kind status solo stake config players hostId expiresAt createdAt').sort({ createdAt: -1 }).limit(5).lean();
+  }).select('kind status solo stake config players hostId expiresAt createdAt').sort({ createdAt: -1 }).limit(10).lean();
   return rows.filter((b) => new Date(endsAt(b)) > now).map((b) => {
     const host = b.players.find((p) => sid(p.userId) === sid(b.hostId)) || {};
     return {

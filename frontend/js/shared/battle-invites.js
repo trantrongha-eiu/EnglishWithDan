@@ -30,6 +30,7 @@
   var _sentNone = true;   // already told the server this tab is not mid-test
   var _queue = [];
   var _showing = null;
+  var _accepting = false; // "Vào trận ngay" sent: a poll mustn't close the card under it
   var _seenMem = {};
 
   function _me() {
@@ -221,15 +222,18 @@
       var btn = this;
       btn.disabled = true;
       btn.textContent = 'Đang vào…';
+      _accepting = true;
       // Mid-test: open the room beside it (opened now, while the click still counts)
       var win = _activity ? window.open('', '_blank') : null;
       _api('/vocab-battle/' + encodeURIComponent(inv.id) + '/accept', { method: 'POST' }).then(function () {
+        _accepting = false;
         _close();
         var url = _roomUrl(inv.id);
         if (win) { win.location.href = url; return; }
         if (/^\/app(\/|$)/.test(location.pathname) && window.ewsNavigate) window.ewsNavigate(url.slice('/app'.length));
         else window.location.href = url;
       }).catch(function (e) {
+        _accepting = false;
         if (win) win.close();
         if (window.showToast) window.showToast(e.message || 'Lời mời đã hết hạn', 'warn');
         _close();
@@ -237,7 +241,18 @@
     };
   }
 
+  // `list` = every invite still open (a poll's answer): one that's gone
+  // (lobby closed after 5 min, host cancelled or went to another room)
+  // leaves the queue, and its card closes with a note.
   function _handle(list) {
+    var open = {};
+    (list || []).forEach(function (inv) { if (inv && inv.id) open[inv.id] = true; });
+    _queue = _queue.filter(function (q) { return open[q.id]; });
+    if (_showing && !open[_showing.id] && !_accepting) {
+      var gone = _showing;
+      _hideCard(false);
+      if (window.showToast) window.showToast('Lời mời của ' + (gone.fromName || 'bạn ấy') + ' đã hết hạn hoặc phòng đã đóng.', 'info');
+    }
     (list || []).forEach(function (inv) {
       if (!inv || !inv.id || _seen(inv.id)) return;
       if (_showing && _showing.id === inv.id) return;

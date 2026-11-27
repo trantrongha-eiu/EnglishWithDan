@@ -40,11 +40,16 @@ function Hub() {
   const load = useCallback(() => battleApi('GET', '').then((d) => {
     if (d.success) { setData(d); setFailed(false); } else setFailed(true);
   }), []);
+  // 10 s while a Nối chữ lobby / invite (5-minute rooms) is on the list, else 20 s;
+  // straight away when the tab is shown again
+  const quick = !!data?.battles?.some((b) => b.kind === 'chain' && b.status === 'open');
   useEffect(() => {
     load();
-    const t = setInterval(() => { if (!document.hidden) load(); }, 20000);
-    return () => clearInterval(t);
-  }, [load]);
+    const t = setInterval(() => { if (!document.hidden) load(); }, quick ? 10000 : 20000);
+    const onShow = () => { if (!document.hidden) load(); };
+    document.addEventListener('visibilitychange', onShow);
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', onShow); };
+  }, [load, quick]);
 
   function setTab(key) {
     const next = new URLSearchParams(params);

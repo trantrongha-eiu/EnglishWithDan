@@ -15,14 +15,27 @@ export default function Room({ id }) {
   const [error, setError] = useState('');
   const [playing, setPlaying] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [offset, setOffset] = useState(0); // server clock − ours
+  const [offset, setOffset] = useState(null); // server clock − ours (null until the first reply)
   const [best, setBest] = useState(null); // solo: the personal best before this run
   const celebrated = useRef(false);
   const autoStarted = useRef(false);
+  const shownRev = useRef(-1);    // rev of the room on screen
+  const inFlight = useRef(false); // one read at a time
 
-  const take = useCallback((battle) => {
+  // A reply from the server (poll or move). `sentAt` = when its request left:
+  // the clock offset is taken at the round trip's midpoint and smoothed, so
+  // the Nối chữ timer doesn't jump with every poll's network lag. A reply
+  // older than what's shown (a slow poll after a move) is dropped.
+  const take = useCallback((battle, sentAt) => {
     if (!battle) return;
-    setOffset(new Date(battle.serverNow).getTime() - Date.now());
+    if (typeof battle.rev === 'number') {
+      if (battle.rev < shownRev.current) return;
+      shownRev.current = battle.rev;
+    }
+    const at = Date.now();
+    const mid = sentAt ? (sentAt + at) / 2 : at;
+    const off = new Date(battle.serverNow).getTime() - mid;
+    setOffset((cur) => (cur === null || Math.abs(off - cur) > 1500 ? off : Math.round(cur * 0.7 + off * 0.3)));
     setB(battle);
     // Chơi một mình: straight into the questions
     const me = battle.players.find((p) => p.me);
@@ -32,14 +45,23 @@ export default function Room({ id }) {
     }
   }, []);
 
-  const load = useCallback(() => battleApi('GET', `/${id}`).then((d) => {
-    if (d.success) {
-      take(d.battle);
-      setError('');
-      if (d.rules) setRules((cur) => cur || d.rules);
-      if (d.best !== undefined) setBest(d.best);
-    } else if (d.code === 'gone') setError(d.message);
-  }), [id, take]);
+  const again = useRef(false);    // asked for while one was out → one more after it
+  const load = useCallback(function read() {
+    if (inFlight.current) { again.current = true; return; }
+    inFlight.current = true;
+    again.current = false;
+    const sentAt = Date.now();
+    battleApi('GET', `/${id}`).then((d) => {
+      inFlight.current = false;
+      if (d.success) {
+        take(d.battle, sentAt);
+        setError('');
+        if (d.rules) setRules((cur) => cur || d.rules);
+        if (d.best !== undefined) setBest(d.best);
+      } else if (d.code === 'gone') setError(d.message);
+      if (again.current) read();
+    });
+  }, [id, take]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -47,13 +69,21 @@ export default function Room({ id }) {
   const soloDone = !!b && b.solo && b.status === 'done';
   useEffect(() => { if (soloDone && best === null) load(); }, [soloDone, best, load]);
 
+  // Poll: 1 s in a Nối chữ game, 2 s in a lobby or a quiz run, 5 s while
+  // just waiting for the others' quiz runs. Paused in a hidden tab, caught
+  // up the moment it's shown again.
   const live = b && (b.status === 'open' || b.status === 'playing');
-  const fast = b && b.kind === 'chain' && b.status === 'playing';
+  const meNow = b?.players.find((p) => p.me);
+  let every = 2000;
+  if (b?.kind === 'chain' && b.status === 'playing') every = 1000;
+  else if (b?.kind === 'quiz' && !playing && (meNow?.finished || meNow?.state === 'invited')) every = 5000;
   useEffect(() => {
     if (!live) return undefined;
-    const t = setInterval(() => { if (!document.hidden) load(); }, fast ? 1000 : 2000);
-    return () => clearInterval(t);
-  }, [live, fast, load]);
+    const t = setInterval(() => { if (!document.hidden) load(); }, every);
+    const onShow = () => { if (!document.hidden) load(); };
+    document.addEventListener('visibilitychange', onShow);
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', onShow); };
+  }, [live, every, load]);
 
   // Confetti once for a win
   useEffect(() => {
@@ -70,10 +100,11 @@ export default function Room({ id }) {
   async function act(path, confirmMsg) {
     const go = async () => {
       setBusy(true);
+      const sentAt = Date.now();
       const d = await battleApi('POST', `/${id}/${path}`);
       setBusy(false);
+      if (d.battle) take(d.battle, sentAt);
       if (!d.success) { siteToast(d.message || 'Không thực hiện được', 'error'); load(); return; }
-      take(d.battle);
     };
     if (confirmMsg) siteConfirm('Chắc chưa?', confirmMsg, 'Đồng ý', go);
     else go();
@@ -101,7 +132,7 @@ export default function Room({ id }) {
           <h1 className="pf-head">{gameOf(b).emoji} {gameOf(b).name}</h1>
           <div className="vb-card-sub">
             {gameLine(b, rules)} · {stakeLine(b)}{b.pot ? ` · Pot ${b.pot} 🔥` : ''}
-            {b.status === 'open' && ` · ${fmtLeft(b.expiresAt, offset)}`}
+            {b.status === 'open' && !b.solo && ` · ${fmtLeft(b.expiresAt, offset || 0)}`}
           </div>
         </div>
       </div>
@@ -130,7 +161,7 @@ export default function Room({ id }) {
         </div>
       )}
 
-      {inRun && <QuizRun b={b} id={id} onBattle={take} onExit={() => setPlaying(false)} />}
+      {inRun && <QuizRun b={b} id={id} onBattle={take} onExit={() => { setPlaying(false); load(); }} />}
 
       {b.kind === 'quiz' && b.status === 'open' && me?.finished && !inRun && (
         <div className="vb-panel vb-panel--wait">
@@ -139,7 +170,7 @@ export default function Room({ id }) {
       )}
 
       {b.kind === 'chain' && (
-        <Chain b={b} id={id} offset={offset} busy={busy} onAct={act} onBattle={take} />
+        <Chain b={b} id={id} offset={offset || 0} busy={busy} onAct={act} onBattle={take} />
       )}
 
       {(b.status === 'done' || b.status === 'cancelled') && !inRun && <Result b={b} best={best} />}
@@ -151,12 +182,12 @@ export default function Room({ id }) {
 }
 
 // 🔁 Chơi lại (alone) / Đấu lại (same people, same stake): same game + settings
-function PlayAgain({ b, solo = true, label = '🔁 Chơi lại', ghost = false }) {
+function PlayAgain({ b, solo = true, everyone = false, label = '🔁 Chơi lại', ghost = false }) {
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   async function again() {
     setBusy(true);
-    const d = await battleApi('POST', '', replayBody(b, { solo }));
+    const d = await battleApi('POST', '', replayBody(b, { solo, everyone }));
     setBusy(false);
     if (!d.success) { siteToast(d.message || 'Không tạo được trận mới', 'error'); return; }
     if (!solo) siteToast('⚔️ Đã gửi lời mời đấu lại!', 'success');
@@ -168,7 +199,15 @@ function PlayAgain({ b, solo = true, label = '🔁 Chơi lại', ghost = false }
 function Result({ b, best }) {
   const me = b.players.find((p) => p.me);
   if (b.status === 'cancelled') {
-    return <div className="vb-panel">Trận đã hủy{me?.reward ? `, ${me.reward} 🔥 cược đã về lại ví lửa` : ''}.</div>;
+    return (
+      <div className="vb-panel">
+        {b.endNote || `Trận đã hủy${me?.reward ? `, ${me.reward} 🔥 cược đã về lại ví lửa` : ''}.`}
+        <div className="vb-row">
+          {b.kind === 'chain' && b.isHost && !b.solo && <PlayAgain b={b} solo={false} everyone label="🔁 Mở phòng mới" />}
+          <Link className="vb-btn vb-btn--ghost" to="/vocab-battle">⚔️ Về Đấu trường</Link>
+        </div>
+      </div>
+    );
   }
   if (b.solo) {
     const won = b.kind === 'chain' && me && b.winnerIds.includes(me.id);

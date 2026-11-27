@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Modal from '../../components/Modal';
-import { battleApi, STAKES, TYPE_EMOJI } from '../../utils/vocabBattle';
+import { battleApi, battleFocus, STAKES, TYPE_EMOJI } from '../../utils/vocabBattle';
 import Avatar from './Avatar';
 
 // Settings for one game from the Đấu trường list.
@@ -46,8 +46,9 @@ export default function CreateModal({ game, solo, rules, wallet, initialPicked =
   );
   const [source, setSource] = useState(sources[0]?.key || 'all');
 
-  // The site's daily-goal card sits over the modal's buttons on a laptop
-  useEffect(() => { document.getElementById('nav-vocab-goal-nudge')?.remove(); }, []);
+  // The site's floating cards (daily-goal nudge "Từ vựng hôm nay", shop
+  // ticker…) sat over the modal's buttons on a laptop: none while it's open
+  useEffect(() => battleFocus(() => true), []);
 
   // Opponent search (classmates + who's online when empty)
   useEffect(() => {
