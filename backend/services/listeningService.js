@@ -266,17 +266,21 @@ async function pickSectionsWithAudio(sections, parts) {
 
 // ── Admin – CRUD Tests ──────────────────────────────────────────────────
 async function listAdminTests() {
-  const tests = await ListeningTest.find()
-    .select('name testNumber seriesName audioUrl audioDuration isActive sections createdAt')
-    .sort({ testNumber: -1 })
-    .lean();
-  // Return the question/part counts, not the whole `sections` tree — the
-  // admin list doesn't render it and it's the bulk of the payload.
-  return tests.map(({ sections = [], ...rest }) => ({
-    ...rest,
-    totalQuestions: flattenQuestions(sections).length,
-    totalParts: sections.length,
-  }));
+  // Count questions/parts inside MongoDB — pulling every test's whole
+  // `sections` tree (transcripts, word timings…) just to count took ~90s
+  // for 140 tests on 2026-11-27, so the admin request timed out and
+  // "Full đề Listening" showed 0 tests.
+  const arr = path => ({ $ifNull: [path, []] });
+  return ListeningTest.aggregate([
+    { $sort: { testNumber: -1 } },
+    { $project: {
+      name: 1, testNumber: 1, seriesName: 1, audioUrl: 1, audioDuration: 1, isActive: 1, createdAt: 1,
+      totalParts: { $size: arr('$sections') },
+      totalQuestions: { $sum: { $map: { input: arr('$sections'), as: 's', in: {
+        $sum: { $map: { input: arr('$$s.questionGroups'), as: 'g', in: { $size: arr('$$g.questions') } } },
+      } } } },
+    } },
+  ]);
 }
 
 // Illustrative AppError adoption: throws instead of returning null, caught
