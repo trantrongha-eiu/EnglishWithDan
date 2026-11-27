@@ -54,10 +54,14 @@ function validateExercise(ex) {
 router.get('/wt1/tree', auth, teacherOnly, async (req, res) => {
   try {
     const course = resolveCourse(req.query.course);
-    const [modules, lessons, counts] = await Promise.all([
-      WT1Module.find({ courseCode: course }).sort({ order: 1 }).lean(),
-      WT1Lesson.find().sort({ order: 1 }).lean(),
-      WT1Exercise.aggregate([{ $group: { _id: '$lessonCode', n: { $sum: 1 }, published: { $sum: { $cond: ['$published', 1, 0] } } } }]),
+    // Only this course's lessons, only the fields the tree shows — every
+    // lesson of every course with its theory/book content took ~20s.
+    const modules = await WT1Module.find({ courseCode: course }).sort({ order: 1 }).lean();
+    const lessons = await WT1Lesson.find({ moduleCode: { $in: modules.map((m) => m.code) } })
+      .select('code title isTest published order moduleCode').sort({ order: 1 }).lean();
+    const counts = await WT1Exercise.aggregate([
+      { $match: { lessonCode: { $in: lessons.map((l) => l.code) } } },
+      { $group: { _id: '$lessonCode', n: { $sum: 1 }, published: { $sum: { $cond: ['$published', 1, 0] } } } },
     ]);
     const cnt = Object.fromEntries(counts.map((c) => [c._id, { total: c.n, published: c.published }]));
     const byModule = {};

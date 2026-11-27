@@ -417,6 +417,13 @@ export default function Speaking() {
   // history list to find that exact row. AttemptModal needs the full doc,
   // not just an id, so this fetches it directly rather than reusing
   // whatever page of /speaking/history happens to already be loaded.
+  // History rows are summaries — the modal needs the whole attempt.
+  function openAttempt(id) {
+    apiFetch(`/admin/speaking/attempts/${id}`)
+      .then((d) => { if (d.attempt) setSelectedAttempt(d.attempt); })
+      .catch((e) => toast(e.message, 'error'));
+  }
+
   useEffect(() => {
     const id = searchParams.get('viewAttempt');
     if (!id) return;
@@ -652,7 +659,7 @@ export default function Speaking() {
                         <td style={{ textAlign:'center', fontWeight:700, fontSize:13, color: BAND_COLOR(v) }}>{v || '—'}</td>
                       );
                       return (
-                        <tr key={a._id} style={{ cursor:'pointer' }} onClick={() => setSelectedAttempt(a)}>
+                        <tr key={a._id} style={{ cursor:'pointer' }} onClick={() => openAttempt(a._id)}>
                           <td>
                             <div style={{ fontWeight:600, fontSize:13 }}>{user.username || '—'}</div>
                             <div style={{ fontSize:11, color:'var(--text3,#888)' }}>{user.email}</div>
@@ -675,7 +682,7 @@ export default function Speaking() {
                           )}
                           <td style={{ fontSize:11, whiteSpace:'nowrap' }}>{formatDate(a.createdAt).split(' ')[0]}</td>
                           <td>
-                            <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setSelectedAttempt(a); }}>Chi tiết</button>
+                            <button className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); openAttempt(a._id); }}>Chi tiết</button>
                           </td>
                         </tr>
                       );

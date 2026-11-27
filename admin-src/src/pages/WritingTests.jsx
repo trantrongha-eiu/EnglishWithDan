@@ -495,6 +495,32 @@ function WritingExamModal({ exam, onClose, onSaved }) {
 
 const WT_TABS = ['exams', 'task1', 'task2', 'samples'];
 
+
+// The task lists carry row summaries only — the editor loads the whole task
+// (sample, analysis, vocabulary, chart data) by id. row === null = new task.
+function FullTask({ kind, row, onClose, children }) {
+  const toast = useToast();
+  const [full, setFull] = useState(null);
+  useEffect(() => {
+    if (!row?._id) return undefined;
+    let alive = true;
+    apiFetch(`/admin/writing-${kind}/${row._id}`)
+      .then((d) => { if (alive) setFull(d.task || null); })
+      .catch((e) => { if (alive) { toast(e.message, 'error'); onClose(); } });
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kind, row?._id]);
+  if (!row?._id) return children(null);
+  if (!full) {
+    return (
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal" style={{ maxWidth: 320, padding: 24, color: 'var(--text2)' }}>⏳ Đang tải đề…</div>
+      </div>
+    );
+  }
+  return children(full);
+}
+
 export default function WritingTests() {
   const toast = useToast();
   const confirm = useConfirm();
@@ -646,10 +672,14 @@ export default function WritingTests() {
   return (
     <>
       {(showT1Modal || editTask1) && (
-        <Task1Modal key={editTask1?._id ?? 'new'} task={editTask1} onClose={() => { setShowT1Modal(false); setEditTask1(null); }} onSaved={loadT1} />
+        <FullTask kind="task1" row={editTask1} onClose={() => { setShowT1Modal(false); setEditTask1(null); }}>
+          {(full) => <Task1Modal key={full?._id ?? 'new'} task={full} onClose={() => { setShowT1Modal(false); setEditTask1(null); }} onSaved={loadT1} />}
+        </FullTask>
       )}
       {(showT2Modal || editTask2) && (
-        <Task2Modal key={editTask2?._id ?? 'new'} task={editTask2} onClose={() => { setShowT2Modal(false); setEditTask2(null); }} onSaved={loadT2} />
+        <FullTask kind="task2" row={editTask2} onClose={() => { setShowT2Modal(false); setEditTask2(null); }}>
+          {(full) => <Task2Modal key={full?._id ?? 'new'} task={full} onClose={() => { setShowT2Modal(false); setEditTask2(null); }} onSaved={loadT2} />}
+        </FullTask>
       )}
       {(showSampleModal || editSample) && (
         <WritingSampleModal
@@ -756,7 +786,7 @@ export default function WritingTests() {
                 {task1List.paged.length === 0
                   ? <tr><td colSpan={8} className="table-empty">{task1.length === 0 ? 'Chưa có prompt Task 1 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
                   : task1List.paged.map(p => {
-                    const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                    const hasSample = p.hasSample ?? (Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim()));
                     return (
                       <tr key={p._id}>
                         <td style={{ maxWidth: 300 }}>{(p.prompt || '').slice(0, 100)}{(p.prompt || '').length > 100 ? '…' : ''}</td>
@@ -803,7 +833,7 @@ export default function WritingTests() {
                 {task2List.paged.length === 0
                   ? <tr><td colSpan={6} className="table-empty">{task2.length === 0 ? 'Chưa có prompt Task 2 nào' : 'Không tìm thấy prompt phù hợp'}</td></tr>
                   : task2List.paged.map(p => {
-                    const hasSample = Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim());
+                    const hasSample = p.hasSample ?? (Array.isArray(p.sampleSections) && p.sampleSections.some(s => s.content?.trim()));
                     return (
                       <tr key={p._id}>
                         <td style={{ maxWidth: 380 }}>{(p.prompt || '').slice(0, 120)}{(p.prompt || '').length > 120 ? '…' : ''}</td>

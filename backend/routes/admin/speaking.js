@@ -26,7 +26,10 @@ router.get('/speaking/questions', auth, teacherOnly, async (req, res) => {
     // DELETE below is a soft delete (isActive: false, same as Materials) —
     // this list must exclude those or a "deleted" question just reappears
     // on the next reload/refetch (e.g. after adding a new one).
-    const questions = await SpeakingQuestion.find({ isActive: { $ne: false } }).sort({ topic: 1, part: 1, createdAt: -1 });
+    // the cached AI sample answers / hints are most of the payload and the
+    // admin page never shows them
+    const questions = await SpeakingQuestion.find({ isActive: { $ne: false } })
+      .select('-sampleAnswer -hints').sort({ topic: 1, part: 1, createdAt: -1 }).lean();
     res.json({ success: true, questions });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -271,13 +274,19 @@ router.get('/speaking/history', auth, teacherOnly, async (req, res) => {
     }
     const skip = (page - 1) * limit;
     const [attempts, total] = await Promise.all([
+      // row fields only (aiFeedback is ~10KB a row) — the detail modal
+      // loads the whole attempt from /speaking/attempts/:id
       SpeakingAttempt.find(filter)
         .populate('userId', 'username email plan')
         .sort({ createdAt: -1 })
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .select('userId part topic question status createdAt aiFeedback.overallBand aiFeedback.fluency aiFeedback.vocabulary aiFeedback.grammar aiFeedback.pronunciation aiFeedback.criteria')
+        .lean(),
       SpeakingAttempt.countDocuments(filter)
     ]);
+    // the table only checks whether criteria exist
+    for (const a of attempts) if (a.aiFeedback && a.aiFeedback.criteria) a.aiFeedback.criteria = true;
     res.json({ success: true, attempts, total, page, pages: Math.ceil(total / limit) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

@@ -993,12 +993,21 @@ async function updateSectionWarmUp(id, body) {
 
 // Admin list: the warm-up key itself stays out (select:false) — only its
 // size, for the list's status badge.
+// The admin list only needs row summaries — the whole sections (questions,
+// transcripts, gap-fill, warm-up) were ~14MB for 660 and the page timed
+// out. Counts/flags are computed in Mongo; the Gap-fill modal fetches the
+// full section by id when opened.
 async function listAdminSections() {
-  const sections = await ListeningSection.find().select('+warmUp').sort({ partNumber: 1, createdAt: -1 }).lean();
-  return sections.map(({ warmUp, ...s }) => ({
-    ...s,
-    warmUpCount: (warmUp?.synonyms?.length || 0) + (warmUp?.paraphrases?.length || 0),
-  }));
+  return ListeningSection.aggregate([
+    { $sort: { partNumber: 1, createdAt: -1 } },
+    { $project: {
+      title: 1, partNumber: 1, isActive: 1, isActualTest: 1, questionRange: 1,
+      audioUrl: 1, audioDuration: 1, warmUpPublished: 1, gapFillPublished: 1, createdAt: 1,
+      questionCount: { $sum: { $map: { input: { $ifNull: ['$questionGroups', []] }, as: 'g', in: { $size: { $ifNull: ['$$g.questions', []] } } } } },
+      hasGapFillTemplate: { $gt: [{ $strLenCP: { $ifNull: ['$gapFillTemplate', ''] } }, 0] },
+      warmUpCount: { $add: [{ $size: { $ifNull: ['$warmUp.synonyms', []] } }, { $size: { $ifNull: ['$warmUp.paraphrases', []] } }] },
+    } },
+  ]);
 }
 
 async function getAdminSection(id) {

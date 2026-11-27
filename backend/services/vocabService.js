@@ -21,14 +21,12 @@ async function getUnitByNumber(number) {
 }
 
 async function listAdminUnits() {
-  const units = await VocabUnit.find()
-    .select('unitNumber sortOrder title level isActive words createdAt')
-    .sort({ sortOrder: 1, unitNumber: 1 });
-
-  return units.map(u => ({
-    _id: u._id, unitNumber: u.unitNumber, sortOrder: u.sortOrder, title: u.title,
-    level: u.level, isActive: u.isActive, wordCount: u.words.length, createdAt: u.createdAt
-  }));
+  // word count computed in Mongo — the word arrays themselves are ~400KB
+  return VocabUnit.aggregate([
+    { $sort: { sortOrder: 1, unitNumber: 1 } },
+    { $project: { unitNumber: 1, sortOrder: 1, title: 1, level: 1, isActive: 1, createdAt: 1,
+      wordCount: { $size: { $ifNull: ['$words', []] } } } },
+  ]);
 }
 
 async function getAdminUnit(id) {

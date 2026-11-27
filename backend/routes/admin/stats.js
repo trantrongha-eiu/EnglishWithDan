@@ -352,26 +352,29 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
         .populate('userId', 'username firstName lastName')
         .populate('testId', 'name testNumber')
         .sort({ endTime: -1 }).limit(LIMIT)
-        .select('-answers -passagesUsed').lean()),
+        // inclusion list: passagesSnapshot alone is ~30KB a row
+        .select('userId testId endTime createdAt bandScore correctCount totalQuestions duration mode proctor.violationCount proctor.violated proctor.events proctor.shots status').lean()),
       rowsOf('listening', () => ListeningAttempt.find({ status: { $in: READING_LISTENING_VISIBLE_STATUSES }, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
-        .select('-answers').lean()
+        // sectionsSnapshot alone is ~30KB a row
+        .select('userId testName submittedAt createdAt bandScore correctCount totalQuestions timeTaken mode proctor.violationCount proctor.violated proctor.events proctor.shots status').lean()
         .catch(() => [])),
       rowsOf('writing', () => WritingAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
-        .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot').lean()
+        // grading + aiGrading are ~35KB a row — only the band is shown
+        .select('userId examName testName submittedAt createdAt grading.overallBand timeTaken mode proctor.violationCount proctor.violated proctor.events proctor.shots status').lean()
         .catch(() => [])),
       rowsOf('listening-practice', () => ListeningPracticeAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
-        .select('-answers').lean()
+        .select('userId sectionTitle partNumber submittedAt createdAt correctCount totalQuestions timeTaken mode proctor.violationCount proctor.violated proctor.events proctor.shots status').lean()
         .catch(() => [])),
       rowsOf('reading-practice', () => ReadingPracticeAttempt.find({ ...REAL_ATTEMPT, ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ submittedAt: -1 }).limit(LIMIT)
-        .select('-answers').lean()
+        .select('userId passageTitle category submittedAt createdAt correctCount totalQuestions timeTaken mode proctor.violationCount proctor.violated proctor.events proctor.shots status').lean()
         .catch(() => [])),
       rowsOf('writing-practice', () => WritingPracticeAttempt.find({ ...(uid && { studentId: uid }) })
         .populate('studentId', 'username firstName lastName')
@@ -398,7 +401,8 @@ router.get('/recent-attempts', auth, teacherOnly, async (req, res) => {
       rowsOf('speaking', () => SpeakingAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')
         .sort({ createdAt: -1 }).limit(LIMIT)
-        .select('-transcript').lean()
+        // aiFeedback is ~10KB a row — only the band + no-answer flag are shown
+        .select('userId topic part createdAt status duration aiFeedback.overallBand aiFeedback.noGenuineAnswer').lean()
         .catch(() => [])),
       rowsOf('task2-template', () => Task2TemplateAttempt.find({ ...(uid && { userId: uid }) })
         .populate('userId', 'username firstName lastName')

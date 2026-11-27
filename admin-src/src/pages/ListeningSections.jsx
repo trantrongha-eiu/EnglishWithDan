@@ -184,7 +184,39 @@ function AudioUploadModal({ section, onClose, onUploaded }) {
   );
 }
 
-function GapFillModal({ section, onClose, onSaved }) {
+// The list only carries row summaries — the modals load the whole section.
+function useFullSection(id) {
+  const [full, setFull] = useState(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    apiFetch(`/admin/listening/sections/${id}`)
+      .then((d) => { if (alive) setFull(d.section || null); })
+      .catch(() => { if (alive) setFailed(true); });
+    return () => { alive = false; };
+  }, [id]);
+  return { full, failed };
+}
+
+function GapFillModal({ section: row, onClose, onSaved }) {
+  const { full, failed } = useFullSection(row._id);
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 680, maxHeight: '85vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <h3 className="modal-title">Gap-fill – {row.title}</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
+        </div>
+        <div style={{ padding: '20px 24px' }}>
+          {full ? <GapFillBody section={full} onSaved={onSaved} />
+            : <div style={{ color: 'var(--text3)', fontSize: 13 }}>{failed ? '⚠️ Không tải được section — đóng và mở lại.' : '⏳ Đang tải…'}</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GapFillBody({ section, onSaved }) {
   const [gapFill, setGapFill] = useState({
     template: section.gapFillTemplate || '',
     answers: section.gapFillAnswers || [],
@@ -193,26 +225,17 @@ function GapFillModal({ section, onClose, onSaved }) {
   });
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 680, maxHeight: '85vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <h3 className="modal-title">Gap-fill – {section.title}</h3>
-          <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
-        </div>
-        <div style={{ padding: '20px 24px' }}>
-          <GapFillPanel
-            sectionId={section._id}
-            transcript={section.transcript}
-            value={gapFill}
-            onChange={next => { setGapFill(next); onSaved(section._id, next); }}
-          />
-        </div>
-      </div>
-    </div>
+    <GapFillPanel
+      sectionId={section._id}
+      transcript={section.transcript}
+      value={gapFill}
+      onChange={next => { setGapFill(next); onSaved(section._id, next); }}
+    />
   );
 }
 
 function WarmUpModal({ section, onClose, onSaved }) {
+  const { full, failed } = useFullSection(section._id);
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" style={{ maxWidth: 960, width: '100%', maxHeight: '88vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
@@ -221,8 +244,10 @@ function WarmUpModal({ section, onClose, onSaved }) {
           <button className="modal-close" onClick={onClose} aria-label="Đóng">✕</button>
         </div>
         <div style={{ padding: '20px 24px' }}>
-          <WarmUpPanel sectionId={section._id} hasTranscript={!!section.transcript?.trim()}
-            onChange={next => onSaved(section._id, next)} />
+          {full ? (
+            <WarmUpPanel sectionId={section._id} hasTranscript={!!full.transcript?.trim()}
+              onChange={next => onSaved(section._id, next)} />
+          ) : <div style={{ color: 'var(--text3)', fontSize: 13 }}>{failed ? '⚠️ Không tải được section — đóng và mở lại.' : '⏳ Đang tải…'}</div>}
         </div>
       </div>
     </div>
@@ -301,12 +326,13 @@ export default function ListeningSections() {
   }
 
   function totalQs(s) {
+    if (s.questionCount != null) return s.questionCount;
     return (s.questionGroups || []).reduce((sum, g) => sum + (g.questions?.length || 0), 0);
   }
 
   function gapFillStatus(s) {
     if (s.gapFillPublished) return { label: 'Đã publish', cls: 'badge-green' };
-    if (s.gapFillTemplate) return { label: 'Chờ duyệt', cls: 'badge-yellow' };
+    if (s.hasGapFillTemplate || s.gapFillTemplate) return { label: 'Chờ duyệt', cls: 'badge-yellow' };
     return { label: 'Chưa sinh', cls: 'badge-gray' };
   }
 
@@ -330,10 +356,8 @@ export default function ListeningSections() {
   function onGapFillSaved(sectionId, next) {
     setSections(prev => prev.map(s => (s._id === sectionId ? {
       ...s,
-      gapFillTemplate: next.template,
-      gapFillAnswers: next.answers,
+      hasGapFillTemplate: !!(next.template || '').length,
       gapFillPublished: next.published,
-      gapFillGeneratedAt: next.generatedAt,
     } : s)));
   }
 

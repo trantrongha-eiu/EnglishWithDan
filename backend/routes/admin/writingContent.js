@@ -138,7 +138,10 @@ router.get('/writing-history', auth, teacherOnly, async (req, res) => {
         .sort({ submittedAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
-        .select('-task1Answer -task2Answer -task1Snapshot -task2Snapshot -rewrite.task1 -rewrite.task2'),
+        // row fields only — grading/aiGrading are ~35KB a row; the detail
+        // view loads the whole attempt from /writing-attempt/:id
+        .select('userId examId examName testName gradingStatus grading.overallBand grading.confirmedAt rewrite.done rewrite.bypassed submissionType submittedAt createdAt wordCount1 wordCount2 timeTaken mode status')
+        .lean(),
       WritingAttempt.countDocuments(filter)
     ]);
     res.json({ success: true, attempts, total, page, limit });
@@ -185,9 +188,20 @@ router.get('/writing-attempt/:id', auth, teacherOnly, async (req, res) => {
 // ══════════════════════════════════════════════════
 
 // GET /api/admin/writing-task1
+// List rows only: the editor loads the whole task by id. sampleSections +
+// analysisSections + vocabularyList were ~1MB for the Task 2 bank.
+const HAS_SAMPLE = { $anyElementTrue: [{ $map: { input: { $ifNull: ['$sampleSections', []] }, as: 's',
+  in: { $gt: [{ $strLenCP: { $trim: { input: { $ifNull: ['$$s.content', ''] } } } }, 0] } } }] };
+function writingTaskRows(Model, extra) {
+  return Model.aggregate([
+    { $sort: { createdAt: -1 } },
+    { $project: { prompt: 1, isActive: 1, createdAt: 1, ...extra, hasSample: HAS_SAMPLE } },
+  ]);
+}
+
 router.get('/writing-task1', auth, teacherOnly, async (req, res) => {
   try {
-    const tasks = await WritingTask1.find().select('+chartData').sort({ createdAt: -1 });
+    const tasks = await writingTaskRows(WritingTask1, { imageUrl: 1, chartType: 1 });
     res.json({ success: true, tasks });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -267,7 +281,7 @@ router.delete('/writing-task1/:id/permanent', auth, teacherOnly, async (req, res
 // GET /api/admin/writing-task2
 router.get('/writing-task2', auth, teacherOnly, async (req, res) => {
   try {
-    const tasks = await WritingTask2.find().sort({ createdAt: -1 });
+    const tasks = await writingTaskRows(WritingTask2, { thumbnailUrl: 1, essayType: 1 });
     res.json({ success: true, tasks });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
