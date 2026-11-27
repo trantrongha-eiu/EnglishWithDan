@@ -1,0 +1,55 @@
+// Cambridge IELTS 14 - Test 2 - Passage 3. Source: ieltsworldly.com, checked against the book key.
+// Text fixes: "seven our sleep" → even; "the number of business that fail" → businesses. Heading ix "disadvantages that" → than.
+const { headings, notes, tfng } = require('../../vr_build');
+module.exports = {
+  vol: 'cam14', book: 14, test: 2, part: 3, title: 'Why companies should welcome disorder', text: 't2p3.txt',
+  groups: [
+    headings(27, [
+      'Complaints about the impact of a certain approach',
+      'Fundamental beliefs that are in fact incorrect',
+      'Early recommendations concerning business activities',
+      'Organisations that put a new approach into practice',
+      'Companies that have suffered from changing their approach',
+      'What people are increasingly expected to do',
+      'How to achieve outcomes that are currently impossible',
+      'Neither approach guarantees continuous improvement',
+      'Evidence that a certain approach can have more disadvantages than advantages',
+    ], ['Section A', 'Section B', 'Section C', 'Section D', 'Section E', 'Section F', 'Section G', 'Section H'],
+    { instruction: 'Reading Passage 3 has eight sections, A–H. Choose the correct heading for each section from the list of headings below. Write the correct number, i–ix, in boxes 27–34 on your answer sheet.' }),
+    notes(35, 37, [
+      'Numerous training sessions are aimed at people who feel they are not __Q35__ enough.',
+      'Being organised appeals to people who regard themselves as __Q36__.',
+      'Many people feel __Q37__ with aspects of their work.',
+    ], { instruction: 'Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 35–37 on your answer sheet.' }),
+    tfng(38, [
+      'Both businesses and people aim at order without really considering its value.',
+      'Innovation is most successful if the people involved have distinct roles.',
+      'Google was inspired to adopt flexibility by the success of General Electric.',
+    ]),
+  ],
+  key: { 27: 'vi', 28: 'i', 29: 'iii', 30: 'ii', 31: 'ix', 32: 'vii', 33: 'iv', 34: 'viii', 35: 'productive', 36: 'perfectionists', 37: 'dissatisfied', 38: 'TRUE', 39: 'FALSE', 40: 'NOT GIVEN' },
+  expl: {
+    27: ['Section A – chọn tiêu đề.', 'Section A', '“We are told that we ought to organize our company, our home life, our week, our day and even our sleep, all as a means to becoming more productive.”',
+      'Người ta ngày càng được bảo phải tổ chức mọi thứ = điều con người ngày càng được kỳ vọng làm → vi'],
+    28: ['Section B – chọn tiêu đề.', 'Section B', '“A large proportion of workers from all demographics claim to be dissatisfied with the way their work is structured”',
+      'Nhân viên phàn nàn về cách tổ chức công việc, căng thẳng tăng = phàn nàn về tác động của một cách tiếp cận → i'],
+    29: ['Section C – chọn tiêu đề.', 'Section C', '“he designed a number of principles to improve the efficiency of the work process”', 'Frederick Taylor đầu thế kỷ 20 đưa ra nguyên tắc quản lý = khuyến nghị ban đầu về hoạt động kinh doanh → iii'],
+    30: ['Section D – chọn tiêu đề.', 'Section D', '“it’s the basic assumptions we hold in approaching how we work. Here it’s the assumption that order is a necessary condition for productivity.”',
+      'Giả định nền tảng (trật tự là điều kiện cần cho năng suất) là sai lầm → ii'],
+    31: ['Section E – chọn tiêu đề.', 'Section E', '“eventually the usefulness of the process of organisation, and the benefit it yields, reduce until the point where any further increase in order reduces productivity.”',
+      'Trật tự có lợi ích giảm dần, đến mức gây hại = bằng chứng cách tiếp cận có thể nhiều bất lợi hơn lợi ích → ix'],
+    32: ['Section F – chọn tiêu đề.', 'Section F', '“These environments can lead to new solutions that, under conventionally structured environments … would never be reached.”',
+      'Môi trường không cấu trúc giúp đạt giải pháp mà cách truyền thống không bao giờ đạt được → vii'],
+    33: ['Section G – chọn tiêu đề.', 'Section G', '“In recent times companies have slowly started to embrace this disorganisation.”', 'Oticon, General Electric, Google áp dụng cách làm mới → iv'],
+    34: ['Section H – chọn tiêu đề.', 'Section H', '“the evidence so far suggests disorder, much like order, also seems to have diminishing utility”', 'Cả trật tự lẫn hỗn loạn đều có lợi ích giảm dần = không cách nào đảm bảo cải thiện liên tục → viii'],
+    35: ['Nhiều khóa đào tạo nhắm tới người cảm thấy mình chưa đủ ___.', 'Section A', '“all as a means to becoming more productive. Every week, countless seminars and workshops take place around the world”', 'Hội thảo dạy cách tổ chức để làm việc năng suất hơn → productive'],
+    36: ['Việc tổ chức thu hút những người tự coi mình là ___.', 'Section A', '“much to the delight of self-proclaimed perfectionists with the need to get everything right.”', '“self-proclaimed” = regard themselves as; người cầu toàn → perfectionists'],
+    37: ['Nhiều người cảm thấy ___ với các khía cạnh công việc.', 'Section B', '“claim to be dissatisfied with the way their work is structured and the way they are managed.”', 'Không hài lòng → dissatisfied'],
+    38: ['Cả doanh nghiệp và con người theo đuổi trật tự mà không thực sự cân nhắc giá trị của nó.', 'Section D',
+      '“businesses and people spend time and money organising themselves for the sake of organising, rather than actually looking at the end goal and usefulness of such an effort.”', 'Tổ chức vì tổ chức, không xét tính hữu ích → TRUE'],
+    39: ['Đổi mới thành công nhất khi người tham gia có vai trò riêng biệt.', 'Section F', '“the best approach is to create an environment devoid of structure and hierarchy and enable everyone involved to engage as one organic group.”',
+      'Tốt nhất là không có cấu trúc, thứ bậc, mọi người là một nhóm hữu cơ → FALSE'],
+    40: ['Google được truyền cảm hứng áp dụng sự linh hoạt nhờ thành công của General Electric.', 'Section G', '“Google and a number of other tech companies have embraced (at least in part) these kinds of flexible structures”',
+      'Không nói Google lấy cảm hứng từ General Electric → NOT GIVEN'],
+  },
+};

@@ -1,0 +1,51 @@
+// Cambridge IELTS 14 - Test 4 - Passage 3 (no title in the book — Q40 asks for one). Source: ieltsworldly.com, checked against the book key.
+// Text fix: "mussels ingesting microscopic bits." → "bits of plastic." (the next sentence refers to "The plastic").
+const { tfng, notes, mc } = require('../../vr_build');
+module.exports = {
+  vol: 'cam14', book: 14, test: 4, part: 3, title: 'Chelsea Rochman and ocean trash', text: 't4p3.txt', lettered: false,
+  groups: [
+    tfng(27, [
+      'Rochman and her colleagues were the first people to research the problem of marine debris.',
+      'The creatures most in danger from ocean trash are certain seabirds.',
+      'The studies Rochman has reviewed have already proved that populations of some birds will soon become extinct.',
+      'Rochman analysed papers on the different kinds of danger caused by ocean trash.',
+      'Most of the research analysed by Rochman and her colleagues was badly designed.',
+      'One study examined by Rochman was expecting to find that mussels were harmed by eating plastic.',
+      'Some mussels choose to eat plastic in preference to their natural diet.',
+    ]),
+    notes(34, 39, [
+      '<strong>Studies of marine debris found the biggest threats were</strong>',
+      '• plastic (not metal or wood)',
+      '• bits of debris that were __Q34__ (harmful to animals)',
+      'There was little research into __Q35__, e.g. from synthetic fibres.',
+      '<strong>Drawbacks of the studies examined</strong>',
+      '• most of them focused on individual animals, not entire __Q36__',
+      '• the __Q37__ of plastic used in the lab did not always reflect those in the ocean',
+      '• there was insufficient information on',
+      '– numbers of animals which could be affected',
+      '– the impact of a reduction in numbers on the __Q38__ of that species',
+      '– the impact on the ecosystem',
+      'Rochman says more information is needed on the possible impact of future __Q39__ (e.g. involving oil).',
+    ], { title: 'Findings related to marine debris', instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 34–39 on your answer sheet.' }),
+    mc(40, [['What would be the best title for this passage?', ['Assessing the threat of marine debris', 'Marine debris: who is to blame?', 'A new solution to the problem of marine debris', 'Marine debris: the need for international action']]]),
+  ],
+  key: { 27: 'FALSE', 28: 'NOT GIVEN', 29: 'FALSE', 30: 'TRUE', 31: 'FALSE', 32: 'TRUE', 33: 'NOT GIVEN', 34: 'large', 35: 'microplastic', 36: 'populations', 37: 'concentrations', 38: 'predators', 39: 'disasters', 40: 'A' },
+  expl: {
+    27: ['Rochman và cộng sự là những người đầu tiên nghiên cứu vấn đề rác biển.', 'Đoạn 2', '“Plenty of studies have sounded alarm bells about the state of marine debris”', 'Đã có rất nhiều nghiên cứu trước đó → FALSE'],
+    28: ['Sinh vật bị rác biển đe dọa nhiều nhất là một số loài chim biển.', 'Đoạn 3', '“For example, a study could show that certain seabirds eat plastic bags”', 'Chim biển chỉ là ví dụ; không nói loài nào bị đe dọa nhiều nhất → NOT GIVEN'],
+    29: ['Các nghiên cứu đã chứng minh quần thể một số loài chim sắp tuyệt chủng.', 'Đoạn 3', '“But the truth was that nobody had yet tested those perceived threats,”', 'Chưa ai kiểm chứng các mối đe dọa đó → FALSE'],
+    30: ['Rochman phân tích các bài báo về những loại nguy hại khác nhau do rác biển gây ra.', 'Đoạn 4', '“Rochman and her colleagues examined more than a hundred papers on the impacts of marine debris”', 'Xem xét hơn 100 bài báo về tác động (366 mối đe dọa) → TRUE'],
+    31: ['Phần lớn nghiên cứu được phân tích có thiết kế kém.', 'Đoạn 5', '“In 83 percent of cases, the perceived dangers of ocean trash were proven true.”', '83% được chứng minh đúng; chỉ phần còn lại có điểm yếu → FALSE'],
+    32: ['Một nghiên cứu Rochman xem xét kỳ vọng thấy trai bị hại khi ăn nhựa.', 'Đoạn 5', '“only one well-designed study failed to find the effect it was looking for, an investigation of mussels ingesting microscopic bits of plastic.”',
+      'Nghiên cứu đi tìm tác hại nhưng không thấy = đã kỳ vọng tìm thấy → TRUE'],
+    33: ['Một số con trai chọn ăn nhựa thay vì thức ăn tự nhiên.', 'Đoạn 6–7', '“While mussels may be fine eating trash”', 'Không nói trai thích ăn nhựa hơn thức ăn tự nhiên → NOT GIVEN'],
+    34: ['Mảnh rác ___ (gây hại cho động vật).', 'Đoạn 8', '“Most of the dangers also involved large pieces of debris”', 'Phần lớn nguy hại liên quan đến mảnh rác lớn → large'],
+    35: ['Ít nghiên cứu về ___, ví dụ từ sợi tổng hợp.', 'Đoạn 9', '“But a lot of ocean debris is ‘microplastic’, or pieces smaller than five millimeters.”', 'Vi nhựa, gồm sợi từ quần áo tổng hợp → microplastic'],
+    36: ['Phần lớn tập trung vào cá thể, không phải toàn bộ ___.', 'Đoạn 10', '“Many studies have looked at how plastic affects an individual animal, or that animal’s tissues or cells, rather than whole populations.”', 'Không nghiên cứu toàn bộ quần thể → populations'],
+    37: ['___ nhựa dùng trong phòng thí nghiệm không phản ánh đúng ngoài đại dương.', 'Đoạn 10', '“scientists often use higher concentrations of plastic than what’s really in the ocean.”', 'Nồng độ cao hơn thực tế → concentrations'],
+    38: ['Tác động của việc suy giảm số lượng lên ___ của loài đó.', 'Đoạn 10', '“or how deaths in one species could affect that animal’s predators, or the rest of the ecosystem.”', 'Ảnh hưởng tới các loài săn mồi của chúng → predators'],
+    39: ['Cần thêm thông tin về tác động có thể có của các ___ trong tương lai (vd. dầu).', 'Đoạn 11', '“Usually, scientists don’t know exactly how disasters such as a tanker accidentally spilling its whole cargo of oil … will affect the environment until after they’ve happened.”',
+      'Các thảm họa như tràn dầu → disasters'],
+    40: ['Tiêu đề phù hợp nhất cho bài.', 'Cả bài', '“set out to determine how many of those perceived risks are real.”', 'Cả bài nói về việc đánh giá xem các mối đe dọa của rác biển có thật không → A'],
+  },
+};

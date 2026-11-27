@@ -499,3 +499,41 @@ khoảng cách giữa các đoạn → tách tay).
   github.com/wongjiawei18/ielts-reading; Q38 nhận cả astrophysics / mathematics). Cả hai `specs/volx/` (t3p1, t4p3), bật, ảnh bìa, pw_mini /
   pw_admin / pw_grade đạt. Vẫn chưa seed: Biotechnology, Face recognition (web đã có "Sorry – who are you?"), Why we need sleep — không có
   nguồn khớp tên.
+
+## Cambridge (nhãn "Quýt N") — 2026-11-26
+Thầy: "thiếu khá nhiều đề Cam … từ Cam 10 trở đi kiếm và seed lên web"; cùng ngày: "đổi toàn bộ chữ Cam trên web thành chữ Quýt"
+(`../renameCamToQuyt.js` đổi mọi "Cam <số>" trong DB → "Quýt <số>"). Ngân hàng có sẵn Quýt 15/16/17/20/21 (+ Quýt 19 T1 nằm trong
+Actual Mocktest 23/24/27). Thiếu: 10, 11, 12, 13, 14, 18, 19.
+- Nguồn: **ieltsworldly.com** `ielts-cambridge-book-N-reading-practice-test-T-with-answers` (có cho 10–14, 18; KHÔNG có 19) — tải về
+  `web/cam/w/cNtT.html`. engnovate.com chặn 403 sau 1 request (không thử lại). babarenglish.com có key + câu trích từng câu (dùng để đối chiếu
+  chữ bị hỏng, vd. Quýt 13 T3 P2 đoạn F mất câu của Patricia Kuhl).
+- `cam_extract.js <book> <test>` → `web/cam/x/cNtT.dump.txt` (bài + câu hỏi + bảng key) + `cNtTpP.txt` (bài theo format vr_build) + key.json.
+  Trang kiểu cũ (Quýt 10, 11, 12 T3/T4) không có bảng key và bài bị chèn heading SEO → chế độ "READING PASSAGE n"; vài bài vẫn phải cắt tay
+  từ dump (Quýt 13 T4 P2/P3, 10 T4, 11 T4 P3, 18 T4).
+- Spec: `specs/camN/tTpP.{txt,js}` với `vol: 'camN', book: N` → vr_build ghi `source: "Quýt N - Test T"`, tags `cambridge`, `cam-N`;
+  `vr_import.js camN`, đề full `specs/volcamN/tests.js` + `vr_tests.js camN` → "Quýt N - Test T" (seriesName "Quýt N").
+- Chống trùng (`web/passages.json` 6-gram): chỉ 8 bài Quýt 12 đã có trong ngân hàng (Cork, Collecting as a hobby, Gaining knowledge,
+  Risks agriculture [P2 → cần bản đánh số 1–13], Bilingual, Health Sciences, History of glass, Big cats [P1 → cần bản 14–26]).
+- **Quýt 12 xong** (2026-11-26): đề full Quýt 12 - Test 1…4 bật. 5 bài ngân hàng dùng lại nguyên trạng (key khớp sách; gắn source "Quýt 12 - Test N"), 3 bản sao đánh số lại (copy_renum, SAME_TEXT_OK.cam12), 4 bài mới (Lost City, Flying tortoises, Music and the emotions, UK boards). Trang cũ T3/T4 không có bảng key → lấy key babarenglish (web/cam/b/c12t3,4.html).
+- ~~CÒN LẠI: Quýt 10, 11, 19 T2–T4~~ → **xong 2026-11-27** (dưới). Cambridge Reading 10–21 giờ đủ hết.
+- **Quýt 10, 11, 19 xong 2026-11-27** (thầy: "bài nào thiếu hay lỗi thì dùng trang ieltstrainingonline.com"). Nguồn
+  **ieltstrainingonline.com**: `practice-cam-<B>-reading-test-0<T>-with-answer/` (bài + câu hỏi + key; Quýt 19 key nằm trong
+  khối toggle "1   piston", "23&24 B, D") + `answers-and-explanations-for-cambridge-ielts-<B>-reading-test-<T>/` (giải thích
+  tiếng Anh, có cho 10–15). Danh sách bài: `post-sitemap.xml` / `wp-json/wp/v2/posts?search=`. Trang lưu ở `web/cam/ito/`.
+  `node ito_extract.js <B> <T>` → `web/cam/x/c<B>t<T>.dump.txt` (+ giải thích nguồn) / `c<B>t<T>p<P>.txt` / `.key.json`
+  (cùng định dạng cam_extract). Đối chiếu key spec ↔ key nguồn bằng scratch `keycheck.js` (bắt được lỗi mình gõ nhầm chữ
+  đoạn ↔ danh sách người ở Quýt 10 T4 P2 Q23/24). 33 bài mới (Quýt 10: 12, Quýt 11: 12, Quýt 19 T2–T4: 9) + đề full
+  Quýt 10/11/19 - Test 1…4 (Quýt 19 T1 = 3 bài ngân hàng c8a831/c8ac20/c8aeb0, key khớp nguồn). Kiểm: vr_build 0 cảnh báo,
+  pw_mini 33/33, pw_admin 33/33, pw_grade 33/33 100%, pw_full_tests 12/12, `vr_audit.js cam10|cam11|cam19` 0 (vr_audit
+  nhận "camN" từ hôm nay). Ảnh bìa CC0/PD `web/volcam1{0,1,9}/covers.json`.
+  Lỗi nguồn đã sửa (ghi ở đầu từng spec): chữ dính/sai (Ciaidini, "Com Flakes", "Rapu Nui", "Joe! Berger", "Dr Dan Hunt" →
+  Lunt, "109 hectares" → 10⁹, từ tiếng Thổ…), tiêu đề nhóm sai số ("Questions 1-8" cho 14–21). **Key nguồn tự mâu thuẫn**:
+  Quýt 11 T4 P1 trang đề ghi 7=A, 8=B; trang giải thích + bài đọc: 7=B (Bouchard – heritability), 8=A (Galton 1875) → dùng
+  7=B, 8=A. Quýt 19 T3 P2 Q26 nguồn ghi "reserve … need to be complex" → sách "reverse … need not be complex" (key B).
+  Quýt 10 T3 P3 "Beyond the blue horizon" trùng 37% chữ với "Voyage of going: beyond the blue line 2" (Vol 1 T5 P1, bản
+  sửa, câu hỏi khác) → giữ cả hai (`SAME_TEXT_OK.cam10`). Sơ đồ (Falkirk Wheel, Mary Rose) gõ thành dòng nhãn như vol10/t7p3.
+- **Quýt 18 xong** (2026-11-26): 12 bài mới, đề full Quýt 18 - Test 1…4 bật (pw_mini 12/12, pw_full_tests 4/4). Key trang nguồn sai: T3 Q34/35 bị tráo (34 = brightest pupils, 35 = lower expectations); T4 thiếu Q10–13 (đặt theo bài: C,D / A,D). Q20–23 T2 là YES/NO/NG.
+- **Quýt 14 xong** (2026-11-26): 12 bài mới, đề full Quýt 14 - Test 1…4 bật; pw_mini 12/12, pw_full_tests 4/4. T4 P3 sách không có tiêu đề (Q40 hỏi tiêu đề) → đặt "Chelsea Rochman and ocean trash".
+- **Quýt 13 xong**: 12 bài mới (bật, ảnh bìa CC0/PD `web/volcam13/covers.json`), đề full Quýt 13 - Test 1…4 bật. pw_mini 12/12, pw_full_tests 4/4.
+  Sửa chữ nguồn ghi ở đầu từng spec. Kiểm từng bước: vr_build (key/trích dẫn/→ đáp án) → pw_mini → import → covers → `--activate` → vr_tests → pw_full_tests.
+- Mạng nhà: DNS cục bộ từ chối SRV/A của Atlas → chạy script với preload đổi DNS sang 8.8.8.8 (scratch `dnsfix.js`, `NODE_OPTIONS=-r …`).

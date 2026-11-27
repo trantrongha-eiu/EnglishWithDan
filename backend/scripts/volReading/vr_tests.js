@@ -12,6 +12,8 @@ const apply = rest.includes('--apply');
 const only = rest.filter(a => !a.startsWith('--')).map(Number);
 const plan = require(`./specs/vol${vol}/tests.js`);
 const impFile = path.join(__dirname, 'web', `vol${vol}`, 'imported.json');
+// vol "camN" = Cambridge book N → tests "Quýt N - Test T", seriesName "Quýt N" (label was "Cam N" before 2026-11-26) (same format as Listening)
+const series = /^cam\d+$/.test(vol) ? `Quýt ${vol.slice(3)}` : `Vol ${vol}`;
 const imported = fs.existsSync(impFile) ? JSON.parse(fs.readFileSync(impFile, 'utf8')) : {};
 
 (async () => {
@@ -22,7 +24,7 @@ const imported = fs.existsSync(impFile) ? JSON.parse(fs.readFileSync(impFile, 'u
     const todo = [];
     for (const [T, refs] of Object.entries(plan)) {
       if (only.length && !only.includes(+T)) continue;
-      const name = `Vol ${vol} - Test ${T}`;
+      const name = `${series} - Test ${T}`;
       const ids = refs.map(r => /^t\d+p\d$/.test(r) ? imported[r] : r);
       const problems = [];
       if (ids.some(x => !x)) problems.push(`not imported: ${refs.filter((r, i) => !ids[i]).join(',')}`);
@@ -36,12 +38,12 @@ const imported = fs.existsSync(impFile) ? JSON.parse(fs.readFileSync(impFile, 'u
         const nums = p.questionGroups.flatMap(g => g.questions.map(q => q.questionNumber));
         if (i && ordered[i - 1] && Math.min(...nums) <= Math.max(...ordered[i - 1].questionGroups.flatMap(g => g.questions.map(q => q.questionNumber)))) problems.push(`P${i + 1} numbers overlap P${i}`);
       });
-      if (tests.some(t => t.name === name || (t.seriesName === `Vol ${vol}` && t.testNumber === +T))) problems.push('test exists');
+      if (tests.some(t => t.name === name || (t.seriesName === series && t.testNumber === +T))) problems.push('test exists');
       const same = tests.find(t => (t.passageIds || []).map(String).join() === ids.join());
       if (same) problems.push(`same passages as "${same.name}"`);
       const total = ordered.reduce((a, p) => a + (p ? p.questionGroups.reduce((s, g) => s + g.questions.length, 0) : 0), 0);
       console.log(`${problems.length ? '✗' : '✓'} ${name}: ${ordered.map(p => p ? `"${p.title}"` : '?').join(' / ')} (${total} q)${problems.length ? ' — ' + problems.join('; ') : ''}`);
-      if (!problems.length) todo.push({ name, seriesName: `Vol ${vol}`, testNumber: +T, isActive: true, passageIds: ids.map(x => new mongoose.Types.ObjectId(x)) });
+      if (!problems.length) todo.push({ name, seriesName: series, testNumber: +T, isActive: true, passageIds: ids.map(x => new mongoose.Types.ObjectId(x)) });
     }
     if (!apply || !todo.length) { console.log(`${todo.length} to create${todo.length ? ' — dry run, re-run with --apply' : ''}`); return; }
     const now = new Date();

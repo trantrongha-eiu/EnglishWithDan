@@ -21,15 +21,15 @@ for (const o of orphans) if (o.src && o.src.book) (byTest[`${o.src.book}-${o.src
 for (const [k, list] of Object.entries(byTest).sort((a, b) => a[0].localeCompare(b[0], 'en', { numeric: true }))) {
   const [book, test] = k.split('-').map(Number);
   const parts = [1, 2, 3, 4].map(p => list.find(o => o.src.section === p));
-  if (parts.every(Boolean)) camPlan.push({ name: `Cam ${book} - Test ${test}`, seriesName: `Cam ${book}`, testNumber: test, file: `cam${book}-test${test}-full.mp3`, ids: parts.map(o => o._id) });
+  if (parts.every(Boolean)) camPlan.push({ name: `Quýt ${book} - Test ${test}`, seriesName: `Quýt ${book}`, testNumber: test, file: `cam${book}-test${test}-full.mp3`, ids: parts.map(o => o._id) });
 }
-const byTitle = t => orphans.find(o => o.title === t)._id;
+const byTitle = t => (orphans.find(o => o.title === t) || {})._id; // undefined once that section is in a test
 const PLAN = [
   ...camPlan,
   // the only P4 left over is Cam 9 T2 S4, so one mixed test — all Cam 9 to keep the level even
   { name: 'Actual Test 16', seriesName: 'Actual Tests', testNumber: 16, file: 'actual-test-16-full.mp3',
     ids: [byTitle('Accommodation Form'), byTitle('Parks & Open Spaces'), byTitle('Course Feedback'), byTitle('Business Culture')] },
-];
+].filter(p => p.ids.every(Boolean)); // plans whose sections are all still orphans
 
 const ffmpeg = () => execFileSync('py', ['-c', 'import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())']).toString().trim();
 const { uploadAudio } = require('../../services/r2Service'); // Listening audio → Cloudflare R2 (zero egress), see services/r2Service.js

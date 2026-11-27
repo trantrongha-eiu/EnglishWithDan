@@ -121,3 +121,35 @@ LIVE 10/10, audit sạch, audio dài hơn cue cuối ~45–55s (phần "check yo
 Xem `web/imported.json` (dolId → _id) và `web/triage.json`. 2026-10-01: lô 1 (10 bài, `web/batch1.txt`) đã bật.
 Triage: 428 = 310 clean + 101 trùng ngân hàng (Cambridge 15–21) + 4 trùng nội bộ DOL + 13 cần xử lý.
 Clean theo nguồn: Actual Test 116, Cambridge 9–14 88, PTP 62, IELTS Trainer 22, Official Guide 22.
+
+## Cambridge 11–14 (thầy 2026-11-26: "thiếu khá nhiều đề Cam … từ Cam 10 trở đi kiếm và seed lên web")
+Kiểm kê 26/11: Listening có Cam 10, 15–21 đủ; thiếu **Cam 11–14**. DOL cache có 57/64 section Cam 11–14; **không có trên DOL**:
+Cam 12 T1 S3, Cam 12 T4 S1, Cam 13 T1 S2, Cam 13 T4 S2, Cam 14 T1 S2, Cam 14 T4 S1 (cần nguồn audio khác).
+- **Cam 11 xong 2026-11-26** (`web/batch_cam11.txt`, 15 section + Hiring A Public Room có sẵn); **Cam 12/13/14 Test 2–3 xong** cùng ngày
+  (`batch_cam12/13/14.txt`, 14 section mỗi bộ). Đề full đang bật: Cam 11 - Test 1…4, Cam 12/13/14 - Test 2, 3. Ảnh bìa: `web/covers_cam1N.json`.
+  Sửa chữ đề/transcript trong `dol_patches.js` (mục "Cambridge 11…14"), nhãn người nói bị tráo (Scandinavian Studies, Total Health Clinic,
+  Woolly Mammoths, Crime Report), cột rỗng bảng, Q2 "17, __Q2__ Street", spaced variants (postcode/phone/số tham chiếu — bộ chấm không bỏ dấu cách).
+- **BIẾN THỂ ĐÁP ÁN CỦA DOL = ĐÁP ÁN PHỤ CHÍNH THỨC CỦA SÁCH** (so với bảng key ieltsworldly.com, `web/camx/w<book>t<test>.html`): vd.
+  Maths/Math/Mathematics, holiday(s)/vacation(s), slaves/slavery, unnecessary/not necessary, work/study, decline/declining/decrease…
+  → KHÔNG xoá dù không có nguyên văn trong băng. (Lúc đầu đã xoá nhầm 16 key; đã trả lại + đồng bộ DB cả bài lẻ lẫn bản trong đề full
+  bằng scratch `synckeys.js`.) Lô Cam 10 trước đây đã bỏ "character"/"ambitions" (Self-Regulatory Focus) — đã trả lại 2026-11-27 (key sách có).
+- `audioDuration` = 0 khi uploadAudio không đọc được độ dài (12/14 bài Cam 14) → `build_full_tests.js` báo lệch → đo bằng ffmpeg rồi ghi lại
+  (scratch `fixdur.js`). `orphan_sections.js`: URL DOL không có book/test (…-mt13-l2-s3) → lấy theo mã `CAM13_L2_S3`.
+- **Còn thiếu 6 section (không có trên DOL)** → Cam 12/13/14 Test 1 và Test 4 chưa ghép được: C12 T1 S3, C12 T4 S1, C13 T1 S2 (Traffic Changes
+  in Granford, map), C13 T4 S2 (The Snow Centre), C14 T1 S2 (Induction talk for new apprentices), C14 T4 S1 (key 85/roses/trees…). Nguồn:
+  ieltsworldly.com có câu hỏi + key + audio (Cam 13: mp3 từng section CD1/CD2 Track_NN; Cam 12/14: mp3 cả đề → phải cắt), KHÔNG có transcript.
+  → **XONG 2026-11-27 từ ieltstrainingonline.com** (thầy: "bài nào thiếu hay lỗi thì dùng trang ieltstrainingonline.com"):
+  trang `practice-cam-<B>-listening-test-0<T>-with-answer/` (câu hỏi, key, ảnh map, mp3 TỪNG section
+  `wp-content/uploads/2021/07/Cam<B>-Test<T>-Section<S>.mp3`) + `audio-script-cambridge-ielts-<B>-listening-test-0<T>/`
+  (Cam 14: `transcript-cambridge-ielts-14-…`; Cam 19: `audioscripts-cambridge-ielts-019-…`) — trang lưu ở `web/ito/`.
+  `ito_sections.js build|import|activate` + spec `ito/c<B>t<T>s<S>.js` (helper của volListening/vol_build; transcript tự
+  tách từ trang audioscript, bỏ "(Qn)", sửa chữ bằng `fix`); audioFileName `ito_CAM<B>_L<T>_S<S>.mp3` → `orphan_sections.js`
+  nhận book/test/section → `build_full_tests.js --apply/--activate`. Đề full Quýt 12/13/14 - Test 1, 4 đã bật: lcheck 40/40,
+  `pw_fulltest.js` trên site thật 6/6 grade 40/40 (pw_fulltest dùng UA Chrome — chạy được). Ảnh bìa `web/ito/covers.json`.
+  Cam 12 T4 Q10 key nguồn "talk / presentation" (giữ cả hai). ieltstrainingonline có đủ Cam 10–20 Listening + audioscript
+  → dùng khi DOL thiếu/lỗi.
+- Cam 10 T3 S4 Self-Regulatory Focus: key ieltstrainingonline = "personality / character", "aspirations / ambitions" →
+  2 đáp án phụ đã trả lại 2026-11-27 (dol_patches + bài lẻ + Quýt 10 - Test 3).
+- `pw_dol.js` hiện timeout (botGuard chặn UA HeadlessChrome ở trang login; thêm UA Chrome thường bị auto-mode chặn) → kiểm thay bằng
+  offline: `set_dol_expl.js` + scratch `lcheck.js` (đánh số 1–40, tự chấm 40/40 bằng gradeQuestionGroups, đủ giải thích/audio/transcript).
+- `build_full_tests.js`: kế hoạch "Actual Test 16" giờ tự bỏ qua khi các section đã nằm trong đề full.

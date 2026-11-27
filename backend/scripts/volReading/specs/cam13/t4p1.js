@@ -1,0 +1,47 @@
+// Cambridge IELTS 13 - Test 4 - Passage 1. Source: ieltsworldly.com, checked against the book key. Text fix: "the contrast with them" → contract.
+const { tfng, notes } = require('../../vr_build');
+module.exports = {
+  vol: 'cam13', book: 13, test: 4, part: 1, title: 'Cutty Sark: the fastest sailing ship of all time', text: 't4p1.txt', lettered: false,
+  groups: [
+    tfng(1, [
+      'Clippers were originally intended to be used as passenger ships.',
+      'Cutty Sark was given the name of a character in a poem.',
+      'The contract between John Willis and Scott & Linton favoured Willis.',
+      'John Willis wanted Cutty Sark to be the fastest tea clipper travelling between the UK and China.',
+      'Despite storm damage, Cutty Sark beat Thermopylae back to London.',
+      'The opening of the Suez Canal meant that steam ships could travel between Britain and China faster than clippers.',
+      'Steam ships sometimes used the ocean route to travel between London and China.',
+      'Captain Woodget put Cutty Sark at risk of hitting an iceberg.',
+    ]),
+    notes(9, 13, [
+      'After 1880, Cutty Sark carried __Q9__ as its main cargo during its most successful time.',
+      'As a captain and __Q10__, Woodget was very skilled.',
+      'Ferreira went to Falmouth to repair damage that a __Q11__ had caused.',
+      'Between 1923 and 1954, Cutty Sark was used for __Q12__.',
+      'Cutty Sark has twice been damaged by __Q13__ in the 21st century.',
+    ], { instruction: 'Complete the sentences below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 9–13 on your answer sheet.' }),
+  ],
+  key: { 1: 'FALSE', 2: 'FALSE', 3: 'TRUE', 4: 'TRUE', 5: 'FALSE', 6: 'TRUE', 7: 'NOT GIVEN', 8: 'TRUE', 9: 'wool', 10: 'navigator', 11: 'gale', 12: 'training', 13: 'fire' },
+  expl: {
+    1: ['Ban đầu clipper được dự định dùng làm tàu chở khách.', 'Đoạn 2', '“three-masted ships built to transport goods around the world, although some also took passengers.”',
+      'Clipper được đóng để chở hàng hóa; chỉ một số chở thêm khách → FALSE'],
+    2: ['Cutty Sark được đặt theo tên một nhân vật trong bài thơ.', 'Đoạn 3', '“who is wearing a ‘cutty sark’ – an old Scottish name for a short nightdress.”',
+      '“cutty sark” là tên chiếc váy ngủ ngắn mà phù thủy Nannie mặc, không phải tên nhân vật → FALSE'],
+    3: ['Hợp đồng giữa John Willis và Scott & Linton có lợi cho Willis.', 'Đoạn 4', '“ensured that the contract with them put him in a very strong position.”',
+      'Hợp đồng đặt Willis vào thế rất mạnh = có lợi cho ông → TRUE'],
+    4: ['John Willis muốn Cutty Sark là tàu chở trà nhanh nhất giữa Anh và Trung Quốc.', 'Đoạn 5', '“so Cutty Sark was designed to make the journey more quickly than any other ship.”',
+      'Tàu được thiết kế để đi nhanh hơn mọi tàu khác trên tuyến buôn trà Trung Quốc – Anh → TRUE'],
+    5: ['Dù bị bão làm hỏng, Cutty Sark vẫn về London trước Thermopylae.', 'Đoạn 6', '“Cutty Sark reached London a week after Thermopylae.”', 'Cutty Sark về sau Thermopylae một tuần → FALSE'],
+    6: ['Kênh Suez mở giúp tàu hơi nước đi giữa Anh và Trung Quốc nhanh hơn clipper.', 'Đoạn 7',
+      '“the canal was of no use to sailing ships”', 'Tàu hơi nước đi đường tắt qua kênh, còn tàu buồm phải đi đường xa hơn; hành trình tàu hơi nước ngắn hơn khoảng 2 tháng → TRUE'],
+    7: ['Tàu hơi nước đôi khi dùng tuyến đường đại dương giữa London và Trung Quốc.', 'Đoạn 7', '“While steam ships could make use of the quick, direct route between the Mediterranean and the Red Sea”',
+      'Bài chỉ nói tàu hơi nước có thể đi qua kênh Suez; không nói chúng có lúc đi đường đại dương hay không → NOT GIVEN'],
+    8: ['Thuyền trưởng Woodget khiến Cutty Sark có nguy cơ đâm vào băng trôi.', 'Đoạn 9', '“bringing her dangerously close to icebergs off the southern tip of South America.”',
+      '“dangerously close to icebergs” = có nguy cơ đâm băng trôi → TRUE'],
+    9: ['Sau 1880, trong thời kỳ thành công nhất, Cutty Sark chủ yếu chở ___.', 'Đoạn 8', '“the beginning of the most successful period in Cutty Sark’s working life, transporting wool from Australia to Britain.”', 'Chở len từ Úc về Anh → wool'],
+    10: ['Woodget rất giỏi với vai trò thuyền trưởng và ___.', 'Đoạn 9', '“Richard Woodget, was an excellent navigator”', '“excellent” = very skilled; một hoa tiêu xuất sắc → navigator'],
+    11: ['Ferreira tới Falmouth để sửa hư hỏng do ___ gây ra.', 'Đoạn 10', '“Badly damaged in a gale in 1922, she was put into Falmouth harbor”', 'Hư hỏng nặng do một trận gió lớn → gale'],
+    12: ['Từ 1923 đến 1954, Cutty Sark được dùng để ___.', 'Đoạn 11', '“Dowman used Cutty Sark as a training ship, and she continued in this role after his death.”', 'Làm tàu huấn luyện → training'],
+    13: ['Cutty Sark hai lần bị ___ làm hư hại trong thế kỷ 21.', 'Đoạn 11', '“The ship suffered from fire in 2007, and again, less seriously, in 2014”', 'Hai vụ hỏa hoạn năm 2007 và 2014 → fire'],
+  },
+};

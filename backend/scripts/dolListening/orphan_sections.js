@@ -38,9 +38,13 @@ for (const s of sections) {
     const tr = triage.find(r => r.id === dolId) || {};
     const d = JSON.parse(fs.readFileSync(W(`draft/${dolId}.json`), 'utf8'));
     const it = items.find(x => x.url && d._url && d._url.endsWith(x.url.split('/').pop())) || items.find(x => nt(x.name) === nt(tr.title || s.title));
-    const m = it && it.url.match(/ielts-(\d+)-test-(\d+)-section-(\d+)/);
+    // URL without book/test/section (e.g. "…answer-key-nanotechnology-mt13-l2-s3") → DOL's own section code
+    const m = (it && it.url.match(/ielts-(\d+)-test-(\d+)-section-(\d+)/)) || String(tr.dolSection || '').match(/^CAM(\d+)_L(\d+)_[SP](\d+)$/);
     src = { dolId, examSource: tr.source, url: it && it.url, book: m ? +m[1] : null, test: m ? +m[2] : null, section: m ? +m[3] : null };
   }
+  // sections built from ieltstrainingonline.com (ito_sections.js): audioFileName "ito_CAM<B>_L<T>_S<P>.mp3"
+  const ito = !src && String(s.audioFileName || '').match(/^ito_CAM(\d+)_L(\d+)_S(\d+)\.mp3$/);
+  if (ito) src = { examSource: 'CAMBRIDGE', book: +ito[1], test: +ito[2], section: +ito[3] };
   out.push({ _id: s._id, part: s.partNumber, title: s.title, isActive: s.isActive, isActualTest: s.isActualTest, audioUrl: s.audioUrl, audioDuration: s.audioDuration, createdAt: s.createdAt, closest: best.test ? `${best.test} ${best.s.toFixed(2)}` : '', src });
 }
 fs.writeFileSync(W('orphans.json'), JSON.stringify(out, null, 1));

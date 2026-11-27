@@ -28,8 +28,10 @@ const groups = src.questionGroups.map(g => {
 });
 for (const o of over) { const [n, a] = o.split('='); groups.forEach(g => g.questions.forEach(q => { if (q.questionNumber === +n) q.correctAnswer = a; })); }
 const doc = { title, category: `passage${P}`, content: src.content,questionGroups: groups, questions: [],
-  questionRange: { start, end: src.questionRange.end + off }, difficulty: src.difficulty || 'medium', tags: [`vol-${vol}`, 'vol-original-exams'],
+  questionRange: { start, end: src.questionRange.end + off }, difficulty: src.difficulty || 'medium', tags: /^cam\d+$/.test(vol) ? ['cambridge', `cam-${vol.slice(3)}`] : [`vol-${vol}`, 'vol-original-exams'],
   isActive: false, isActualTest: true, thumbnailUrl: src.thumbnailUrl || '' };
+// Cambridge vols ("camN"): the bài lẻ card shows Passage.source "Quýt N - Test T"
+if (/^cam\d+$/.test(vol)) doc.source = `Quýt ${vol.slice(3)} - Test ${T}`;
 const out = path.join(__dirname, 'web', `vol${vol}`, 'draft', `t${T}p${P}.json`);
 fs.writeFileSync(out, JSON.stringify({ source: `Vol ${vol} - Test ${T} - Passage ${P} (renumbered copy of "${src.title}" ${src._id})`, imageUrl: null, notes: [], doc }, null, 1));
 console.log(`✓ "${title}" passage${P} Q${start}-${doc.questionRange.end} ← "${src.title}" Q${src.questionRange.start}-${src.questionRange.end} (offset ${off}) → ${path.relative(__dirname, out)}`);

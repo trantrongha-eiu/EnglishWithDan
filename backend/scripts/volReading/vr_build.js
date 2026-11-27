@@ -102,7 +102,9 @@ function build(specPath) {
   const start = spec.start || { 1: 1, 2: 14, 3: 27 }[P];
   const end = Math.max(...nums);
   const doc = { title: spec.title, category: cat, content, questionGroups: groups, questions: [], questionRange: { start, end },
-    difficulty: 'medium', tags: [`vol-${spec.vol}`, 'vol-original-exams'], isActive: false, isActualTest: true, thumbnailUrl: '' };
+    difficulty: 'medium', tags: spec.book ? ['cambridge', `cam-${spec.book}`] : [`vol-${spec.vol}`, 'vol-original-exams'], isActive: false, isActualTest: true, thumbnailUrl: '' };
+  // Cambridge books (spec.book, vol "camN"): the bài lẻ card shows Passage.source "Cam N - Test M" (renameCamReadingTests.js)
+  if (spec.book) doc.source = `Quýt ${spec.book} - Test ${spec.test}`; // the "Cam N" label became "Quýt N" on 2026-11-26
 
   // ── checks ──
   const exp = range(start, end);
@@ -155,7 +157,7 @@ function build(specPath) {
   }
   const out = path.join(__dirname, 'web', `vol${spec.vol}`, 'draft', `t${spec.test}p${P}.json`);
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  fs.writeFileSync(out, JSON.stringify({ source: `Vol ${spec.vol} - Test ${spec.test} - Passage ${P}`, imageUrl: null, notes: spec.notes || [], doc }, null, 1));
+  fs.writeFileSync(out, JSON.stringify({ source: spec.book ? `Quýt ${spec.book} - Test ${spec.test} - Passage ${P}` : `Vol ${spec.vol} - Test ${spec.test} - Passage ${P}`, imageUrl: null, notes: spec.notes || [], doc }, null, 1));
   const words = plain(content).split(/\s+/).filter(Boolean).length;
   console.log(`${warn.length ? '✗' : '✓'} T${spec.test}P${P} "${spec.title}" ${cat} Q${start}-${end} (${nums.length} q, ${words} words) → ${path.relative(__dirname, out)}`);
   for (const w of warn) console.log('   ! ' + w);

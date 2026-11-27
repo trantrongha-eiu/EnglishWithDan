@@ -1,0 +1,45 @@
+// Cambridge IELTS 13 - Test 3 - Passage 1. Source: ieltsworldly.com, checked against the book key. Text fix: "the Americans" → "the Americas".
+const { tfng, table } = require('../../vr_build');
+module.exports = {
+  vol: 'cam13', book: 13, test: 3, part: 1, title: 'The coconut palm', text: 't3p1.txt', lettered: false,
+  groups: [
+    table(1, 8, ['Part', 'Description', 'Uses'], [
+      ['trunk', 'up to 30 metres', 'timber for houses and the making of __Q1__'],
+      ['leaves', 'up to 6 metres long', 'to make brushes'],
+      ['flowers', 'at the top of the trunk', 'stems provide sap, used as a drink or a source of __Q2__'],
+      ['fruits', 'outer layer', ''],
+      ['', 'middle layer (coir fibres)', 'used for __Q3__, etc.'],
+      ['', 'inner layer (shell)', '• a source of __Q4__<br>• (when halved) for __Q5__'],
+      ['', 'coconut water', '• a drink<br>• a source of __Q6__ for other plants'],
+      ['', 'coconut flesh', '• oil and milk for cooking and __Q7__<br>• glycerine (an ingredient in __Q8__)'],
+    ], { instruction: 'Complete the table below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1–8 on your answer sheet.' }),
+    tfng(9, [
+      'Coconut seeds need shade in order to germinate.',
+      'Coconuts were probably transported to Asia from America in the 16th century.',
+      'Coconuts found on the west coast of America were a different type from those found on the east coast.',
+      'All the coconuts found in Asia are cultivated varieties.',
+      'Coconuts are cultivated in different ways in America and the Pacific.',
+    ]),
+  ],
+  key: { 1: 'furniture', 2: 'sugar', 3: 'ropes', 4: 'charcoal', 5: 'bowls', 6: 'hormones', 7: 'cosmetics', 8: 'dynamite',
+    9: 'FALSE', 10: 'FALSE', 11: 'NOT GIVEN', 12: 'TRUE', 13: 'NOT GIVEN' },
+  expl: {
+    1: ['Thân cây: gỗ làm nhà và dùng để làm ___.', 'Đoạn 2', '“is increasingly being used as a replacement for endangered hardwoods in the furniture construction industry.”', 'Gỗ thân dừa dùng trong ngành làm đồ nội thất → furniture'],
+    2: ['Cuống hoa cho nhựa, dùng làm đồ uống hoặc nguồn ___.', 'Đoạn 3', '“the sap can also be reduced by boiling to produce a type of sugar used for cooking.”', 'Nhựa đun cô lại thành một loại đường → sugar'],
+    3: ['Lớp giữa (xơ dừa) dùng để làm ___.', 'Đoạn 4', '“coir’, which has numerous uses and is particularly important in manufacturing ropes.”', 'Xơ dừa đặc biệt quan trọng trong sản xuất dây thừng → ropes'],
+    4: ['Lớp trong (gáo dừa) là nguồn ___.', 'Đoạn 4', '“An important product obtained from the shell is charcoal”', '“obtained from” = a source of; than → charcoal'],
+    5: ['(khi bổ đôi) dùng làm ___.', 'Đoạn 4', '“When broken in half, the shells are also used as bowls in many parts of Asia.”', '“broken in half” = halved; làm bát → bowls'],
+    6: ['Nước dừa: đồ uống và nguồn ___ cho cây khác.', 'Đoạn 5', '“but also provides the hormones which encourage other plants to grow more rapidly”', 'Nước dừa cung cấp hormone giúp cây khác lớn nhanh → hormones'],
+    7: ['Cùi dừa: dầu và sữa dùng nấu ăn và ___.', 'Đoạn 5', '“which are widely used in cooking in different parts of the world, as well as in cosmetics.”', 'Dầu dừa, sữa dừa dùng nấu ăn và làm mỹ phẩm → cosmetics'],
+    8: ['Glycerine (thành phần của ___).', 'Đoạn 5', '“as Alfred Nobel introduced the world to his nitroglycerine-based invention: dynamite.”', 'Glycerine là nguyên liệu của thuốc nổ dynamite → dynamite'],
+    9: ['Hạt dừa cần bóng râm để nảy mầm.', 'Đoạn 6', '“exposed to the full glare of the tropical sun, coconut seeds are able to germinate and root.”', 'Hạt nảy mầm được ngay dưới nắng gắt nhiệt đới, không cần bóng râm → FALSE'],
+    10: ['Dừa có lẽ được đưa từ châu Mỹ sang châu Á vào thế kỷ 16.', 'Đoạn 7',
+      '“Arab traders and European sailors are likely to have moved coconuts from South and Southeast Asia to Africa and then across the Atlantic to the east coast of America.”', 'Hướng ngược lại: từ châu Á sang châu Phi rồi sang châu Mỹ → FALSE'],
+    11: ['Dừa ở bờ tây châu Mỹ khác loại với dừa ở bờ đông.', 'Đoạn 7',
+      '“But the origin of coconuts discovered along the west coast of America by 16th century sailors has been the subject of centuries of discussion.”', 'Bài chỉ nói nguồn gốc dừa bờ tây còn tranh cãi, không so sánh giống dừa hai bờ → NOT GIVEN'],
+    12: ['Mọi cây dừa ở châu Á đều là giống được trồng.', 'Đoạn 8', '“In Asia, there is a large degree of coconut diversity and evidence of millennia of human use – but there are no relatives growing in the wild.”',
+      'Ở châu Á không có cây dừa mọc hoang = tất cả là cây trồng → TRUE'],
+    13: ['Cách trồng dừa ở châu Mỹ và Thái Bình Dương khác nhau.', 'Đoạn 8', '“These problems have led to the intriguing suggestion that coconuts originated on coral islands in the Pacific and were dispersed from there.”',
+      'Bài chỉ bàn nguồn gốc dừa, không nói cách canh tác ở hai nơi → NOT GIVEN'],
+  },
+};

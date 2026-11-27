@@ -1,0 +1,48 @@
+// Cambridge IELTS 12 - Test 4 - Section 1 (not on DOL). Source: ieltstrainingonline.com practice-cam-12-listening-test-04 + audio-script page.
+// Source typos fixed: "I probable need", "That’s be fine". Q10 key "talk / presentation" as listed by the source.
+const { note } = require('../../volListening/vol_build');
+module.exports = {
+  book: 12, test: 4, part: 1, title: 'Cycle Tour Leader: Applicant Enquiry',
+  fix: [['I probable need', 'I probably need'], ['That’s be fine', 'That’d be fine']],
+  groups: [
+    note('Complete the notes below.\nWrite ONE WORD AND/OR A NUMBER for each answer.', 'Cycle tour leader: Applicant enquiry', [
+      'Example: Name: Margaret Smith',
+      '<strong>About the applicant:</strong>',
+      '• wants a __Q1__ job',
+      '• will soon start work as a __Q2__',
+      '• has led cycle trips in __Q3__',
+      '• interested in being a leader of a cycling trip for families',
+      '• is currently doing voluntary work with members of a __Q4__ club',
+      '• available for five months from the 1st of __Q5__',
+      '• can’t eat __Q6__',
+      '<strong>Contact details:</strong>',
+      '• address: 27 __Q7__ Place, Dumfries',
+      '• postcode: __Q8__',
+      '<strong>Interview:</strong>',
+      '• interview at 2.30 pm on __Q9__',
+      '• will plan a short __Q10__ about being a tour guide',
+    ], { 1: 'temporary', 2: 'doctor', 3: 'Africa', 4: 'youth', 5: 'May', 6: 'cheese', 7: 'Arbuthnot', 8: 'DG7 4PH/DG74PH', 9: 'Tuesday', 10: 'talk/presentation' }, 'Questions 1–10'),
+  ],
+  expl: {
+    1: { v: 'Khi Bob hỏi Margaret có tìm việc lâu dài không.', t: ['Are you looking for a permanent job, Margaret?', 'No, temporary.'],
+      p: 'Margaret muốn việc tạm thời vì vài tháng nữa sẽ bắt đầu công việc chính thức → temporary' },
+    2: { v: 'Khi Bob hỏi Margaret làm nghề gì.', t: 'I used to be a lawyer, and then I made a complete career change and I’m going to be a doctor',
+      p: 'Trước là luật sư (bẫy), sắp tới sẽ làm bác sĩ → doctor' },
+    3: { v: 'Khi Bob hỏi về kinh nghiệm dẫn tour xe đạp.', t: 'Yes, I’ve led several bike tours in Africa.',
+      p: 'Đã dẫn tour ở châu Phi; chuyến Ấn Độ (bẫy) đã bị huỷ → Africa' },
+    4: { v: 'Khi Bob hỏi về kinh nghiệm với tuổi thiếu niên.', t: 'I’m a volunteer worker in a youth club',
+      p: '“volunteer worker” = voluntary work; câu lạc bộ xe đạp là việc trước đây → youth' },
+    5: { v: 'Khi nói về thời gian rảnh của Margaret.', t: 'I’m available from May the 1st until late September',
+      p: 'Rảnh 5 tháng từ ngày 1/5; ngày 2/10 là ngày bắt đầu đi làm (bẫy) → May' },
+    6: { v: 'Khi Bob hỏi về chế độ ăn.', t: 'Yes, I’m allergic to cheese.',
+      p: '“allergic to cheese” = can’t eat cheese → cheese' },
+    7: { v: 'Khi Margaret đọc địa chỉ.', t: 'Could you send it to 27 Arbuthnot Place – A-R-B-U-T-H-N-O-T – Place, Dumfries.',
+      p: 'Tên đường được đánh vần từng chữ → Arbuthnot' },
+    8: { v: 'Khi Bob hỏi mã bưu điện.', t: ['And what’s the postcode, please?', 'DG7 4PH.', 'P Papa.'],
+      p: 'Bob hỏi lại P hay B, Margaret xác nhận “P Papa” → DG7 4PH' },
+    9: { v: 'Khi Bob hẹn lịch phỏng vấn.', t: 'we can interview you on Tuesday next week',
+      p: 'Phỏng vấn thứ Ba tuần sau lúc 2.30; thứ Sáu là hạn nộp đơn, thứ Hai là ngày Margaret lái xe đến (bẫy) → Tuesday' },
+    10: { v: 'Khi Bob dặn chuẩn bị cho buổi phỏng vấn.', t: 'could you prepare a ten-minute talk about that, please?',
+      p: '“ten-minute” = short; bài nói về kinh nghiệm làm hướng dẫn viên → talk' },
+  },
+};

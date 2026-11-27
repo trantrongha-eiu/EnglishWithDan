@@ -39,6 +39,11 @@ const SAME_TEXT_OK = ({
   // Test 9 P1) / Classifying societies (Vol 4 update Test 5 P1 "Categorizing societies")
   '2u': { t9p1: '6abdad023bcd15105e99fc00' },
   '4u': { t5p1: '6adc40e45cf66bdff87cfba1' },
+  // Quýt 12 (Cambridge 12, 2026-11-26): renumbered copies — Collecting as a hobby (bank P1 → book P2), The Risks Agriculture Faces
+  // (bank P2 → book P1), Bring back the big cats (bank P1 → book P2)
+  cam12: { t1p2: '6abd18a7766cfd5ee7885cfc', t2p1: '6abdad053bcd15105e99fc4c', t4p2: '6abdf8511a3545ddbcd9fdfd' },
+  // Quýt 10 T3 P3 "Beyond the blue horizon" (Cambridge original, 27–40) vs the bank's edited "Voyage of going: beyond the blue line 2" (Vol 1 T5 P1, other questions)
+  cam10: { t3p3: '6ad252daf0a50d6ef8e33836' },
 })[vol] || {};
 
 // --activate: publish (isActive:true) exactly the passages listed in imported.json, refusing any without a cover

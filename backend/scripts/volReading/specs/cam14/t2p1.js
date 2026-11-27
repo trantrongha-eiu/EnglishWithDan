@@ -1,0 +1,52 @@
+// Cambridge IELTS 14 - Test 2 - Passage 1. Source: ieltsworldly.com, checked against the book key.
+// Text fixes: stray "(Text)"/"(Data)" markers removed; "In the 1890s and 1880s" → 1870s and 1880s (as in Q notes); "become" → became.
+const { tfng, notes } = require('../../vr_build');
+module.exports = {
+  vol: 'cam14', book: 14, test: 2, part: 1, title: 'Alexander Henderson (1831–1913)', text: 't2p1.txt', lettered: false,
+  groups: [
+    tfng(1, [
+      'Henderson rarely visited the area around Press estate when he was younger.',
+      'Henderson pursued a business career because it was what his family wanted.',
+      'Henderson and Notman were surprised by the results of their 1865 experiment.',
+      'There were many similarities between Henderson’s early landscapes and those of Notman.',
+      'The studio that Henderson opened in 1866 was close to his home.',
+      'Henderson gave up portraiture so that he could focus on taking photographs of scenery.',
+      'When Henderson began work for the Intercolonial Railway, the Montreal to Halifax line had been finished.',
+      'Henderson’s last work as a photographer was with the Canadian Pacific Railway.',
+    ]),
+    notes(9, 13, [
+      '<strong>Early life</strong>',
+      '• was born in Scotland in 1831 – father was a __Q9__',
+      '• trained as an accountant, emigrated to Canada in 1855',
+      '<strong>Start of a photographic career</strong>',
+      '• opened up a photographic studio in 1866',
+      '• took photos of city life, but preferred landscape photography',
+      '• people bought Henderson’s photos because photography took up considerable time and the __Q10__ was heavy',
+      '• the photographs Henderson sold were __Q11__ or souvenirs',
+      '<strong>Travelling as a professional photographer</strong>',
+      '• travelled widely in Quebec and Ontario in 1870s and 1880s',
+      '• took many trips along eastern rivers in a __Q12__',
+      '• worked for Canadian railways between 1875 and 1897',
+      '• worked for CPR in 1885 and photographed the __Q13__ and the railway at Rogers Pass',
+    ], { title: 'Alexander Henderson', instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 9–13 on your answer sheet.' }),
+  ],
+  key: { 1: 'FALSE', 2: 'TRUE', 3: 'NOT GIVEN', 4: 'FALSE', 5: 'NOT GIVEN', 6: 'TRUE', 7: 'FALSE', 8: 'TRUE', 9: 'merchant', 10: 'equipment', 11: 'gifts', 12: 'canoe', 13: 'mountains' },
+  expl: {
+    1: ['Hồi nhỏ Henderson hiếm khi tới vùng quanh điền trang Press.', 'Đoạn 2–3', '“Alexander spent much of his childhood in the area”', 'Ông dành phần lớn tuổi thơ ở đó, đi học rồi vẫn về mỗi cuối tuần → FALSE'],
+    2: ['Henderson theo nghề kinh doanh vì gia đình muốn vậy.', 'Đoạn 3', '“Although he never liked the prospect of a business career, he stayed with it to please his family.”', '“to please his family” = vì gia đình muốn → TRUE'],
+    3: ['Henderson và Notman bất ngờ với kết quả thí nghiệm năm 1865.', 'Đoạn 4', '“they cooperated on experiments with magnesium flares as a source of artificial light in 1865.”', 'Chỉ nói họ cùng thí nghiệm; không nhắc kết quả hay sự bất ngờ → NOT GIVEN'],
+    4: ['Có nhiều điểm giống nhau giữa ảnh phong cảnh thời đầu của Henderson và của Notman.', 'Đoạn 6', '“In spite of their friendship, their styles of photography were quite different.”',
+      'Notman hiện thực táo bạo, Henderson lãng mạn = phong cách khác hẳn → FALSE'],
+    5: ['Studio Henderson mở năm 1866 ở gần nhà ông.', 'Đoạn 7', '“In 1866, he gave up his business to open a photographic studio”', 'Không nói vị trí studio so với nhà → NOT GIVEN'],
+    6: ['Henderson bỏ chụp chân dung để tập trung chụp phong cảnh.', 'Đoạn 7', '“From about 1870 he dropped portraiture to specialize in landscape photography and other views.”', '“dropped” = gave up; “specialize in” = focus on → TRUE'],
+    7: ['Khi Henderson bắt đầu làm cho Intercolonial Railway, tuyến Montreal–Halifax đã xong.', 'Đoạn 10–11',
+      '“a commission from the railway to record the principal structures along the almost-completed line connecting Montreal to Halifax.”', '“almost-completed” = gần xong, chưa hoàn thành → FALSE'],
+    8: ['Công việc nhiếp ảnh cuối cùng của Henderson là cho Canadian Pacific Railway.', 'Đoạn 12', '“He continued in this post until 1897, when he retired completely from photography.”',
+      'Làm ở CPR đến 1897 rồi nghỉ hẳn nhiếp ảnh → TRUE'],
+    9: ['Cha ông là một ___.', 'Đoạn 2', '“Alexander Henderson was born in Scotland in 1831 and was the son of a successful merchant.”', 'Con trai một thương gia thành đạt → merchant'],
+    10: ['Người ta mua ảnh của Henderson vì chụp ảnh tốn thời gian và ___ nặng.', 'Đoạn 8', '“because of the time-consuming techniques involved and the weight of equipment.”', '“the weight of equipment” = thiết bị nặng → equipment'],
+    11: ['Ảnh Henderson bán là ___ hoặc đồ lưu niệm.', 'Đoạn 8', '“People wanted to buy photographs as souvenirs of a trip or as gifts”', 'Làm quà tặng hoặc kỷ niệm → gifts'],
+    12: ['Đi nhiều chuyến dọc các con sông phía đông bằng ___.', 'Đoạn 10', '“often travelled by canoe on the Blanche, du Lièvre, and other noted eastern rivers.”', 'Đi bằng xuồng → canoe'],
+    13: ['Năm 1885 làm cho CPR và chụp ___ và đường sắt ở Rogers Pass.', 'Đoạn 11', '“where he took photographs of the mountains and the progress of construction.”', 'Chụp núi và tiến độ xây dựng → mountains'],
+  },
+};

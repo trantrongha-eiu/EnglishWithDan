@@ -1,0 +1,37 @@
+// Cambridge IELTS 14 - Test 1 - Section 2 (not on DOL). Source: ieltstrainingonline.com practice-cam-14-listening-test-01 + transcript page.
+const { multi, matching } = require('../../volListening/vol_build');
+module.exports = {
+  book: 14, test: 1, part: 2, title: 'Induction Talk for New Apprentices',
+  groups: [
+    multi('Choose TWO letters, A–E.', 11, 'Which TWO pieces of advice for the first week of an apprenticeship does the manager give?',
+      ['get to know colleagues', 'learn from any mistakes', 'ask lots of questions', 'react positively to feedback', 'enjoy new challenges'], ['A', 'C'], 'Questions 11 and 12'),
+    multi('Choose TWO letters, A–E.', 13, 'Which TWO things does the manager say mentors can help with?',
+      ['confidence-building', 'making career plans', 'completing difficult tasks', 'making a weekly timetable', 'reviewing progress'], ['B', 'E'], 'Questions 13 and 14'),
+    matching('What does the manager say about each of the following aspects of the company policy for apprentices?\nWrite the correct letter, A, B or C, next to Questions 15–20.',
+      ['It is encouraged.', 'There are some restrictions.', 'It is against the rules.'],
+      [[15, 'Using the internet', 'B'], [16, 'Flexible working', 'B'], [17, 'Booking holidays', 'C'], [18, 'Working overtime', 'A'], [19, 'Wearing trainers', 'A'], [20, 'Bringing food to work', 'C']],
+      { title: 'Company policy for apprentices', reuse: true, groupTitle: 'Questions 15–20' }),
+  ],
+  expl: {
+    11: { v: 'Lời khuyên cho tuần đầu tiên (đáp án 1/2).', t: 'make an effort to talk to as many people as possible about their work – you’ll make some new friends',
+      p: 'Nói chuyện với càng nhiều người càng tốt, kết bạn mới = get to know colleagues → A' },
+    12: { v: 'Lời khuyên cho tuần đầu tiên (đáp án 2/2).', t: 'check with someone if you’re not sure what to do',
+      p: 'Không chắc thì hỏi người khác; người giám sát sẵn lòng giải thích = ask lots of questions → C' },
+    13: { v: 'Người hướng dẫn (mentor) giúp được gì (đáp án 1/2).', t: 'You can also discuss your more long-term ambitions with them as well.',
+      p: '“long-term ambitions” = making career plans → B' },
+    14: { v: 'Người hướng dẫn (mentor) giúp được gì (đáp án 2/2).', t: 'they’ll be asking you about what goals you’ve achieved so far, as well as helping you to identify any areas for improvement',
+      p: 'Hỏi về mục tiêu đã đạt và chỗ cần cải thiện = reviewing progress; mentor không làm hộ việc (C sai) → E' },
+    15: { v: 'Chính sách dùng internet.', t: 'you’ll have unlimited access for that but please don’t use it for personal use',
+      p: 'Dùng thoải mái cho công việc nhưng không dùng việc riêng = có hạn chế → B' },
+    16: { v: 'Chính sách làm việc linh hoạt.', t: 'it will depend on which department you’re in and what your personal circumstances are',
+      p: 'Chỉ một số người đủ điều kiện, tuỳ bộ phận và hoàn cảnh = có hạn chế → B' },
+    17: { v: 'Chính sách đặt ngày nghỉ.', t: 'we ask that you don’t book any holidays until after your six-month apprenticeship has finished',
+      p: 'Không được đặt kỳ nghỉ trong 6 tháng học việc = trái quy định → C' },
+    18: { v: 'Chính sách làm thêm giờ.', t: 'it can be a valuable experience – so we advise you to take it up if possible',
+      p: '“we advise you to take it up” = được khuyến khích → A' },
+    19: { v: 'Chính sách giày dép.', t: 'Comfortable shoes like trainers are preferable.',
+      p: 'Chỉ cấm giày cao gót; giày thể thao được ưu tiên = khuyến khích → A' },
+    20: { v: 'Chính sách mang đồ ăn đến chỗ làm.', t: 'we’ve decided to introduce a no packed lunch policy',
+      p: '“no packed lunch policy” = không được mang cơm hộp → C' },
+  },
+};

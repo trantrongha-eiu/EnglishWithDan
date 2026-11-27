@@ -1,0 +1,50 @@
+// Cambridge IELTS 14 - Test 1 - Passage 1. Source: ieltsworldly.com, checked against the book key.
+// Text fixes: "makes up think" → "makes us think"; "thinking progresses" → processes.
+const { tfng, notes } = require('../../vr_build');
+module.exports = {
+  vol: 'cam14', book: 14, test: 1, part: 1, title: 'The importance of children’s play', text: 't1p1.txt', lettered: false,
+  groups: [
+    notes(1, 8, [
+      '<strong>Uses of children’s play</strong>',
+      '• building a ‘magical kingdom’ may help develop __Q1__',
+      '• board games involve __Q2__ and turn-taking',
+      '<strong>Recent changes affecting children’s play</strong>',
+      '• populations of __Q3__ have grown',
+      '• opportunities for free play are limited due to',
+      '– fear of __Q4__',
+      '– fear of __Q5__',
+      '– increased __Q6__ in schools',
+      '<strong>International policies on children’s play</strong>',
+      '• it is difficult to find __Q7__ to support new policies',
+      '• research needs to study the impact of play on the rest of the child’s __Q8__',
+    ], { title: 'Children’s play', instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1–8 on your answer sheet.' }),
+    tfng(9, [
+      'Children with good self-control are known to be likely to do well at school later on.',
+      'The way a child plays may provide information about possible medical problems.',
+      'Playing with dolls was found to benefit girls’ writing more than boys’ writing.',
+      'Children had problems thinking up ideas when they first created the story with Lego.',
+      'People nowadays regard children’s play as less significant than they did in the past.',
+    ]),
+  ],
+  key: { 1: 'creativity', 2: 'rules', 3: 'cities', 4: 'traffic', 5: 'crime', 6: 'competition', 7: 'evidence', 8: 'life',
+    9: 'TRUE', 10: 'TRUE', 11: 'NOT GIVEN', 12: 'FALSE', 13: 'TRUE' },
+  expl: {
+    1: ['Xây một “vương quốc phép thuật” có thể giúp phát triển ___.', 'Đoạn 1', '“this fantasy is helping her take her first steps towards her capacity for creativity”', 'Trò tưởng tượng giúp phát triển khả năng sáng tạo → creativity'],
+    2: ['Trò chơi cờ bàn liên quan đến ___ và việc lần lượt đến lượt.', 'Đoạn 2', '“she’s learning about the need to follow rules and take turns with a partner.”', '“take turns” = turn-taking; tuân theo luật chơi → rules'],
+    3: ['Dân số ở ___ tăng lên.', 'Đoạn 5', '“pointing out that over half the people in the world now live in cities.”', 'Hơn nửa dân số thế giới sống ở thành phố → cities'],
+    4: ['Cơ hội chơi tự do bị hạn chế vì nỗi sợ ___.', 'Đoạn 5', '“Outdoor play is curtailed by perceptions of risk to do with traffic”', '“curtailed” = limited; nguy cơ liên quan tới giao thông → traffic'],
+    5: ['…và nỗi sợ ___.', 'Đoạn 5', '“parents’ increased wish to protect their children from being the victims of crime”', 'Cha mẹ muốn bảo vệ con khỏi tội phạm → crime'],
+    6: ['…và ___ tăng lên trong trường học.', 'Đoạn 5', '“which is leading to greater competition in academic learning and schools.”', '“greater” = increased; cạnh tranh trong học tập → competition'],
+    7: ['Khó tìm ___ để hỗ trợ chính sách mới.', 'Đoạn 6', '“But what they often lack is the evidence to base policies on.”', 'Các tổ chức thiếu bằng chứng để làm chính sách → evidence'],
+    8: ['Nghiên cứu cần tìm hiểu tác động của việc chơi lên phần còn lại của ___ đứa trẻ.', 'Đoạn 8', '“there is very little data on the impact it has on the child’s later life.”', '“later life” = phần đời sau này → life'],
+    9: ['Trẻ tự chủ tốt được biết là có khả năng học tốt ở trường sau này.', 'Đoạn 13', '“because the ability to self-regulate has been shown to be a key predictor of academic performance.”',
+      'Khả năng tự điều chỉnh đã được chứng minh là yếu tố dự báo kết quả học tập → TRUE'],
+    10: ['Cách trẻ chơi có thể cho biết về các vấn đề y khoa có thể có.', 'Đoạn 14', '“can even be useful in the diagnosis of neurodevelopmental disorders like autism.”', 'Quan sát trẻ chơi có thể giúp chẩn đoán rối loạn phát triển thần kinh như tự kỷ → TRUE'],
+    11: ['Chơi búp bê giúp con gái viết tốt hơn con trai.', 'Đoạn 15', '“Children wrote longer and better-structured stories when they first played with dolls representing characters in the story.”',
+      'Bài chỉ nói trẻ em nói chung viết tốt hơn; không so sánh trai và gái → NOT GIVEN'],
+    12: ['Trẻ gặp khó khăn nghĩ ý tưởng khi lần đầu tạo câu chuyện bằng Lego.', 'Đoạn 15', '“With the Lego building, however, not a single child said this through the whole year of the project.”',
+      'Không một trẻ nào nói không biết viết gì = không gặp khó khăn → FALSE'],
+    13: ['Ngày nay người ta coi việc chơi của trẻ kém quan trọng hơn trước.', 'Đoạn 17', '“Somehow the importance of play has been lost in recent decades. It’s regarded as something trivial”',
+      'Tầm quan trọng của việc chơi đã bị đánh mất trong những thập kỷ gần đây, bị coi là tầm thường → TRUE'],
+  },
+};

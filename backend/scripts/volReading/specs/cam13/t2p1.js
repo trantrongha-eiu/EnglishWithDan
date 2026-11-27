@@ -1,0 +1,53 @@
+// Cambridge IELTS 13 - Test 2 - Passage 1. Source: ieltsworldly.com, checked against the book key.
+// Text fixes: "the set their sights" → "they set"; "in 1996, the English" → 1796.
+const { tfng, notes } = require('../../vr_build');
+module.exports = {
+  vol: 'cam13', book: 13, test: 2, part: 1, title: 'Bringing cinnamon to Europe', text: 't2p1.txt', lettered: false,
+  groups: [
+    notes(1, 9, [
+      '<strong>Biblical times</strong>',
+      '• added to __Q1__',
+      '• used to show __Q2__ between people',
+      '<strong>Ancient Rome</strong>',
+      '• used for its sweet smell at __Q3__',
+      '<strong>Middle Ages</strong>',
+      '• added to food, especially meat',
+      '• was an indication of a person’s __Q4__',
+      '• known as a treatment for __Q5__ and other health problems',
+      '• grown in __Q6__',
+      '• merchants used __Q7__ to bring it to the Mediterranean',
+      '• arrived in the Mediterranean at __Q8__',
+      '• traders took it to __Q9__ and sold it to destinations around Europe',
+    ], { title: 'The Early History of Cinnamon', instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 1–9 on your answer sheet.' }),
+    tfng(10, [
+      'The Portuguese had control over the cinnamon trade in Ceylon throughout the 16th century.',
+      'The Dutch took over the cinnamon trade from the Portuguese as soon as they arrived in Ceylon.',
+      'The trees planted by the Dutch produced larger quantities of cinnamon than the wild trees.',
+      'The spice trade maintained its economic importance during the 19th century.',
+    ]),
+  ],
+  key: { 1: 'oils', 2: 'friendship', 3: 'funerals', 4: 'wealth', 5: 'indigestion', 6: 'India', 7: 'camels', 8: 'Alexandria', 9: 'Venice',
+    10: 'TRUE', 11: 'FALSE', 12: 'NOT GIVEN', 13: 'FALSE' },
+  expl: {
+    1: ['Thời Kinh Thánh: được thêm vào ___.', 'Đoạn 1', '“as an ingredient that was mixed with oils for anointing people’s bodies”', '“mixed with” = added to; quế được trộn vào dầu → oils'],
+    2: ['Dùng để thể hiện ___ giữa người với người.', 'Đoạn 1', '“also as a token indicating friendship among lovers and friends.”', '“a token indicating” = used to show; biểu tượng của tình bạn → friendship'],
+    3: ['La Mã cổ đại: dùng vì mùi thơm ở ___.', 'Đoạn 1', '“In ancient Rome, mourners attending funerals burnt cinnamon to create a pleasant scent.”', '“pleasant scent” = sweet smell; đốt quế ở đám tang → funerals'],
+    4: ['Trung Cổ: là dấu hiệu của ___ của một người.', 'Đoạn 2', '“as a sign of the wealth at his or her disposal.”', '“a sign of” = an indication of; dấu hiệu của sự giàu có → wealth'],
+    5: ['Được biết đến như phương thuốc trị ___.', 'Đoạn 2', '“was thought to cure various ailments, such as indigestion.”', '“cure various ailments” = treatment for health problems; ví dụ là chứng khó tiêu → indigestion'],
+    6: ['Được trồng ở ___.', 'Đoạn 3', '“They took it from India, where it was grown”', 'Quế được trồng ở Ấn Độ → India'],
+    7: ['Thương nhân dùng ___ để mang quế tới Địa Trung Hải.', 'Đoạn 3', '“on camels via an overland route to the Mediterranean.”', 'Chở bằng lạc đà theo đường bộ → camels'],
+    8: ['Đến Địa Trung Hải tại ___.', 'Đoạn 3', '“Their journey ended when they reached Alexandria.”', 'Hành trình kết thúc ở Alexandria → Alexandria'],
+    9: ['Thương nhân mang quế tới ___ rồi bán đi khắp châu Âu.', 'Đoạn 3', '“then brought it back to Venice. The spice then travelled from that great trading city to markets all around Europe.”', 'Mang về Venice rồi phân phối đi khắp châu Âu → Venice'],
+    10: ['Người Bồ Đào Nha kiểm soát việc buôn quế ở Ceylon suốt thế kỷ 16.', 'Đoạn 5–6',
+      '“In 1518, the Portuguese built a fort on Ceylon, which enabled them to protect the island, so helping them to develop a monopoly in the cinnamon trade”',
+      'Từ 1518 họ độc quyền, cuối thế kỷ 16 vẫn lãi gấp 10 lần; tới 1649 người Hà Lan mới phá được thế độc quyền “150 năm” → TRUE'],
+    11: ['Người Hà Lan giành quyền buôn quế từ người Bồ Đào Nha ngay khi tới Ceylon.', 'Đoạn 6',
+      '“By 1649, the Dutch broke the 150-year Portuguese monopoly when they overran and occupied their factories.”',
+      'Người Hà Lan đến đầu thế kỷ 17 nhưng phải tới 1649 (và 1658) mới giành được quyền kiểm soát, không phải “as soon as” → FALSE'],
+    12: ['Cây do người Hà Lan trồng cho sản lượng quế lớn hơn cây hoang dã.', 'Đoạn 7',
+      '“Eventually, the Dutch began cultivating their own cinnamon trees to supplement the diminishing number of wild trees available for use.”',
+      'Bài chỉ nói họ trồng thêm để bổ sung cho cây hoang dã đang cạn; không so sánh sản lượng → NOT GIVEN'],
+    13: ['Việc buôn bán gia vị giữ được tầm quan trọng kinh tế trong thế kỷ 19.', 'Đoạn 8',
+      '“but the spice trade overall was diminishing in economic potential”', 'Tiềm năng kinh tế của buôn gia vị đang giảm, bị cà phê, trà… thay thế → FALSE'],
+  },
+};

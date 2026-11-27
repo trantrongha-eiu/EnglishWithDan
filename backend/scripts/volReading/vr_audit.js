@@ -6,6 +6,8 @@
 require('dotenv').config({ path: require('path').join(__dirname, '..', '..', '.env'), quiet: true });
 const mongoose = require('mongoose');
 const vol = process.argv[2];
+// vol "camN" = Cambridge book N → series "Quýt N" (as vr_tests.js)
+const SERIES = /^cam\d+$/.test(vol) ? `Quýt ${vol.slice(3)}` : `Vol ${vol}`;
 const plain = s => String(s).replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/&[a-z]+;/g, ' ');
 const nrm = s => plain(s).toLowerCase().replace(/[‘’`´]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, '-').replace(/[^a-z0-9'%£$,.-]+/g, ' ').replace(/[,.](?=\s|$)/g, '').replace(/\s+/g, ' ').trim();
 
@@ -14,11 +16,11 @@ const nrm = s => plain(s).toLowerCase().replace(/[‘’`´]/g, "'").replace(/[�
   const db = mongoose.connection.db;
   let problems = 0, quotes = 0, qn = 0;
   try {
-    const tests = (await db.collection('readingtests').find({ seriesName: `Vol ${vol}` }).toArray()).sort((a, b) => a.testNumber - b.testNumber);
+    const tests = (await db.collection('readingtests').find({ seriesName: SERIES }).toArray()).sort((a, b) => a.testNumber - b.testNumber);
     for (const t of tests) {
       const out = [];
       if (!t.isActive) out.push('test inactive');
-      if (t.name !== `Vol ${vol} - Test ${t.testNumber}`) out.push(`name/number mismatch`);
+      if (t.name !== `${SERIES} - Test ${t.testNumber}`) out.push(`name/number mismatch`);
       const ps = await db.collection('passages').find({ _id: { $in: t.passageIds } }).toArray();
       let last = 0;
       t.passageIds.forEach((id, i) => {

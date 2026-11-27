@@ -1,0 +1,57 @@
+// Cambridge IELTS 11 - Test 2 - Passage 2. Source: ieltstrainingonline.com (text + questions + key), checked against the passage.
+// Source typos fixed: "Rapu Nui" (→ Rapa Nui), hyphens used as dashes, ’worst-case.
+const { headings, notes, multi } = require('../../vr_build');
+module.exports = {
+  vol: 'cam11', book: 11, test: 2, part: 2, title: 'What destroyed the civilisation of Easter Island?', text: 't2p2.txt',
+  groups: [
+    headings(14, [
+      'Evidence of innovative environment management practices',
+      'An undisputed answer to a question about the moai',
+      'The future of the moai statues',
+      'A theory which supports a local belief',
+      'The future of Easter Island',
+      'Two opposing views about the Rapanui people',
+      'Destruction outside the inhabitants’ control',
+      'How the statues made a situation worse',
+      'Diminishing food resources',
+    ], ['Paragraph A', 'Paragraph B', 'Paragraph C', 'Paragraph D', 'Paragraph E', 'Paragraph F', 'Paragraph G'],
+    { instruction: 'Reading Passage 2 has seven paragraphs, A–G. Choose the correct heading for each paragraph from the list of headings below. Write the correct number, i–ix, in boxes 14–20 on your answer sheet.' }),
+    notes(21, 24, [
+      'Diamond believes that the Polynesian settlers on Rapa Nui destroyed its forests, cutting down its trees for fuel and clearing land for __Q21__. Twentieth-century discoveries of pollen prove that Rapa Nui had once been covered in palm forests, which had turned into grassland by the time the Europeans arrived on the island. When the islanders were no longer able to build the __Q22__ they needed to go fishing, they began using the island’s __Q23__ as a food source, according to Diamond. Diamond also claims that the moai were built to show the power of the island’s chieftains, and that the methods of transporting the statues needed not only a great number of people, but also a great deal of __Q24__.',
+    ], { title: 'Jared Diamond’s View', instruction: 'Complete the summary below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 21–24 on your answer sheet.' }),
+    multi(25, 2, 'On what points do Hunt and Lipo disagree with Diamond?', [
+      'the period when the moai were created', 'how the moai were transported', 'the impact of the moai on Rapanui society', 'how the moai were carved', 'the origins of the people who made the moai',
+    ]),
+  ],
+  key: { 14: 'ii', 15: 'ix', 16: 'viii', 17: 'i', 18: 'iv', 19: 'vii', 20: 'vi', 21: 'farming', 22: 'canoes', 23: 'birds', 24: 'wood', 25: 'B', 26: 'C' },
+  expl: {
+    14: ['Đoạn A', 'Đoạn A', '“Modern science – linguistic, archaeological and genetic evidence – has definitively proved the moai builders were Polynesians”',
+      '“definitively proved” = câu trả lời không thể tranh cãi cho câu hỏi ai đã xây moai → ii'],
+    15: ['Đoạn B', 'Đoạn B', '“As trees became scarce and they could no longer construct wooden canoes for fishing, they ate birds. Soil erosion decreased their crop yields.”',
+      'Không còn thuyền đánh cá, mùa màng giảm = nguồn thức ăn cạn dần → ix'],
+    16: ['Đoạn C', 'Đoạn C', '“The moai, he thinks, accelerated the self-destruction.”',
+      '“accelerated the self-destruction” = các bức tượng khiến tình hình tồi tệ hơn → viii'],
+    17: ['Đoạn D', 'Đoạn D', '“They built thousands of circular stone windbreaks and gardened inside them, and used broken volcanic rocks to keep the soil moist.”',
+      'Bằng chứng khảo cổ cho thấy người Rapanui là “pioneers of sustainable farming” = cách quản lý môi trường sáng tạo → i'],
+    18: ['Đoạn E', 'Đoạn E', '“On that issue, Hunt and Lipo say, archaeological evidence backs up Rapanui folklore.”',
+      'Giả thuyết tượng được “đi bộ” dựng đứng ủng hộ truyền thuyết địa phương (“the statues walked”) → iv'],
+    19: ['Đoạn F', 'Đoạn F', '“They would have prevented the reseeding of the slow-growing palm trees and thereby doomed Rapa Nui’s forest”',
+      'Chuột, bệnh dịch từ người châu Âu, buôn nô lệ = sự tàn phá ngoài tầm kiểm soát của cư dân → vii'],
+    20: ['Đoạn G', 'Đoạn G', '“one of an island populated by peaceful and ingenious moai builders and careful stewards of the land, rather than by reckless destroyers”',
+      'Hai cách nhìn trái ngược về người Rapanui: người xây tượng hòa bình, khéo léo vs kẻ phá hoại liều lĩnh → vi'],
+    21: ['…đốn cây làm củi và phát quang đất để ___.', 'Đoạn B', '“When the islanders cleared the forests for firewood and farming, the forests didn’t grow back.”',
+      '“firewood” = fuel; phát rừng để làm nông → farming'],
+    22: ['Khi không còn đóng được ___ để đi đánh cá…', 'Đoạn B', '“they could no longer construct wooden canoes for fishing”',
+      '“construct” = build → canoes'],
+    23: ['…họ bắt đầu dùng ___ trên đảo làm thức ăn.', 'Đoạn B', '“they ate birds”',
+      'Ăn chim thay cá → birds'],
+    24: ['…cách vận chuyển tượng cần không chỉ nhiều người mà còn rất nhiều ___.', 'Đoạn C', '“but that required both a lot of wood and a lot of people”',
+      '“a lot of” = a great deal of → wood'],
+    25: ['Hunt và Lipo bất đồng với Diamond ở điểm nào? (đáp án 1)', 'Đoạn C, E',
+      '“moving the moai required few people and no wood, because they were walked upright”',
+      'Diamond cho rằng tượng được kéo trên xe trượt gỗ; Hunt và Lipo cho rằng tượng được “đi bộ” → cách vận chuyển → B'],
+    26: ['Hunt và Lipo bất đồng với Diamond ở điểm nào? (đáp án 2)', 'Đoạn C, E',
+      '“Hunt and Lipo contend that moai-building was an activity that helped keep the peace between islanders.”',
+      'Diamond: moai đẩy nhanh sự tự hủy diệt; Hunt và Lipo: xây moai giúp giữ hòa bình → tác động của moai lên xã hội → C'],
+  },
+};

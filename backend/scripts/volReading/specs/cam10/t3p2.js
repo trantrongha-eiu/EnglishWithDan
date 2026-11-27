@@ -1,0 +1,62 @@
+// Cambridge IELTS 10 - Test 3 - Passage 2. Source: ieltstrainingonline.com (text + questions + key), checked against the passage.
+// Source typos fixed: "captures sunlight converts", "a leafs tolerance"; the TFNG block was headed "Questions 10-12" (book: 23–25).
+const { matching, notes, tfng, mc } = require('../../vr_build');
+module.exports = {
+  vol: 'cam10', book: 10, test: 3, part: 2, title: 'Autumn leaves', text: 't3p2.txt',
+  groups: [
+    matching(14, ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'], [
+      'a description of the substance responsible for the red colouration of leaves',
+      'the reason why trees drop their leaves in autumn',
+      'some evidence to confirm a theory about the purpose of the red leaves',
+      'an explanation of the function of chlorophyll',
+      'a suggestion that the red colouration in leaves could serve as a warning signal',
+    ], { reuse: true, instruction: 'Reading Passage 2 has nine paragraphs, A–I. Which paragraph contains the following information? Write the correct letter, A–I, in boxes 14–18 on your answer sheet. NB You may use any letter more than once.' }),
+    notes(19, 22, [
+      'The most vividly coloured red leaves are found on the side of the tree facing the __Q19__.',
+      'The __Q20__ surfaces of leaves contain the most red pigment.',
+      'Red leaves are most abundant when daytime weather conditions are __Q21__ and sunny.',
+      'The intensity of the red colour of leaves increases as you go further __Q22__.',
+    ], { title: 'Why believe the ‘light screen’ hypothesis?', instruction: 'Complete the notes below. Choose ONE WORD ONLY from the passage for each answer. Write your answers in boxes 19–22 on your answer sheet.' }),
+    tfng(23, [
+      'It is likely that the red pigments help to protect the leaf from freezing temperatures.',
+      'The ‘light screen’ hypothesis would initially seem to contradict what is known about chlorophyll.',
+      'Leaves which turn colours other than red are more likely to be damaged by sunlight.',
+    ]),
+    mc(26, [
+      ['For which of the following questions does the writer offer an explanation?', ['why conifers remain green in winter', 'how leaves turn orange and yellow in autumn', 'how herbivorous insects choose which trees to lay their eggs in', 'why anthocyanins are restricted to certain trees']],
+    ], { instruction: 'Choose the correct letter, A, B, C or D. Write the correct letter in box 26 on your answer sheet.' }),
+  ],
+  key: { 14: 'C', 15: 'B', 16: 'H', 17: 'B', 18: 'E', 19: 'sun/sunlight', 20: 'upper', 21: 'dry', 22: 'north', 23: 'FALSE', 24: 'TRUE', 25: 'NOT GIVEN', 26: 'B' },
+  expl: {
+    14: ['Mô tả chất tạo ra màu đỏ của lá.', 'Đoạn C', '“The source of the red is widely known: it is created by anthocyanins, water-soluble plant pigments”',
+      'Đoạn C mô tả anthocyanin – sắc tố tan trong nước, thuộc nhóm flavonoid → C'],
+    15: ['Lý do cây rụng lá vào mùa thu.', 'Đoạn B', '“So rather than maintaining the now redundant leaves throughout the winter, the tree saves its precious resources and discards them.”',
+      'Năng lượng mặt trời giảm nên cây ngừng quang hợp, bỏ lá thừa để tiết kiệm tài nguyên → B'],
+    16: ['Bằng chứng xác nhận một giả thuyết về mục đích của lá đỏ.', 'Đoạn H', '“Even if you had never suspected that this is what was going on when leaves turn red, there are clues out there.”',
+      '“clues” = evidence; đoạn H đưa ra các manh mối ủng hộ giả thuyết “light screen” → H'],
+    17: ['Giải thích chức năng của diệp lục.', 'Đoạn B', '“chlorophyll, the molecule that captures sunlight and converts that energy into new building materials for the tree”',
+      'Diệp lục hấp thụ ánh sáng và chuyển năng lượng thành vật liệu cho cây → B'],
+    18: ['Gợi ý rằng màu đỏ của lá có thể là tín hiệu cảnh báo.', 'Đoạn E',
+      '“trees may produce vivid red colours to convince herbivorous insects that they are healthy and robust”',
+      'Màu đỏ “quảng cáo” với côn trùng rằng cây khỏe, có thể tự vệ = tín hiệu cảnh báo → E'],
+    19: ['Lá đỏ rực nhất nằm ở phía cây hướng về ___.', 'Đoạn H', '“the leaves that are the reddest are those on the side of the tree which gets most sun”',
+      '“gets most sun” = facing the sun → sun'],
+    20: ['Mặt ___ của lá chứa nhiều sắc tố đỏ nhất.', 'Đoạn H', '“the red is brighter on the upper side of the leaf”',
+      '“upper side” = mặt trên → upper'],
+    21: ['Lá đỏ nhiều nhất khi thời tiết ban ngày ___ và nắng.', 'Đoạn H', '“the best conditions for intense red colours are dry, sunny days and cool nights”',
+      'Ngày khô ráo, nắng → dry'],
+    22: ['Màu đỏ đậm dần khi đi xa hơn về phía ___.', 'Đoạn H', '“trees such as maples usually get much redder the more north you travel in the northern hemisphere”',
+      'Càng đi về phía bắc lá càng đỏ → north'],
+    23: ['Có khả năng sắc tố đỏ giúp bảo vệ lá khỏi giá lạnh.', 'Đoạn D',
+      '“or increase a leaf’s tolerance to freezing. However there are problems with each of these theories”',
+      'Giả thuyết chống đông được nêu ra rồi bị bác bỏ (năng lượng bỏ ra lớn hơn lợi ích) → không “likely” → FALSE'],
+    24: ['Giả thuyết “màn chắn sáng” thoạt nghe có vẻ mâu thuẫn với hiểu biết về diệp lục.', 'Đoạn F',
+      '“It sounds paradoxical, because the idea behind this hypothesis is that the red pigment is made in autumn leaves to protect chlorophyll, the light-absorbing chemical, from too much light.”',
+      '“sounds paradoxical” = initially seem to contradict; diệp lục vốn là chất hấp thụ ánh sáng giỏi nhất → TRUE'],
+    25: ['Lá chuyển màu khác (không phải đỏ) dễ bị ánh nắng làm hại hơn.', 'Đoạn I',
+      '“Do these trees have other means at their disposal to prevent overexposure to light in autumn?”',
+      'Tác giả chỉ đặt câu hỏi, chưa biết các cây lá vàng/cam có bị hại hơn không → NOT GIVEN'],
+    26: ['Tác giả giải thích câu hỏi nào sau đây?', 'Đoạn B', '“This unmasking explains the autumn colours of yellow and orange”',
+      'Khi diệp lục mất đi, các màu bị che lộ ra = giải thích lá chuyển cam, vàng; A, C, D đều không được giải thích → B'],
+  },
+};
