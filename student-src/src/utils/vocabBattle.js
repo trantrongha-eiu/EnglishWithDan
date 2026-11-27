@@ -11,6 +11,25 @@ export function battleApi(method, url, body) {
   });
 }
 
+// Nối chữ: the earlier word `w` repeats (itself, its plural, with/without
+// hyphen) — or null. Same rule as backend services/vocabBattleBank.js
+// chainUsedAs; checked here first so the player hears it instantly.
+function chainForms(w) {
+  const x = String(w || '').toLowerCase().replace(/-/g, '');
+  const forms = [x];
+  if (x.length > 3 && x.endsWith('s') && !/(ss|us|is)$/.test(x)) {
+    forms.push(x.slice(0, -1));
+    if (x.endsWith('es')) forms.push(x.slice(0, -2));
+    if (x.length > 4 && x.endsWith('ies')) forms.push(x.slice(0, -3) + 'y');
+  }
+  return forms;
+}
+export function chainUsedAs(words, w) {
+  const mine = new Set(chainForms(w));
+  const hit = (words || []).find((x) => x.w && chainForms(x.w).some((f) => mine.has(f)));
+  return hit ? hit.w : null;
+}
+
 export const KIND_LABEL = { quiz: 'Đấu tổng hợp', chain: 'Nối chữ' };
 export const KIND_EMOJI = { quiz: '🧠', chain: '🔗' };
 
@@ -32,7 +51,7 @@ export const GAMES = [
   { key: 'listen', kind: 'quiz', emoji: '🎧', name: 'Nghe & điền', desc: 'Nghe câu ví dụ, điền từ còn thiếu.', types: ['listen'] },
   { key: 'spell', kind: 'quiz', emoji: '🔤', name: 'Nghe & gõ', desc: 'Nghe từ rồi gõ lại đúng chính tả.', types: ['spell'] },
   { key: 'image', kind: 'quiz', emoji: '🖼️', name: 'Nhìn hình đoán từ', desc: 'Xem hình, chọn từ đúng: hơn 700 hình con vật, đồ ăn, đồ vật, nghề nghiệp, thời tiết, idiom…', types: ['image'] },
-  { key: 'chain', kind: 'chain', emoji: '🔗', name: 'Nối chữ', desc: 'tea → apple → egg… Từ sau bắt đầu bằng chữ cuối của từ trước. Chơi một mình là đấu với Lulu 🤖.', types: null },
+  { key: 'chain', kind: 'chain', emoji: '🔗', name: 'Nối chữ', desc: 'tea → apple → egg… Từ sau bắt đầu bằng chữ cuối của từ trước, từ đã nối không được dùng lại. Chơi một mình là đấu với Lulu 🤖.', types: null },
 ];
 
 // The GAMES entry a room was made from

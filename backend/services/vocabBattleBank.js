@@ -59,8 +59,15 @@ const { BLOCK, lookupWiktionary, lookupFreeDict } = require('./wordCheck');
 const R = require('../constants/vocabBattle');
 const { QUESTION_TYPES, SOURCES } = R;
 
+// The pools take ~4 MB from 9 collections (seconds on a cold read), so a
+// request never waits for a refresh: a stale cache is served while a new one
+// loads in the background, the server warms it at startup (warmPools) and an
+// admin edit reloads it at once (refreshSoon). Only the very first load — or
+// one after resetCache — is awaited, and concurrent callers share it.
 const POOL_TTL_MS = 10 * 60 * 1000;
 let poolCache = null; // { at, pools }
+let poolGen = 0;      // bumped by resetCache: a load started before it is stale
+let poolLoad = null;  // { gen, promise } — the load in flight
 
 // Which sets each word source reads (null = all)
 const SOURCE_SETS = Object.fromEntries(Object.entries(SOURCES).map(([k, v]) => [k, v.sets || null]));
@@ -157,7 +164,28 @@ const near = (a, b) => norm(a) === norm(b) || (NEAR_OF.get(norm(a))?.has(norm(b)
 
 // ── pools ──────────────────────────────────────────────────────────
 async function loadPools() {
-  if (poolCache && Date.now() - poolCache.at < POOL_TTL_MS) return poolCache.pools;
+  if (poolCache) {
+    if (Date.now() - poolCache.at >= POOL_TTL_MS) fetchPools().catch(logPoolError);
+    return poolCache.pools;
+  }
+  return fetchPools();
+}
+
+function fetchPools() {
+  if (poolLoad && poolLoad.gen === poolGen) return poolLoad.promise;
+  const gen = poolGen;
+  const promise = buildPools().then((pools) => {
+    if (gen === poolGen) poolCache = { at: Date.now(), pools };
+    return pools;
+  });
+  poolLoad = { gen, promise };
+  promise.finally(() => { if (poolLoad && poolLoad.promise === promise) poolLoad = null; }).catch(() => {});
+  return promise;
+}
+
+function logPoolError(err) { console.error('[vocab-battle] word bank load failed:', err.message); }
+
+async function buildPools() {
   const [units, lessons, dict, chainDocs, t2, colls, sections, saved, battleWords] = await Promise.all([
     VocabUnit.find({ isActive: { $ne: false } }).select('title words').lean(),
     VocabularyLesson.find({ published: true, $or: [{ targetClass: '' }, { targetClass: { $exists: false } }] })
@@ -375,12 +403,18 @@ async function loadPools() {
   for (const w of verified.lulu) if (w.length <= 8 && !blockedWord(w)) addLulu(w);
   for (const w of bank) if ((enable.has(w) || verified.lulu.has(w)) && !blockedWord(w)) addLulu(w);
 
-  const pools = { para, dictSyn, sets, topics: sets.filter((s) => s.src === 'topics'), bank, viOf, meansOf, wordsOf, lulu, luluByLetter, antonyms, opp };
-  poolCache = { at: Date.now(), pools };
-  return pools;
+  return { para, dictSyn, sets, topics: sets.filter((s) => s.src === 'topics'), bank, viOf, meansOf, wordsOf, lulu, luluByLetter, antonyms, opp };
 }
 
-function resetCache() { poolCache = null; }
+// Drop the cache: the next loadPools reads the DB again (tests, scripts)
+function resetCache() { poolCache = null; poolGen++; }
+// After an admin edit: reload now in the background so no player waits for it
+function refreshSoon() {
+  resetCache();
+  if (process.env.NODE_ENV !== 'test') fetchPools().catch(logPoolError);
+}
+// Server start: have the bank ready before the first player opens a game
+function warmPools() { return fetchPools().catch(logPoolError); }
 
 // ── ENABLE word list (Nối chữ) ─────────────────────────────────────
 let enable = null;
@@ -734,6 +768,28 @@ async function onlineWord(w) {
   return true;
 }
 
+// "Already played": two words are the same when their forms overlap, so a
+// word can't come back as its plural or with/without its hyphen —
+// apple = apples, horse = horses, box = boxes, city = cities,
+// well-known = wellknown. (Mirrored in student-src utils/vocabBattle.js
+// for the instant check.)
+function chainForms(w) {
+  const x = String(w || '').toLowerCase().replace(/-/g, '');
+  const forms = [x];
+  if (x.length > 3 && x.endsWith('s') && !/(ss|us|is)$/.test(x)) {
+    forms.push(x.slice(0, -1));
+    if (x.endsWith('es')) forms.push(x.slice(0, -2));
+    if (x.length > 4 && x.endsWith('ies')) forms.push(x.slice(0, -3) + 'y');
+  }
+  return forms;
+}
+// The earlier word `w` repeats, or null. words = [{ w }]
+function chainUsedAs(words, w) {
+  const mine = new Set(chainForms(w));
+  const hit = words.find((x) => x.w && chainForms(x.w).some((f) => mine.has(f)));
+  return hit ? hit.w : null;
+}
+
 // w = lower-case letters, maybe one hyphen (well-known)
 async function chainWordInfo(w) {
   const pools = await loadPools();
@@ -752,7 +808,8 @@ async function chainStartWord() {
   const pools = await loadPools();
   const verified = chainWords();
   const easy = (w) => w.length >= 4 && w.length <= 8 && !/[xqzjvy]$/.test(w) && !blockedWord(w);
-  const taught = [...pools.bank].filter((w) => easy(w) && verified.lulu.has(w));
+  if (!pools.startWords) pools.startWords = [...pools.bank].filter((w) => easy(w) && verified.lulu.has(w));
+  const taught = pools.startWords.filter((w) => !blockedWord(w));
   if (taught.length) return pick(taught);
   const any = [...verified.lulu].filter(easy);
   return any.length ? pick(any) : pick(['table', 'water', 'school', 'garden', 'travel', 'health']);
@@ -763,7 +820,8 @@ async function chainStartWord() {
 // it's stuck.
 function botWord(letter, used) {
   const pools = poolCache ? poolCache.pools : null;
-  const list = ((pools ? pools.luluByLetter : chainWords().byLetter)[letter] || []).filter((w) => !used.has(w) && !blockedWord(w));
+  const usedForms = new Set([...used].flatMap(chainForms));
+  const list = ((pools ? pools.luluByLetter : chainWords().byLetter)[letter] || []).filter((w) => !chainForms(w).some((f) => usedForms.has(f)) && !blockedWord(w));
   const bankSet = pools ? pools.bank : new Set();
   const taught = list.filter((w) => bankSet.has(w));
   if (taught.length && Math.random() < 0.7) return { w: pick(taught), bank: true };
@@ -786,6 +844,10 @@ async function lessonOptions() {
 // How big the bank is, per word source (shown on the create form)
 async function bankStats() {
   const pools = await loadPools();
+  if (!pools.stats) pools.stats = computeBankStats(pools);
+  return pools.stats;
+}
+function computeBankStats(pools) {
   const sources = {};
   for (const key of Object.keys(SOURCES)) {
     const srcs = SOURCE_SETS[key];
@@ -801,6 +863,6 @@ async function bankStats() {
 
 module.exports = {
   buildQuestions, publicQuestion, grade, answerText, usableTypes, findSet,
-  chainWordInfo, chainStartWord, botWord, meaningOf, lessonOptions, bankStats, loadPools, resetCache,
+  chainWordInfo, chainStartWord, chainUsedAs, botWord, meaningOf, lessonOptions, bankStats, loadPools, resetCache, refreshSoon, warmPools,
   _internal: { norm, normTyped, close, isOpposite, englishWords, chainWords, setChainWords, luluWords: () => (poolCache ? poolCache.pools.lulu : chainWords().lulu) },
 };

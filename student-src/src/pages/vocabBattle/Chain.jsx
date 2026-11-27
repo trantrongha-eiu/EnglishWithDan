@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { battleApi, battleFocus, shortName } from '../../utils/vocabBattle';
+import { battleApi, battleFocus, chainUsedAs, shortName } from '../../utils/vocabBattle';
 import { playSound } from '../../utils/vocab';
 import Avatar from './Avatar';
 import { siteToast } from '../../utils/shell';
@@ -127,6 +127,12 @@ function ChainGame({ b, id, offset, players, onBattle }) {
     e.preventDefault();
     const w = text.trim().toLowerCase();
     if (!w || sending) return;
+    const dup = chainUsedAs(c.words, w);
+    if (dup) {
+      playSound('wrong');
+      setErr(`“${dup}” đã nối rồi — không dùng lại từ cũ (kể cả số nhiều) nhé!`);
+      return;
+    }
     setSending(true);
     const sentAt = Date.now();
     const d = await battleApi('POST', `/${id}/word`, { word: w });

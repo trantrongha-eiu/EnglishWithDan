@@ -218,7 +218,7 @@ async function updateWord(id, body = {}) {
   const contentEdit = Object.keys(f).some((k) => k !== 'hidden');
   try {
     const doc = await BattleWord.findByIdAndUpdate(id, { $set: { ...f, ...(contentEdit ? { edited: true } : {}) } }, { new: true }).lean();
-    bank.resetCache();
+    bank.refreshSoon();
     return { status: 'ok', word: wordRow(doc) };
   } catch (err) {
     if (err && err.code === 11000) return { status: 'bad', message: 'Đã có từ này trong kho.' };
@@ -237,7 +237,7 @@ async function createWord(body = {}) {
   if (kind === 'picture' && !f.imageUrl) return { status: 'bad', message: 'Từ có hình cần một ảnh.' };
   try {
     const doc = await BattleWord.create({ kind, near: [], ...f, origin: 'admin', edited: true });
-    bank.resetCache();
+    bank.refreshSoon();
     return { status: 'ok', word: wordRow(doc.toObject()) };
   } catch (err) {
     if (err && err.code === 11000) return { status: 'bad', message: 'Đã có từ này trong kho.' };
@@ -249,7 +249,7 @@ async function deleteWord(id) {
   if (!mongoose.isValidObjectId(id)) return { status: 'not_found' };
   const d = await BattleWord.findByIdAndDelete(id).lean();
   if (!d) return { status: 'not_found' };
-  bank.resetCache();
+  bank.refreshSoon();
   return { status: 'ok' };
 }
 
@@ -258,7 +258,7 @@ async function hideWords(ids, hidden) {
   const list = (Array.isArray(ids) ? ids : []).filter((x) => mongoose.isValidObjectId(x)).slice(0, 500);
   if (!list.length) return { status: 'bad', message: 'Chưa chọn từ nào.' };
   const r = await BattleWord.updateMany({ _id: { $in: list } }, { $set: { hidden: !!hidden } });
-  bank.resetCache();
+  bank.refreshSoon();
   return { status: 'ok', modified: r.modifiedCount };
 }
 
@@ -294,7 +294,7 @@ async function blockChainWord(w) {
   bank._internal.chainWords().lulu.delete(word);
   const { settings: s } = await settings.get();
   const res = await settings.update({ blockedWords: [...new Set([...s.blockedWords, word])] });
-  bank.resetCache();
+  bank.refreshSoon();
   return res.status === 'ok' ? { status: 'ok', blocked: res.settings.blockedWords } : res;
 }
 
@@ -302,7 +302,7 @@ async function unblockChainWord(w) {
   const word = clean(w, 40).toLowerCase();
   const { settings: s } = await settings.get();
   const res = await settings.update({ blockedWords: s.blockedWords.filter((x) => x !== word) });
-  bank.resetCache();
+  bank.refreshSoon();
   return res.status === 'ok' ? { status: 'ok', blocked: res.settings.blockedWords } : res;
 }
 
@@ -318,13 +318,13 @@ async function getSettings() {
 
 async function saveSettings(body) {
   const res = await settings.update(body || {});
-  if (res.status === 'ok') bank.resetCache();
+  if (res.status === 'ok') bank.refreshSoon();
   return res;
 }
 
 async function resetSettings() {
   const res = await settings.reset();
-  bank.resetCache();
+  bank.refreshSoon();
   return res;
 }
 

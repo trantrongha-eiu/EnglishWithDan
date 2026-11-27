@@ -100,6 +100,8 @@ mongoose.connection.on('reconnected', () => {
 mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     logger.db('MongoDB Atlas connected');
+    // ⚔️ Đấu trường: load the word bank now (seconds cold) so the first game doesn't wait for it
+    setTimeout(() => require('./services/vocabBattleBank').warmPools(), 15000).unref();
     logger.startup('Integration config loaded', {
       openRouterKey: !!process.env.OPENROUTER_API_KEY,
       anthropicKey: !!process.env.ANTHROPIC_API_KEY,

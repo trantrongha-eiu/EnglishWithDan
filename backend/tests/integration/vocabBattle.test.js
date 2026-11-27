@@ -259,6 +259,32 @@ describe('/api/vocab-battle', () => {
     expect((await post({ opponents: [String(others[0]._id)], source: 'paraphrase', types: ['listen'] })).body.code).toBe('bad_types');
   });
 
+  test('Nối chữ: a word already played never comes back, not even as its plural or without its hyphen', async () => {
+    const W = (...a) => a.map((w) => ({ w }));
+    expect(bank.chainUsedAs(W('horse'), 'horses')).toBe('horse');
+    expect(bank.chainUsedAs(W('cities'), 'city')).toBe('cities');
+    expect(bank.chainUsedAs(W('box'), 'boxes')).toBe('box');
+    expect(bank.chainUsedAs(W('well-known'), 'wellknown')).toBe('well-known');
+    expect(bank.chainUsedAs(W('glass', 'status'), 'statue')).toBeNull();
+    expect(bank.chainUsedAs(W('tea'), 'eat')).toBeNull();
+
+    const a = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true } });
+    const b = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true } });
+    let res = await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', opponents: [String(b._id)], stake: 0, count: 10, lives: 2, turnSeconds: 15 });
+    const id = res.body.battle.id;
+    await request(app).post(`/api/vocab-battle/${id}/accept`).set(auth(b));
+    await request(app).post(`/api/vocab-battle/${id}/start`).set(auth(a));
+    await VocabBattle.updateOne({ _id: id }, { $set: { 'chain.words': [{ w: 'stars', by: null, pts: 0, start: true, at: new Date() }], 'chain.letter': 's' } });
+    for (const w of ['stars', 'star']) {
+      res = await request(app).post(`/api/vocab-battle/${id}/word`).set(auth(a)).send({ word: w });
+      expect(res.body.code).toBe('chain_used');
+      expect(res.body.message).toContain('stars');
+    }
+    // Lulu skips them too
+    for (let i = 0; i < 30; i++) expect(['stars', 'star']).not.toContain(bank.botWord('s', new Set(['stars']))?.w);
+  });
+
   test('Nối chữ: turns, word checks, a timeout knocks the last life out', async () => {
     const a = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true } });
     const b = await createStudent({ extra: { flameWallet: 0, flameWalletGranted: true } });

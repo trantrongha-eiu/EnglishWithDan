@@ -754,7 +754,8 @@ async function playWord(userId, id, raw) {
   // a word that can't count anyway)
   if (pre && pre.kind === 'chain' && pre.status === 'playing' && sid(pre.players[pre.chain.turn]?.userId) === sid(userId)) {
     if (w[0] !== pre.chain.letter) return { status: 'chain_letter', letter: pre.chain.letter };
-    if (pre.chain.words.some((x) => x.w === w)) return { status: 'chain_used' };
+    const dup = bank.chainUsedAs(pre.chain.words, w);
+    if (dup) return { status: 'chain_used', word: dup };
   }
   const info = await bank.chainWordInfo(w);
   const wins = pre ? await friendlyWinsToday(pre.players.map((p) => p.userId)) : {};
@@ -767,7 +768,8 @@ async function playWord(userId, id, raw) {
     const p = b.players[b.chain.turn];
     if (sid(p.userId) !== sid(userId)) return deny('not_your_turn');
     if (w[0] !== b.chain.letter) return deny('chain_letter', { letter: b.chain.letter });
-    if (b.chain.words.some((x) => x.w === w)) return deny('chain_used');
+    const dup = bank.chainUsedAs(b.chain.words, w);
+    if (dup) return deny('chain_used', { word: dup });
     if (info.blocked) return deny('chain_blocked');
     if (!info.known) return deny('chain_unknown');
     const pts = 10 + Math.max(0, w.length - 4) * 2 + (info.bank ? R.CHAIN_BANK_BONUS : 0);
@@ -782,7 +784,7 @@ async function playWord(userId, id, raw) {
     return { status: 'ok', effects, pts };
   });
   if (res.status !== 'ok') return res;
-  if (res.deny) return { status: res.deny, letter: res.letter, battle: view(res.battle, userId) };
+  if (res.deny) return { status: res.deny, letter: res.letter, word: res.word, battle: view(res.battle, userId) };
   return { status: 'ok', pts: res.pts, bank: info.bank, battle: view(res.battle, userId) };
 }
 

@@ -36,7 +36,7 @@ const MESSAGES = {
   chain_letters: [400, 'Chỉ gõ 1 từ tiếng Anh (chữ cái a–z).'],
   chain_short: [400, () => `Từ phải có ít nhất ${R.CHAIN_MIN_LEN} chữ cái.`],
   chain_letter: [400, 'Từ phải bắt đầu bằng chữ cái được yêu cầu.'],
-  chain_used: [400, 'Từ này đã có người dùng rồi!'],
+  chain_used: [400, (r) => (r.word ? `“${r.word}” đã nối rồi — không dùng lại từ cũ (kể cả số nhiều) nhé!` : 'Từ này đã có người dùng rồi!')],
   chain_unknown: [400, 'Không tìm thấy từ này trong từ điển.'],
   chain_blocked: [400, 'Từ này không dùng trong trò chơi nhé 🙂'],
   not_finished: [400, 'Làm xong lượt của bạn rồi mới xem đáp án nhé.'],
@@ -51,7 +51,7 @@ function send(res, result) {
     return res.json({ success: true, ...rest });
   }
   const [code, msg] = MESSAGES[result.status] || [400, 'Không thực hiện được.'];
-  const message = typeof msg === 'function' ? msg() : msg; // rules an admin can change (services/vocabBattleSettings.js)
+  const message = typeof msg === 'function' ? msg(result) : msg; // rules an admin can change (services/vocabBattleSettings.js)
   const rest = { ...result };
   delete rest.status;
   return res.status(code).json({ success: false, code: result.status, message, ...rest });
