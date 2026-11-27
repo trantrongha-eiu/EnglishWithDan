@@ -269,6 +269,11 @@
 .vb-lobby h3 { margin: 0 0 10px; }
 .vb-lobby-list { display: grid; gap: 8px; }
 .vb-lobby-p { display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.vb-lobby-p--gone > div { opacity: .55; text-decoration: line-through; }
+.vb-tag--off { background: var(--vb-bad-bg); color: var(--vb-bad); }
+.vb-lobby-clock { margin: -4px 0 12px; font-size: 14px; color: var(--text2); }
+.vb-lobby-clock b { font-variant-numeric: tabular-nums; color: var(--text); }
+.vb-lobby-clock.low b { color: var(--vb-bad); }
 .vb-chain-players { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 14px 0; }
 .vb-chain-p {
   display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: center; padding: 10px 12px; border-radius: 16px;

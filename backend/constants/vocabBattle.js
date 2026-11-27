@@ -50,7 +50,8 @@ const MAX_PLAYERS = 4;                       // host + 3
 const MAX_OPEN = 5;                          // open/playing rooms one student can be in
 const MIN_STAKE = 5;
 const MAX_STAKE = 100;                       // 0 = trận giao hữu (friendly)
-const INVITE_HOURS = 24;                     // quiz: time to accept AND play; chain: lobby lifetime
+const INVITE_HOURS = 24;                     // quiz: time to accept AND play
+const LOBBY_MINUTES = 5;                     // Nối chữ: a lobby not started by then cancels itself
 const GRACE_MS = 3000;                       // network slack on a question's time limit
 const SPEED_BONUS = 50;                      // on top of 100 per fully-right question
 
@@ -82,7 +83,7 @@ const BLOCKED_WORDS = new Set();             // Nối chữ: words admins took o
 
 module.exports = {
   QUESTION_TYPES, TYPE_KEYS, SOURCES, COUNTS, MAX_PLAYERS, MAX_OPEN,
-  MIN_STAKE, MAX_STAKE, INVITE_HOURS, GRACE_MS, SPEED_BONUS,
+  MIN_STAKE, MAX_STAKE, INVITE_HOURS, LOBBY_MINUTES, GRACE_MS, SPEED_BONUS,
   TURN_SECONDS, LIVES, CHAIN_MIN_LEN, CHAIN_BANK_BONUS, CHAIN_SURVIVOR_BONUS,
   FRIENDLY_WIN_FLAMES, FRIENDLY_DAILY_WINS, SOLO_HOURS, BOT, BOT_MS, BOT_FAIL,
   ENABLED, DISABLED_TYPES, DISABLED_SOURCES, BLOCKED_WORDS,

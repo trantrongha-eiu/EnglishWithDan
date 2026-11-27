@@ -20,6 +20,7 @@ const DEFAULTS = {
   maxStake: R.MAX_STAKE,
   maxOpen: R.MAX_OPEN,
   inviteHours: R.INVITE_HOURS,
+  lobbyMinutes: R.LOBBY_MINUTES,
   friendlyWinFlames: R.FRIENDLY_WIN_FLAMES,
   friendlyDailyWins: R.FRIENDLY_DAILY_WINS,
   speedBonus: R.SPEED_BONUS,
@@ -35,6 +36,7 @@ const RANGES = {
   maxStake: [1, 10000],
   maxOpen: [1, 20],
   inviteHours: [1, 168],
+  lobbyMinutes: [1, 60],
   friendlyWinFlames: [0, 50],
   friendlyDailyWins: [0, 50],
   speedBonus: [0, 500],
@@ -68,6 +70,7 @@ function apply(doc) {
   R.MAX_STAKE = Math.max(e.maxStake, e.minStake);
   R.MAX_OPEN = e.maxOpen;
   R.INVITE_HOURS = e.inviteHours;
+  R.LOBBY_MINUTES = e.lobbyMinutes;
   R.FRIENDLY_WIN_FLAMES = e.friendlyWinFlames;
   R.FRIENDLY_DAILY_WINS = e.friendlyDailyWins;
   R.SPEED_BONUS = e.speedBonus;

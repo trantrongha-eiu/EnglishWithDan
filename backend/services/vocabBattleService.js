@@ -12,7 +12,9 @@
 //     questions are served one at a time (/next) and timed on the server, so
 //     peeking ahead or a slow reply doesn't pay. The room ends when every
 //     invitee has answered and every player has finished, or at expiresAt.
-//   • chain: a lobby until the host starts; then turns of turnSeconds, a
+//   • chain: a lobby until the host starts — at most LOBBY_MINUTES, then it
+//     cancels itself; a player who goes into another room drops out of the
+//     lobby (note 'moved', shown to the others). Then turns of turnSeconds, a
 //     timeout costs a life, the last one standing (or the best score when
 //     the word count is reached) wins. Timeouts are applied lazily on every
 //     poll/move (tick), so no timer runs on the server.
@@ -82,6 +84,17 @@ async function mutate(id, fn) {
     }
   }
   return { status: 'busy' };
+}
+
+// When an open room stops waiting: a Nối chữ lobby lives LOBBY_MINUTES from
+// its creation (older lobbies were made with a 24 h expiresAt — this caps
+// them too), everything else at expiresAt.
+function endsAt(b) {
+  if (b.kind === 'chain' && b.status === 'open' && !b.solo && b.createdAt) {
+    const lobby = new Date(new Date(b.createdAt).getTime() + R.LOBBY_MINUTES * 60000);
+    if (!b.expiresAt || lobby < new Date(b.expiresAt)) return lobby;
+  }
+  return b.expiresAt;
 }
 
 const me = (b, userId) => b.players.find((p) => sid(p.userId) === sid(userId));
@@ -210,8 +223,8 @@ function tick(b, now, effects, wins) {
 
   // chain
   if (b.status === 'open') {
-    if (now >= new Date(b.expiresAt)) {
-      refundAll(b, effects, 'Phòng Nối chữ hết hạn mà chưa bắt đầu — 🔥 cược đã về lại ví lửa.');
+    if (now >= new Date(endsAt(b))) {
+      refundAll(b, effects, `Phòng chờ Nối chữ quá ${R.LOBBY_MINUTES} phút mà chưa bắt đầu nên đã tự hủy — 🔥 cược đã về lại ví lửa.`);
       return true;
     }
     return false;
@@ -301,7 +314,7 @@ function view(b, viewerId, now = new Date()) {
     total: b.kind === 'quiz' ? b.questions.length : b.config.count,
     isHost: sid(b.hostId) === sid(viewerId),
     hostId: sid(b.hostId),
-    expiresAt: b.expiresAt,
+    expiresAt: endsAt(b),
     startedAt: b.startedAt,
     endedAt: b.endedAt,
     createdAt: b.createdAt,
@@ -313,6 +326,7 @@ function view(b, viewerId, now = new Date()) {
       avatar: p.avatar,
       bot: !!p.bot,
       state: p.state,
+      note: p.note || '',
       me: sid(p.userId) === sid(viewerId),
       online: !!p.bot || (!!p.seenAt && now - new Date(p.seenAt) < 20000),
       idx: p.idx,
@@ -423,7 +437,8 @@ async function create(userId, body = {}) {
   ];
   const doc = {
     hostId: userId, kind, solo, stake, config, players, memberIds: players.map((p) => p.userId),
-    questions, expiresAt: new Date(now.getTime() + (solo ? R.SOLO_HOURS : R.INVITE_HOURS) * HOUR),
+    questions,
+    expiresAt: new Date(now.getTime() + (solo ? R.SOLO_HOURS * HOUR : kind === 'chain' ? R.LOBBY_MINUTES * 60000 : R.INVITE_HOURS * HOUR)),
   };
   if (solo && kind === 'chain') {
     // vs Lulu 🤖, starting straight away
@@ -443,12 +458,16 @@ async function create(userId, body = {}) {
     return { status: 'failed' };
   }
 
+  await movedOn(userId, b._id);
   if (solo) return { status: 'ok', battle: view(b.toObject(), userId, now) };
   const game = gameText(b);
+  const when = kind === 'chain'
+    ? `Phòng chờ chỉ mở ${R.LOBBY_MINUTES} phút — vào ngay ở BXH vocab → Đấu trường từ vựng.`
+    : `Nhận lời trong ${R.INVITE_HOURS} giờ ở BXH vocab → Đấu trường từ vựng.`;
   const bet = stake ? `Cược ${stake} 🔥 — người thắng ẵm cả pot!` : 'Trận giao hữu — người thắng được thưởng 🔥.';
   for (const id of ids) {
     await notify(userId, hostName, id, `⚔️ ${hostName} thách đấu từ vựng với bạn!`,
-      `${hostName} mời bạn vào trận ${game}. ${bet}\nNhận lời trong ${R.INVITE_HOURS} giờ ở BXH vocab → Đấu trường từ vựng.`);
+      `${hostName} mời bạn vào trận ${game}. ${bet}\n${when}`);
   }
   return { status: 'ok', wallet: paid ? paid.flameWallet : undefined, battle: view(b.toObject(), userId, now) };
 }
@@ -487,7 +506,46 @@ async function respond(userId, id, accept) {
   if (stake && (res.status !== 'ok' || res.refused)) await credit(userId, stake);
   if (res.refused) return { status: 'gone' };
   if (res.status !== 'ok') return res;
+  if (accept) await movedOn(userId, id);
   return { status: 'ok', battle: view(res.battle, userId) };
+}
+
+// The student went into another room (created one, or accepted an invite):
+// their other Nối chữ lobbies stop counting on them, and the others there
+// see it (note 'moved') instead of waiting for nobody —
+//   • host → the lobby is cancelled, stakes refunded, joined players told
+//   • joined → they leave it (stake refunded)
+//   • invited → the invite lapses
+// Quiz rooms are untouched: they're played at each one's own pace.
+async function movedOn(userId, exceptId) {
+  try {
+    const rows = await VocabBattle.find({
+      _id: { $ne: exceptId }, kind: 'chain', status: 'open', solo: { $ne: true },
+      players: { $elemMatch: { userId, state: { $in: ['invited', 'joined'] } } },
+    }).select('_id').limit(20).lean();
+    for (const r of rows) {
+      await mutate(r._id, (b, now) => {
+        const effects = [];
+        const ticked = tick(b, now, effects, {});
+        const p = me(b, userId);
+        if (b.status !== 'open' || !p || !['invited', 'joined'].includes(p.state)) {
+          return ticked ? { status: 'ok', effects } : { status: 'ok', write: false };
+        }
+        p.note = 'moved';
+        if (sid(b.hostId) === sid(userId)) {
+          refundAll(b, effects, `${p.name} (chủ phòng) đã vào phòng khác nên phòng chờ Nối chữ đã hủy — 🔥 cược đã về lại ví lửa.`, userId);
+        } else if (p.state === 'joined') {
+          if (p.paid) { effects.push({ credit: p.userId, n: p.paid }); p.paid = 0; }
+          p.state = 'left';
+        } else {
+          p.state = 'declined';
+        }
+        return { status: 'ok', effects };
+      });
+    }
+  } catch (err) {
+    console.error('[vocab-battle] movedOn failed:', err.message);
+  }
 }
 
 // Host, before anyone else has joined (or a chain lobby that hasn't started)
@@ -747,6 +805,7 @@ async function sweepDue() {
   const now = new Date();
   const due = await VocabBattle.find({ $or: [
     { status: 'open', expiresAt: { $lte: now } },
+    { status: 'open', kind: 'chain', solo: { $ne: true }, createdAt: { $lte: new Date(now - R.LOBBY_MINUTES * 60000) } },
     { status: 'playing', 'chain.deadline': { $lte: now } }, // Nối chữ left mid-game
   ] }).select('_id players.userId').limit(50).lean();
   for (const d of due) {
@@ -769,8 +828,8 @@ async function pendingInvites(userId, activity) {
   const rows = await VocabBattle.find({
     memberIds: userId, status: 'open', solo: { $ne: true }, expiresAt: { $gt: now },
     players: { $elemMatch: { userId, state: 'invited' } },
-  }).select('kind stake config players hostId expiresAt createdAt').sort({ createdAt: -1 }).limit(5).lean();
-  return rows.map((b) => {
+  }).select('kind status solo stake config players hostId expiresAt createdAt').sort({ createdAt: -1 }).limit(5).lean();
+  return rows.filter((b) => new Date(endsAt(b)) > now).map((b) => {
     const host = b.players.find((p) => sid(p.userId) === sid(b.hostId)) || {};
     return {
       id: sid(b._id),
@@ -783,7 +842,7 @@ async function pendingInvites(userId, activity) {
         .filter((p) => ![sid(userId), sid(b.hostId)].includes(sid(p.userId)) && p.state !== 'declined')
         .map((p) => p.name),
       createdAt: b.createdAt,
-      expiresAt: b.expiresAt,
+      expiresAt: endsAt(b),
     };
   });
 }
@@ -832,7 +891,7 @@ function rules() {
     sources: Object.entries(R.SOURCES).filter(([key]) => !R.DISABLED_SOURCES.includes(key))
       .map(([key, v]) => ({ key, label: v.label, types: v.types.filter((t) => !R.DISABLED_TYPES.includes(t)), sets: v.sets })),
     counts: R.COUNTS, maxPlayers: R.MAX_PLAYERS, minStake: R.MIN_STAKE, maxStake: R.MAX_STAKE,
-    turnSeconds: R.TURN_SECONDS, lives: R.LIVES, inviteHours: R.INVITE_HOURS,
+    turnSeconds: R.TURN_SECONDS, lives: R.LIVES, inviteHours: R.INVITE_HOURS, lobbyMinutes: R.LOBBY_MINUTES,
     friendlyWin: R.FRIENDLY_WIN_FLAMES, friendlyDaily: R.FRIENDLY_DAILY_WINS,
     chainMinLen: R.CHAIN_MIN_LEN, chainBankBonus: R.CHAIN_BANK_BONUS,
   };
@@ -840,5 +899,5 @@ function rules() {
 
 module.exports = {
   create, respond, cancel, leave, get, next, answer, start, playWord, review, list, players, rules, sweepDue, pendingInvites, adminCancel, gameText,
-  _internal: { tick, finish, view, mutate },
+  _internal: { tick, finish, view, mutate, endsAt, movedOn },
 };

@@ -167,6 +167,60 @@ describe('/api/vocab-battle', () => {
     expect(await wallet(a)).toBe(20);
   });
 
+  test('Nối chữ lobby cancels itself after LOBBY_MINUTES (old 24 h lobbies too) and refunds', async () => {
+    const a = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const b = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const res = await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', opponents: [String(b._id)], stake: 10, count: 10, lives: 1, turnSeconds: 15 });
+    const id = res.body.battle.id;
+    const left = new Date(res.body.battle.expiresAt) - Date.now();
+    expect(left).toBeGreaterThan(4 * 60000);
+    expect(left).toBeLessThanOrEqual(5 * 60000);
+    await request(app).post(`/api/vocab-battle/${id}/accept`).set(auth(b));
+    expect(await wallet(b)).toBe(10);
+    // a lobby made before the rule (24 h expiresAt) is capped by its age
+    await VocabBattle.collection.updateOne({ _id: new (require('mongoose').Types.ObjectId)(id) },
+      { $set: { createdAt: new Date(Date.now() - 6 * 60000), expiresAt: new Date(Date.now() + 20 * 3600000) } });
+    expect((await request(app).get('/api/vocab-battle/invites').set(auth(b))).body.invites || []).toEqual([]);
+    const list = await request(app).get('/api/vocab-battle').set(auth(a));
+    expect(list.body.battles.find((x) => x.id === id).status).toBe('cancelled');
+    expect(await wallet(a)).toBe(20);
+    expect(await wallet(b)).toBe(20);
+  });
+
+  test('going into another room drops a player out of their Nối chữ lobbies, and the others see it', async () => {
+    const a = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const b = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const c = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const d = await createStudent({ extra: { flameWallet: 20, flameWalletGranted: true } });
+    const lobby = (await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', opponents: [String(b._id), String(c._id)], stake: 5, count: 10, lives: 1, turnSeconds: 15 })).body.battle.id;
+    await request(app).post(`/api/vocab-battle/${lobby}/accept`).set(auth(b));
+    expect(await wallet(b)).toBe(15);
+    // b (joined) and c (invited) each start something else
+    await request(app).post('/api/vocab-battle').set(auth(b)).send({ kind: 'chain', solo: true, count: 10, lives: 1, turnSeconds: 15 });
+    await request(app).post('/api/vocab-battle').set(auth(c))
+      .send({ kind: 'quiz', opponents: [String(d._id)], stake: 0, count: 5, source: 'all', types: ['antonym'] });
+    let v = (await request(app).get(`/api/vocab-battle/${lobby}`).set(auth(a))).body.battle;
+    expect(v.status).toBe('open');
+    const pb = v.players.find((p) => p.id === String(b._id));
+    const pc = v.players.find((p) => p.id === String(c._id));
+    expect([pb.state, pb.note]).toEqual(['left', 'moved']);
+    expect([pc.state, pc.note]).toEqual(['declined', 'moved']);
+    expect(await wallet(b)).toBe(20);
+    // now the host goes elsewhere → the lobby is cancelled, stake back
+    const lobby2 = (await request(app).post('/api/vocab-battle').set(auth(a))
+      .send({ kind: 'chain', opponents: [String(d._id)], stake: 5, count: 10, lives: 1, turnSeconds: 15 })).body.battle.id;
+    v = (await request(app).get(`/api/vocab-battle/${lobby}`).set(auth(a))).body.battle;
+    expect(v.status).toBe('cancelled');
+    expect(await wallet(a)).toBe(15); // 20 − lobby2's stake
+    // d accepting c's quiz invite moves d out of lobby2 (an invite there)
+    const quiz = (await request(app).get('/api/vocab-battle').set(auth(d))).body.battles.find((x) => x.kind === 'quiz');
+    await request(app).post(`/api/vocab-battle/${quiz.id}/accept`).set(auth(d));
+    v = (await request(app).get(`/api/vocab-battle/${lobby2}`).set(auth(a))).body.battle;
+    expect(v.players.find((p) => p.id === String(d._id)).note).toBe('moved');
+  });
+
   test('refuses self, unknown and too many opponents, bad stakes, not enough 🔥', async () => {
     const a = await createStudent({ extra: { flameWallet: 3, flameWalletGranted: true } });
     const others = await Promise.all([1, 2, 3, 4].map(() => createStudent()));

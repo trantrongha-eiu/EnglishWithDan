@@ -527,7 +527,7 @@ const NUM_FIELDS = [
     ['minStake', 'Cược tối thiểu (🔥)', 'Trận có cược phải từ mức này trở lên (0 = giao hữu luôn được).'],
     ['maxStake', 'Cược tối đa (🔥)', ''],
     ['maxOpen', 'Số trận chưa xong tối đa / học sinh', 'Đủ số này thì phải đánh xong mới tạo thêm.'],
-    ['inviteHours', 'Thời hạn lời mời (giờ)', 'Trận câu hỏi: hạn nhận lời VÀ làm bài. Nối chữ: phòng chờ tồn tại bấy lâu.'],
+    ['inviteHours', 'Thời hạn lời mời (giờ)', 'Trận câu hỏi: hạn nhận lời VÀ làm bài.'],
   ]],
   ['Thưởng', [
     ['friendlyWinFlames', 'Thắng trận giao hữu được (🔥)', 'Trận không cược: người thắng được thưởng chừng này.'],
@@ -535,6 +535,7 @@ const NUM_FIELDS = [
     ['speedBonus', 'Điểm thưởng tốc độ / câu', 'Cộng thêm vào 100 điểm mỗi câu đúng hết, trả lời càng nhanh càng nhiều.'],
   ]],
   ['Nối chữ', [
+    ['lobbyMinutes', 'Phòng chờ tối đa (phút)', 'Chưa bắt đầu sau bấy lâu thì phòng tự hủy, 🔥 cược trả lại.'],
     ['chainBankBonus', 'Thưởng từ đã học trên site (⭐ điểm)', 'Từ có trong Vocab Topics / Paraphrase… được cộng thêm.'],
     ['chainSurvivorBonus', 'Thưởng người trụ lại cuối (điểm)', ''],
     ['botFailBase', 'Lulu 🤖 bí từ — tỉ lệ ban đầu (%)', 'Càng cao Lulu càng dễ thua.'],
@@ -626,7 +627,7 @@ function Settings() {
             {fields.map(([k, label, hint]) => (
               <label key={k} className="form-group">
                 <span className="form-label">{label}</span>
-                <input type="number" className="form-input" min={data.ranges[k][0]} max={data.ranges[k][1]} value={form[k]}
+                <input type="number" className="form-input" min={data.ranges[k]?.[0]} max={data.ranges[k]?.[1]} value={form[k]}
                   onChange={e => set(k, Number(e.target.value))} />
                 <span className="muted" style={{ fontSize: 11 }}>{hint ? `${hint} ` : ''}Mặc định {d[k]} · {data.ranges[k][0]}–{data.ranges[k][1]}</span>
               </label>

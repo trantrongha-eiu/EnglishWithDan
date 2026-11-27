@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { battleApi, battleFocus, shortName } from '../../utils/vocabBattle';
 import { playSound } from '../../utils/vocab';
 import Avatar from './Avatar';
+import { siteToast } from '../../utils/shell';
 
 // 🔗 Nối chữ: lobby (host starts), then turns. The server decides
 // timeouts; the countdown here is the room's deadline on the server clock.
@@ -13,14 +14,16 @@ export default function Chain({ b, id, offset, busy, onAct, onBattle }) {
     const ready = b.players.filter((p) => p.state === 'joined').length;
     return (
       <div className="vb-panel vb-lobby">
+        <MovedToast players={b.players} />
         <h3 className="pf-head">Phòng chờ</h3>
+        <LobbyClock until={b.expiresAt} offset={offset} />
         <div className="vb-lobby-list">
-          {b.players.filter((p) => p.state !== 'declined' && p.state !== 'left').map((p) => (
-            <div key={p.id} className="vb-lobby-p">
-              <Avatar p={p} online={p.online} />
+          {b.players.filter((p) => p.note === 'moved' || (p.state !== 'declined' && p.state !== 'left')).map((p) => (
+            <div key={p.id} className={`vb-lobby-p${p.note === 'moved' ? ' vb-lobby-p--gone' : ''}`}>
+              <Avatar p={p} online={p.online && p.note !== 'moved'} />
               <div>{p.name}{p.me && ' (bạn)'}</div>
-              <span className={`vb-tag${p.state === 'joined' ? ' vb-tag--ok' : ''}`}>
-                {p.state === 'joined' ? (p.online ? 'đã vào · online' : 'đã vào') : 'đang chờ nhận lời'}
+              <span className={`vb-tag${p.state === 'joined' ? ' vb-tag--ok' : ''}${p.note === 'moved' ? ' vb-tag--off' : ''}`}>
+                {p.note === 'moved' ? '🚪 đã vào phòng khác' : p.state === 'joined' ? (p.online ? 'đã vào · online' : 'đã vào') : 'đang chờ nhận lời'}
               </span>
             </div>
           ))}
@@ -53,6 +56,40 @@ export default function Chain({ b, id, offset, busy, onAct, onBattle }) {
   }
 
   return <ChainGame b={b} id={id} offset={offset} players={players} onBattle={onBattle} />;
+}
+
+// "Phòng tự hủy sau m:ss" — the server cancels the lobby at expiresAt
+function LobbyClock({ until, offset }) {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const ms = Math.max(0, new Date(until).getTime() - (now + offset));
+  const s = Math.ceil(ms / 1000);
+  const txt = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+  return (
+    <p className={`vb-lobby-clock${ms < 60000 ? ' low' : ''}`}>
+      ⏱ Phòng chờ tự hủy sau <b>{txt}</b> nếu chưa bắt đầu.
+    </p>
+  );
+}
+
+// Tell the room when someone has gone into another room (once each)
+function MovedToast({ players }) {
+  const seen = useRef(null);
+  const moved = players.filter((p) => p.note === 'moved' && !p.me).map((p) => p.id + '|' + p.name);
+  const key = moved.join(',');
+  useEffect(() => {
+    if (seen.current === null) { seen.current = new Set(moved); return; } // already gone when the page opened
+    for (const m of moved) {
+      if (seen.current.has(m)) continue;
+      seen.current.add(m);
+      siteToast(`🚪 ${m.split('|')[1]} đã vào phòng khác — bạn ấy không chơi phòng này nữa.`, 'info');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
+  return null;
 }
 
 function ChainGame({ b, id, offset, players, onBattle }) {

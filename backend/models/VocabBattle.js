@@ -30,6 +30,7 @@ const PlayerSchema = new mongoose.Schema({
   paid:       { type: Number, default: 0 },     // 🔥 held on the room
   joinedAt:   { type: Date, default: null },
   seenAt:     { type: Date, default: null },    // last poll (lobby "online" dot)
+  note:       { type: String, default: '' },    // 'moved' = went into another room while a Nối chữ lobby waited
   // quiz run
   idx:        { type: Number, default: 0 },     // next question
   qAt:        { type: Date, default: null },    // when question idx was served

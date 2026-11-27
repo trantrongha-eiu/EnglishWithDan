@@ -14,6 +14,7 @@ const VocabBattleSettingsSchema = new mongoose.Schema({
   maxStake:         { type: Number },
   maxOpen:          { type: Number },
   inviteHours:      { type: Number },
+  lobbyMinutes:     { type: Number },
   friendlyWinFlames: { type: Number },
   friendlyDailyWins: { type: Number },
   speedBonus:       { type: Number },
