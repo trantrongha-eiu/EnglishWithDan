@@ -387,7 +387,7 @@ function mindsetLessonRow(d) {
 const REGISTRY = {
   reading_test: {
     label: 'Full đề Reading',
-    catalog: { model: ReadingTest, filter: { isActive: true }, sort: { testNumber: -1 },
+    catalog: { model: ReadingTest, filter: { isActive: true }, sort: { testNumber: -1 }, select: 'name testNumber',
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }) },
     attempt: { model: TestAttempt, userField: 'userId', idField: 'testId', filter: { status: 'completed' } },
     scoreGate: { fields: 'correctCount totalQuestions', passPercent: PRACTICE_PASS_PERCENT, percent: (d) => (d.totalQuestions ? (d.correctCount / d.totalQuestions) * 100 : 0) },
@@ -395,6 +395,9 @@ const REGISTRY = {
   listening_test: {
     label: 'Full đề Listening',
     catalog: { model: ListeningTest, filter: { isActive: true }, sort: { testNumber: -1 },
+      // only what shape + decorate read — whole tests (questions, transcripts)
+      // are ~8MB for 140 tests and made the mock picker hang ~90s.
+      select: 'name testNumber sections.partNumber sections.title',
       shape: (d) => ({ _id: d._id, label: d.name, meta: `Test ${d.testNumber}` }),
       // partsPickable: every section has its own audio, so the teacher can
       // assign just some sections (same rule as the student's "Chọn phần làm").
@@ -895,7 +898,9 @@ async function listCatalog(type, search = '', limit = 100, extraFilters = {}) {
     const byTest = entry.catalog.sectionSearch ? await sectionsOfTestNamed(search) : null;
     q.$or = byTest ? [byWords, byTest] : [byWords];
   }
-  const docs = await entry.catalog.model.find(q)
+  let find = entry.catalog.model.find(q);
+  if (entry.catalog.select) find = find.select(entry.catalog.select);
+  const docs = await find
     .sort(entry.catalog.sort)
     .limit(Math.min(Number(limit) || 100, CATALOG_MAX))
     .lean();

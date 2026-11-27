@@ -1434,13 +1434,18 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
     readingParts: current?.mockBundle?.readingParts?.length ? [...current.mockBundle.readingParts] : undefined,
   }));
 
+  // per skill: undefined = loading, 'error' = failed — each list shows as soon
+  // as it arrives (one slow skill used to leave every dropdown empty)
+  const [loadState, setLoadState] = useState({});
   useEffect(() => {
     let alive = true;
-    Promise.all(MOCK_SKILLS.map((s) => {
+    for (const s of MOCK_SKILLS) {
       const qs = new URLSearchParams({ type: s.type, limit: '2000' });
       if (s.type === 'speaking') qs.set('part', '2');
-      return apiFetch(`/classes/resources/catalog?${qs}`).then((d) => [s.key, d.items || []]).catch(() => [s.key, []]);
-    })).then((pairs) => { if (alive) setLists(Object.fromEntries(pairs)); });
+      apiFetch(`/classes/resources/catalog?${qs}`)
+        .then((d) => { if (alive) { setLists((l) => ({ ...l, [s.key]: d.items || [] })); setLoadState((x) => ({ ...x, [s.key]: 'ok' })); } })
+        .catch(() => { if (alive) setLoadState((x) => ({ ...x, [s.key]: 'error' })); });
+    }
     return () => { alive = false; };
   }, []);
 
@@ -1480,6 +1485,9 @@ function MockBundlePicker({ current, onPick, assignedIndex }) {
           <span style={{ fontWeight: 600 }}>{s.label}</span>
           <select className="form-input" value={sel[s.key]} onChange={(e) => setSel((x) => ({ ...x, [s.key]: e.target.value }))}>
             <option value="">🎲 Ngẫu nhiên (chốt 1 đề chung khi giao)</option>
+            {!loadState[s.key] && <option value="" disabled>⏳ Đang tải danh sách đề…</option>}
+            {loadState[s.key] === 'error' && <option value="" disabled>⚠️ Không tải được danh sách đề — đóng và mở lại</option>}
+            {loadState[s.key] === 'ok' && !(lists[s.key] || []).length && <option value="" disabled>(Không có đề nào đang bật)</option>}
             {sel[s.key] && !(lists[s.key] || []).some((x) => String(x._id) === sel[s.key]) && (
               <option value={sel[s.key]}>{current?.mockBundle?.[s.nameKey] || 'Đề đã chọn'}</option>
             )}
