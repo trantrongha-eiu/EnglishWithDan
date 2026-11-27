@@ -336,6 +336,7 @@
   background: var(--vb-card); border: 2.5px solid var(--vb-ink); border-radius: 18px; padding: 10px 14px; box-shadow: var(--pf-shadow, 4px 4px 0 #1d1a16);
 }
 .vb-save .vb-input { width: auto; margin: 0; flex: 1 1 140px; }
+.vb-save-pick { display: flex; gap: 6px; flex-wrap: wrap; flex-basis: 100%; }
 
 @media (max-width: 600px) {
   .vb-page { padding: 14px 16px 50px; }

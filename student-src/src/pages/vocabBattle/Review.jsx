@@ -48,6 +48,16 @@ export default function Review({ id }) {
     });
   }
 
+  const allTicked = allWords.size > 0 && ticked.size === allWords.size;
+  function toggleAll() {
+    setTicked(allTicked ? new Set() : new Set(allWords.keys()));
+  }
+  function tickMissed() {
+    const miss = new Set();
+    items.forEach((it) => { if (it.frac < 1) it.words.forEach((w) => w.word && miss.add(w.word)); });
+    setTicked(miss);
+  }
+
   async function save() {
     if (!bookId || !ticked.size) return;
     setSaving(true);
@@ -90,6 +100,14 @@ export default function Review({ id }) {
       </div>
       {books?.length > 0 && (
         <div className="vb-save">
+          <div className="vb-save-pick">
+            <button className="vb-btn vb-btn--ghost vb-btn--sm" type="button" onClick={toggleAll}>
+              {allTicked ? '☐ Bỏ chọn tất cả' : `☑ Chọn tất cả (${allWords.size})`}
+            </button>
+            {right < items.length && (
+              <button className="vb-btn vb-btn--ghost vb-btn--sm" type="button" onClick={tickMissed}>❌ Chỉ từ sai</button>
+            )}
+          </div>
           <span>Lưu <b>{ticked.size}</b> từ đã chọn vào</span>
           <select className="vb-input" value={bookId} onChange={(e) => setBookId(e.target.value)}>
             {books.map((bk) => <option key={bk._id} value={bk._id}>{bk.emoji || '📒'} {bk.name}</option>)}
