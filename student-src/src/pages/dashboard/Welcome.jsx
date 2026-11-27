@@ -8,6 +8,7 @@ import ClassInfoCard from './ClassInfoCard';
 import HomeworkCard from './HomeworkCard';
 import WeaknessCard from './WeaknessCard';
 import TodaysLesson from './TodaysLesson';
+import ArenaCard from './ArenaCard';
 import { hasPremiumAccess } from '../../utils/plan';
 import { bindDict, openUpgrade } from '../../utils/shell';
 import { useStreakFace } from '../../utils/streak';
@@ -156,6 +157,7 @@ export default function Welcome() {
           <div className="dash-vocab-hero-row">
             <StreakCard stats={stats} weekDays={weekDays} onUseHammer={useHammer} hammerBusy={hammerBusy} onFlameRules={() => setInfoKey('streak')} />
             <TodaysLesson lessons={lessons} />
+            <ArenaCard />
           </div>
         </section>
 

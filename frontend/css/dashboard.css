@@ -444,6 +444,80 @@ body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(-
   .dash-vocab-hero .todays-lesson-card>.btn{padding:10px 16px;font-size:14px}
 }
 
+/* ⚔️ Đấu trường từ vựng card (ArenaCard.jsx) — full row under streak + lesson,
+   the arena's 3 tabs side by side (Trò chơi · BXH tuần · Lịch sử). */
+.dash-vocab-hero-row>.dash-arena-card{flex-basis:100%}
+.dash-arena-card{
+  --da-ink:var(--pf-ink,#1d1a16);
+  background:radial-gradient(circle at 96% 0%,rgba(155,92,255,.18) 0 90px,transparent 91px),linear-gradient(135deg,#f3eeff 0%,#fff3e6 100%);
+  border:2.5px solid var(--da-ink);border-radius:22px;box-shadow:var(--pf-shadow,4px 4px 0 #1d1a16);
+  padding:22px 26px;
+}
+[data-theme="dark"] .dash-arena-card{background:#141414}
+.dash-arena-head{display:flex;align-items:center;justify-content:space-between;gap:12px 16px;flex-wrap:wrap;margin-bottom:16px}
+.dash-arena-title{display:flex;align-items:center;gap:12px;min-width:0}
+.dash-arena-emoji{font-size:40px;line-height:1}
+.dash-arena-name{font-size:22px;font-weight:800;color:var(--text)}
+.dash-arena-sub{font-size:14px;color:var(--text2)}
+.dash-arena-head-side{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dash-arena-wallet,.dash-arena-alert{
+  display:inline-flex;align-items:center;gap:4px;padding:6px 12px;border-radius:999px;font-size:13px;font-weight:700;
+  border:2px solid var(--da-ink);background:#fff;color:var(--text);text-decoration:none;
+}
+.dash-arena-alert{background:#ffd23f;color:#1d1a16;animation:tl-bubble-nudge 3.6s ease-in-out 1s infinite}
+.dash-arena-alert--live{background:#dcfce7;animation:none}
+[data-theme="dark"] .dash-arena-wallet{background:#1b1b1b}
+.dash-arena-go{white-space:nowrap}
+.dash-arena-closed{margin:-4px 0 14px;padding:8px 12px;border-radius:12px;background:#fee2e2;color:#991b1b;font-size:13px;font-weight:700}
+.dash-arena-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.dash-arena-col{background:var(--surface,#fff);border:2px solid var(--da-ink);border-radius:16px;padding:14px 16px;min-width:0}
+[data-theme="dark"] .dash-arena-col{background:#1b1b1b}
+.dash-arena-col-h{display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:800;color:var(--text);text-decoration:none;margin-bottom:10px}
+.dash-arena-col-h i{font-size:11px;opacity:.5}
+.dash-arena-col-h:hover{color:var(--blue)}
+.dash-arena-games{display:flex;flex-wrap:wrap;gap:6px}
+.dash-arena-game{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;font-size:13px;font-weight:700;
+  background:#f3eeff;color:#5b3cc4;border:1.5px solid rgba(123,82,214,.35);text-decoration:none;transition:transform .15s;
+}
+.dash-arena-game small{font-size:11px;color:#b45309;font-weight:700}
+.dash-arena-game:hover{transform:translateY(-2px)}
+.dash-arena-game--more{background:none;color:var(--text2);border-style:dashed}
+[data-theme="dark"] .dash-arena-game{background:rgba(123,82,214,.2);color:#c4b5fd}
+.dash-arena-rank,.dash-arena-hist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.dash-arena-rank li{display:flex;align-items:center;gap:8px;font-size:14px;padding:4px 6px;border-radius:10px}
+.dash-arena-rank li.me{background:#fff7d6}
+[data-theme="dark"] .dash-arena-rank li.me{background:rgba(255,210,63,.15)}
+.dash-arena-medal{width:22px;text-align:center;font-weight:800;color:var(--text2);flex-shrink:0}
+.dash-arena-ava{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;
+  background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:800;border:1.5px solid var(--da-ink);overflow:hidden;
+}
+.dash-arena-ava img{width:100%;height:100%;object-fit:cover}
+.dash-arena-who{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}
+.dash-arena-rank b{font-size:13px;color:#b45309;flex-shrink:0}
+.dash-arena-mine{margin-top:10px;font-size:13px;color:var(--text2)}
+.dash-arena-mine .hot{color:#ea580c;font-weight:700}
+.dash-arena-hist a{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border-radius:10px;text-decoration:none;color:var(--text);font-size:14px}
+.dash-arena-hist a:hover{background:var(--surface2,#f4f4f5)}
+.dash-arena-hist-g{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-arena-hist-g small{color:var(--text3);font-size:12px}
+.dash-arena-out{flex-shrink:0;font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--surface2,#eee);color:var(--text2)}
+.dash-arena-out.vb-out--win{background:#dcfce7;color:#15803d}
+.dash-arena-out.vb-out--tie{background:#fef3c7;color:#b45309}
+.dash-arena-out.vb-out--solo{background:#ede9fe;color:#6d28d9}
+.dash-arena-empty{font-size:13px;color:var(--text3);line-height:1.5}
+.dash-arena-skel{height:84px;border-radius:12px;background:linear-gradient(90deg,var(--surface2,#f1f1f1) 25%,rgba(0,0,0,.04) 50%,var(--surface2,#f1f1f1) 75%);background-size:200% 100%;animation:da-skel 1.2s linear infinite}
+@keyframes da-skel{to{background-position:-200% 0}}
+@media (prefers-reduced-motion:reduce){.dash-arena-alert,.dash-arena-skel{animation:none}}
+@media(max-width:900px){.dash-arena-cols{grid-template-columns:1fr}}
+@media(max-width:640px){
+  .dash-arena-card{padding:16px}
+  .dash-arena-emoji{font-size:30px}
+  .dash-arena-name{font-size:18px}
+  .dash-arena-sub{font-size:13px}
+}
+
 .mocktest-card{
   display:flex;align-items:center;gap:14px;
   background:linear-gradient(135deg,#fef2f2 0%,#fff1f4 100%);
